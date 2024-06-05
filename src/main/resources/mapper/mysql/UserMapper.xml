@@ -1,0 +1,599 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- Mapperとxmlのマッピング -->
+<mapper namespace="katachi.spring.exercise.repository.UserMapper">
+
+  <!-- マッピング定義(ユーザー) -->
+  <resultMap
+    type="katachi.spring.exercise.domain.user.model.MUser" id="user">
+    <id column="id" property="id" />
+    <result column="e_mail" property="eMail" />
+    <result column="user_name" property="userName" />
+    <result column="phone_number" property="phoneNumber" />
+  </resultMap>
+
+  <!-- マッピング定義(アイテム) -->
+  <resultMap
+    type="katachi.spring.exercise.domain.user.model.MGoods" id="goods">
+    <id column="id" property="id" />
+    <result column="goods_name" property="goodsName" />
+    <result column="description" property="description" />
+    <result column="price" property="price" />
+    <result column="image_url" property="imageUrl" />
+  </resultMap>
+
+  <!-- マッピング定義(オーダー) -->
+  <resultMap
+    type="katachi.spring.exercise.domain.user.model.Order" id="order">
+    <id column="id" property="id" />
+    <result column="user_id" property="userId" />
+    <result column="order_date" property="orderDate" />
+    <result column="order_number" property="orderNumber" />
+    <collection property="user" resultMap="user"
+      columnPrefix="user_" />
+    <collection property="deliveryAddress"
+      resultMap="deliveryAddress" columnPrefix="delivery_address_" />
+    <collection property="orderDetailsList"
+      resultMap="orderDetails" columnPrefix="order_details_" />
+  </resultMap>
+
+  <!-- マッピング定義(オーダー詳細) -->
+  <resultMap
+    type="katachi.spring.exercise.domain.user.model.OrderDetails"
+    id="orderDetails">
+    <id column="id" property="id" />
+    <result column="order_id" property="orderId" />
+    <result column="goods_id" property="goodsId" />
+    <result column="price" property="price" />
+    <result column="quantity" property="quantity" />
+    <association property="goods" resultMap="goods"
+      columnPrefix="goods_" />
+  </resultMap>
+
+  <!-- マッピング定義(配送先) -->
+  <resultMap
+    type="katachi.spring.exercise.domain.user.model.DeliveryAddress"
+    id="deliveryAddress">
+    <id column="id" property="id" />
+    <result column="order_id" property="orderId" />
+    <result column="postal_code" property="postalCode" />
+    <result column="prefectures" property="prefectures" />
+    <result column="city" property="city" />
+    <result column="town_name" property="townName" />
+    <result column="others" property="others" />
+  </resultMap>
+
+  <!-- ユーザー1件登録 -->
+  <insert id="insertOne">
+    insert into m_users(
+    user_name,
+    furigana,
+    e_mail,
+    password,
+    postal_code,
+    prefectures,
+    city,
+    town_name,
+    others,
+    phone_number,
+    gender,
+    birthday,
+    role
+    )
+    values(
+    #{userName},
+    #{furigana},
+    #{eMail},
+    #{password},
+    #{postalCode},
+    #{prefectures},
+    #{city},
+    #{townName},
+    #{others},
+    #{phoneNumber},
+    #{gender},
+    #{birthday},
+    #{role}
+    )
+  </insert>
+
+  <!-- アイテム複数件取得 -->
+  <select id="selectGoodsWithPagination" resultType="MGoods">
+    SELECT
+    id,
+    goods_name,
+    description,
+    price,
+    image_url
+    FROM
+    m_goods
+    ORDER BY id
+    LIMIT #{offset}, #{limit}
+  </select>
+
+  <!-- アイテムの合計数を取得 -->
+  <select id="getTotalGoodsCount" resultType="int">
+    SELECT COUNT(*) FROM m_goods
+  </select>
+
+  <!-- アイテム1件検索 -->
+  <select id="selectOneGoods" resultMap="goods">
+    select
+    id,
+    goods_name,
+    description,
+    price,
+    image_url
+    from
+    m_goods
+    WHERE
+    id = #{goodsId}
+  </select>
+
+  <!-- アイテム複数件検索 -->
+  <select id="selectAllGoods" resultMap="goods">
+    select
+    id,
+    goods_name,
+    description,
+    price,
+    image_url
+    from
+    m_goods
+  </select>
+
+  <!-- ログインユーザー情報取得 -->
+  <select id="findLoginUserByEmail" resultType="MUser">
+    select
+    *
+    from
+    m_users
+    where
+    e_mail = #{eMail}
+  </select>
+
+  <select id="findLoginUserById" resultType="MUser">
+    select
+    *
+    from
+    m_users
+    where
+    id = #{userId}
+  </select>
+
+  <!-- ログインユーザーカート登録 -->
+  <insert id="saveToCart">
+    insert into cart(
+    user_id,
+    goods_id,
+    quantity
+    )
+    values(
+    #{userId},
+    #{goodsId},
+    #{quantity}
+    )
+  </insert>
+
+  <!-- カートに同じ商品が存在するか確認 -->
+  <select id="findTwo">
+    select
+    user_id,
+    goods_id
+    from
+    cart
+    where
+    user_id = #{userId}
+    and
+    goods_id = #{goodsId}
+  </select>
+
+  <!-- 同じ商品に個数を加算する -->
+  <update id="addQuantity">
+    update
+    cart
+    set
+    quantity = quantity + #{quantity}
+    where
+    user_id = #{userId}
+    and
+    goods_id = #{goodsId}
+  </update>
+
+  <!-- 同じ商品の個数を変更する -->
+  <update id="updateQuantity">
+    update
+    cart
+    set
+    quantity = #{quantity}
+    where
+    user_id = #{userId}
+    and
+    goods_id = #{goodsId}
+  </update>
+
+  <!-- カート取得 -->
+  <select id="findCartInformation" resultType="CartItem">
+    select
+    user_id,
+    goods_id,
+    quantity,
+    price,
+    goods_name,
+    image_url
+    from cart
+    join m_goods on cart.goods_id = m_goods.id
+    join m_users on cart.user_id = m_users.id
+    where
+    e_mail = #{eMail}
+  </select>
+
+  <!-- アイテム１件削除 -->
+  <delete id="deleteItem">
+    delete
+    from
+    cart
+    where
+    user_id = #{userId}
+    and
+    goods_id = #{goodsId}
+  </delete>
+
+  <!-- アイテム全件削除 -->
+  <delete id="deleteAllItem">
+    delete
+    from
+    cart
+    where
+    user_id = #{userId}
+  </delete>
+
+  <!--メールアドレス更新 -->
+  <update id="updateAddress">
+    update
+    m_users
+    set
+    e_mail = #{newAddress}
+    where
+    id = #{userId}
+  </update>
+
+  <!--パスワード更新 -->
+  <update id="updatePassword">
+    update
+    m_users
+    set
+    password = #{newPassword}
+    where
+    id = #{userId}
+  </update>
+
+  <!--配送先住所更新 -->
+  <update id="updateShippingAddress">
+    update
+    m_users
+    set
+    postal_code = #{user.postalCode},
+    prefectures = #{user.prefectures},
+    city = #{user.city},
+    town_name = #{user.townName},
+    others = #{user.others}
+    where
+    id = #{userId}
+  </update>
+
+  <!--ユーザー情報更新 -->
+  <update id="updateMany">
+    update
+    m_users
+    set
+    user_name = #{user.userName},
+    furigana = #{user.furigana},
+    postal_code = #{user.postalCode},
+    prefectures = #{user.prefectures},
+    city = #{user.city},
+    town_name = #{user.townName},
+    others = #{user.others},
+    phone_number = #{user.phoneNumber},
+    gender = #{user.gender},
+    birthday = #{user.birthday}
+    where
+    id = #{userId}
+  </update>
+
+  <!--購入者情報を保存する -->
+  <insert id="insertOrderOne" useGeneratedKeys="true"
+    keyProperty="id">
+    INSERT INTO `order` (
+    user_id,
+    order_date,
+    order_number
+    )
+    VALUES (
+    #{userId},
+    #{orderDate},
+    #{orderNumber}
+    )
+  </insert>
+
+  <!--購入商品の詳細を保存する -->
+  <insert id="insertOrderDetail">
+    INSERT INTO `order_details` (
+    order_id,
+    goods_id,
+    price,
+    quantity
+    )
+    VALUES (
+    #{orderId},
+    #{goodsId},
+    #{price},
+    #{quantity}
+    )
+  </insert>
+
+  <!--購入商品の配送先を保存する -->
+  <insert id="insertDeliveryAddress">
+    INSERT INTO delivery_address (
+    order_id,
+    postal_code,
+    prefectures,
+    city,
+    town_name,
+    others
+    )
+    VALUES (
+    #{orderId},
+    #{postalCode},
+    #{prefectures},
+    #{city},
+    #{townName},
+    #{others}
+    )
+  </insert>
+
+  <!-- 購入履歴を複数件取得 -->
+  <select id="findManyHistories" resultMap="order">
+    SELECT
+    `order`.id,
+    `order`.order_date,
+    `order`.order_number,
+    order_details.id as order_details_id,
+    order_details.price as order_details_price,
+    order_details.quantity as order_details_quantity,
+    order_details.goods_id as order_details_goods_id,
+    m_goods.goods_name as order_details_goods_goods_name,
+    m_goods.image_url as order_details_goods_image_url
+    FROM
+    `order`
+    JOIN
+    order_details ON `order`.id = order_details.order_id
+    JOIN
+    m_goods ON m_goods.id = order_details.goods_id
+    WHERE
+    `order`.user_id = #{userId}
+  </select>
+
+  <!-- 購入履歴１件取得 -->
+  <select id="findOneHistory" resultMap="order">
+    SELECT
+    `order`.id,
+    `order`.order_date,
+    `order`.order_number,
+    order_details.price as order_details_price,
+    order_details.quantity as order_details_quantity,
+    order_details.goods_id as order_details_goods_id,
+    m_goods.goods_name as order_details_goods_goods_name,
+    m_goods.image_url as order_details_goods_image_url,
+    delivery_address.postal_code as delivery_address_postal_code,
+    delivery_address.prefectures as delivery_address_prefectures,
+    delivery_address.city as delivery_address_city,
+    delivery_address.town_name as delivery_address_town_name,
+    delivery_address.others as delivery_address_others,
+    m_users.id as user_id,
+    m_users.user_name as user_user_name,
+    m_users.e_mail as user_e_mail,
+    m_users.phone_number as user_phone_number
+    FROM
+    `order`
+    JOIN
+    order_details ON `order`.id = order_details.order_id
+    JOIN
+    delivery_address ON `order`.id = delivery_address.order_id
+    JOIN
+    m_users ON `order`.user_id = m_users.id
+    JOIN
+    m_goods ON m_goods.id = order_details.goods_id
+    WHERE
+    `order`.user_id = #{userId}
+    AND
+    `order`.id = #{orderId}
+
+  </select>
+
+  <!-- アイテム１件更新 -->
+  <update id="updateGoods">
+    update
+    m_goods
+    set
+    goods_name = #{goodsName},
+    description = #{description},
+    price = #{price},
+    image_url = #{imageUrl}
+    where
+    id = #{id}
+  </update>
+
+  <!-- アイテム１件削除 -->
+  <delete id="deleteGoods">
+    delete
+    from
+    m_goods
+    where
+    id = #{id}
+  </delete>
+
+  <!-- 新規アイテム登録 -->
+  <insert id="insertGoods">
+    insert into m_goods(
+    goods_name,
+    description,
+    price,
+    image_url
+    )
+    values(
+    #{goodsName},
+    #{description},
+    #{price},
+    #{imageUrl}
+    )
+  </insert>
+
+  <!-- 全ユーザーの注文履歴を取得 -->
+  <select id="selectAllOrders" resultMap="order">
+    SELECT
+    `order`.id,
+    `order`.order_date,
+    `order`.order_number,
+    order_details.id as order_details_id,
+    order_details.price as order_details_price,
+    order_details.quantity as order_details_quantity,
+    m_users.id as user_id,
+    m_users.user_name as user_user_name,
+    m_users.e_mail as user_e_mail
+    FROM
+    `order`
+    JOIN
+    order_details ON `order`.id = order_details.order_id
+    JOIN
+    m_users ON `order`.user_id = m_users.id
+    <where>
+      <if test="searchQuery != null and searchQuery != ''">
+        `order`.order_number LIKE CONCAT('%', #{searchQuery}, '%')
+        OR
+        m_users.user_name LIKE CONCAT('%', #{searchQuery}, '%')
+        OR
+        m_users.e_mail LIKE CONCAT('%', #{searchQuery}, '%')
+      </if>
+    </where>
+  </select>
+
+  <!-- 購入履歴１件取得 -->
+  <select id="selectUserOrders" resultMap="order">
+    SELECT
+    `order`.id,
+    `order`.order_date,
+    `order`.order_number,
+    order_details.price as order_details_price,
+    order_details.quantity as order_details_quantity,
+    order_details.goods_id as order_details_goods_id,
+    m_goods.goods_name as order_details_goods_goods_name,
+    m_goods.image_url as order_details_goods_image_url,
+    delivery_address.postal_code as delivery_address_postal_code,
+    delivery_address.prefectures as delivery_address_prefectures,
+    delivery_address.city as delivery_address_city,
+    delivery_address.town_name as delivery_address_town_name,
+    delivery_address.others as delivery_address_others,
+    m_users.id as user_id,
+    m_users.user_name as user_user_name,
+    m_users.e_mail as user_e_mail,
+    m_users.phone_number as user_phone_number
+    FROM
+    `order`
+    JOIN
+    order_details ON `order`.id = order_details.order_id
+    JOIN
+    delivery_address ON `order`.id = delivery_address.order_id
+    JOIN
+    m_users ON `order`.user_id = m_users.id
+    JOIN
+    m_goods ON m_goods.id = order_details.goods_id
+    WHERE
+    `order`.id = #{orderId}
+  </select>
+
+  <!-- 顧客情報を複数件取得 -->
+  <select id="selectAllUsers" resultType="MUser">
+    SELECT
+    id,
+    user_name,
+    furigana,
+    e_mail,
+    postal_code,
+    prefectures,
+    city,
+    town_name,
+    others,
+    phone_number,
+    gender,
+    birthday,
+    created_at
+    FROM
+    m_users
+    <where>
+      role = 'ROLE_GENERAL'
+      <if test="searchQuery != null and searchQuery != ''">
+        AND (user_name LIKE CONCAT('%', #{searchQuery}, '%')
+        OR
+        furigana LIKE CONCAT('%', #{searchQuery}, '%')
+        OR
+        phone_number LIKE CONCAT('%', #{searchQuery}, '%')
+        OR
+        e_mail LIKE CONCAT('%', #{searchQuery}, '%'))
+      </if>
+    </where>
+  </select>
+
+  <!-- 顧客情報を1件取得 -->
+  <select id="selectUser" resultType="MUser">
+    SELECT
+    id,
+    user_name,
+    furigana,
+    e_mail,
+    postal_code,
+    prefectures,
+    city,
+    town_name,
+    others,
+    phone_number,
+    gender,
+    birthday,
+    created_at
+    FROM
+    m_users
+    WHERE
+    id = #{userId}
+  </select>
+
+  <!-- 顧客情報を更新 -->
+  <update id="updateUser">
+    UPDATE
+    m_users
+    set
+    e_mail = #{eMail},
+    furigana = #{furigana},
+    phone_number = #{phoneNumber},
+    postal_code = #{postalCode},
+    prefectures = #{prefectures},
+    city = #{city},
+    town_name = #{townName},
+    others = #{others},
+    gender = #{gender},
+    birthday = #{birthday}
+    where
+    id = #{id}
+  </update>
+
+  <!-- 顧客情報を１件削除 -->
+  <delete id="deleteUser">
+    delete
+    from
+    m_users
+    where
+    id = #{userId}
+  </delete>
+
+</mapper>

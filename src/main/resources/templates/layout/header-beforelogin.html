@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layout}">
+
+<head>
+</head>
+
+<body>
+  <nav layout:fragment="beforeLoginHeader" class="navbar navbar-expand-lg" style="background-color: #d4a373;">
+    <div class="container">
+      <a th:href="@{/}" class="navbar-brand text-white">
+        <img src="/img/plants_01.png" alt="" / style="width: 40px; height: 40px;">
+        <span th:text="#{title}"></span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+
+          <li class="nav-item pe-3">
+            <figure class="text-white mb-0 text-center position-relative">
+              <i class="text-white fa-solid fa-user fa-lg dropdown-toggle mb-2" data-bs-toggle="dropdown"
+                aria-expanded="false"></i>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" th:href="@{/login}">ログイン</a></li>
+                <li><a class="dropdown-item" th:href="@{/user/signup}">新規登録</a></li>
+              </ul>
+              <figcaption th:text="#{login}"></figcaption>
+            </figure>
+          </li>
+
+          <li class="nav-item li pe-3">
+            <a th:href="@{/goods/cart}">
+              <figure class="text-white mb-0 text-center relative">
+                <i class="fas fa-shopping-cart fa-lg"></i>
+                <figcaption th:text="#{cart}"></figcaption>
+                <th:block th:if="${session.totalQuantity > 0}">
+                  <figcaption class="absolute">
+                    <p class="mb-0 fw-bold" th:text="${session.totalQuantity}"></p>
+                  </figcaption>
+                </th:block>
+              </figure>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+</body>
+
+</html>

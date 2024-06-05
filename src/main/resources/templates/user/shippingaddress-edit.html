@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layout}">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!--CSS読み込み-->
+  <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+  <link rel="stylesheet" th:href="@{/css/user/style.css}">
+  <link href="https://use.fontawesome.com/releases/v6.5.2/css/all.css" rel="stylesheet">
+  <!--JS読み込み-->
+  <script th:src="@{/js/popper.min.js}" defer></script>
+  <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}" defer></script>
+  <title th:text="#{shippingAddressUpdate}"></title>
+</head>
+
+<body>
+  <div layout:fragment="content">
+    <div class="align-items-center py-4">
+      <h2 class="text-center my-3" th:text="#{shippingAddressUpdate}"></h2>
+      <form method="post" th:action="@{/account/shippingAddressUpdate}" class="form-signup"
+        th:object="${shippingAddressEditForm}">
+        <!--郵便番号-->
+        <div class="mb-3">
+          <label for="postalCode" th:text="#{postalCode}" class="form-label fw-bold"></label>
+          <input type="text" class="form-control" th:field="*{postalCode}" th:errorclass="is-invalid" />
+          <div class="invalid-feedback" th:errors="*{postalCode}"></div>
+        </div>
+        <!--都道府県-->
+        <div class="mb-3">
+          <label for="prefectures" th:text="#{prefectures}" class="form-label fw-bold"></label>
+          <select class="form-control" th:field="*{prefectures}" th:errorclass="is-invalid">
+            <option value="" selected></option>
+            <option th:each="item : ${prefecturesList}" th:text="${item}" th:value="${item}"
+              id="prefectures" />
+            </option>
+          </select>
+          <div class="invalid-feedback" th:errors="*{prefectures}"></div>
+        </div>
+        <!--市町村-->
+        <div class="mb-3">
+          <label for="city" th:text="#{city}" class="form-label fw-bold"></label>
+          <input type="text" class="form-control" th:field="*{city}" th:errorclass="is-invalid" />
+          <div class="invalid-feedback" th:errors="*{city}"></div>
+        </div>
+        <!--町名・番地-->
+        <div class="mb-3">
+          <label for="townName" th:text="#{townName}" class="form-label fw-bold"></label>
+          <input type="text" class="form-control" th:field="*{townName}" th:errorclass="is-invalid" />
+          <div class="invalid-feedback" th:errors="*{townName}"></div>
+        </div>
+        <!--建物名・部屋番号 -->
+        <div class="mb-3">
+          <label for="others" th:text="#{others}" class="form-label fw-bold"></label>
+          <input type="text" class="form-control" th:field="*{others}" th:errorclass="is-invalid" />
+          <div class="invalid-feedback" th:errors="*{others}"></div>
+        </div>
+        <!--チェック-->
+        <div class="mb-3">
+          <input type="checkbox" class="form-check-input" th:field="*{isEverytime}" />
+          <label class="form-label fw-bold" for="isEverytime">いつもこの住所に届ける</label>
+        </div>
+        <div class="text-center">
+          <button class="btn btn-primary mt-3 w-75" type="submit">変更する</button>
+        </div>
+      </form>
+
+      <div class="text-center">
+        <a th:href="@{/goods/casher}">決済画面に戻る</a>
+      </div>
+
+    </div>
+  </div>
+</body>
+
+</html>

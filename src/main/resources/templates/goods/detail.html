@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layout}">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!--CSS読み込み-->
+  <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+  <link rel="stylesheet" th:href="@{/css/user/style.css}">
+  <link href="https://use.fontawesome.com/releases/v6.5.2/css/all.css" rel="stylesheet">
+  <!--JS読み込み-->
+  <script th:src="@{/js/popper.min.js}" defer></script>
+  <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}" defer></script>
+  <title th:text="#{detail}"></title>
+</head>
+
+<body>
+  <div layout:fragment="content">
+    <div class="container mt-40">
+      <form th:action="@{/goods/addToCart}" method="post">
+        <th:block th:if="${#authorization.expression('isAuthenticated()')}">
+          <input type="hidden" name="userId" th:value="${#authentication.principal.userId}" />
+        </th:block>
+        <input type="hidden" name="goodsId" th:value="${goodsOne.id}" />
+        <h2 class="text-center" th:text="#{detail}"></h2>
+
+        <div th:if="${message}" class="text-center">
+          <div class="alert alert-success w-50 m-auto mt-3" th:text="${message}">
+          </div>
+        </div>
+
+        <div class="mt-5">
+          <div class="row">
+            <div class="item_img me-5 text-center col">
+              <img class="mx-auto" th:src="'/img/' + ${goodsOne.imageUrl}" alt="アイテム画像" width="80%" height="100%" style="background-color: #f5f5f5;"/>
+            </div>
+            <div class="item_detail col">
+              <div class="p-3">
+                <h3 th:text="${goodsOne.goodsName}" class="text-center"></h3>
+                <p th:text="${goodsOne.description}" class="my-3"></p>
+                <p class="mb-0">数量</p>
+                <select class="form-select-sm" name="quantity">
+                  <option th:each="i : ${#numbers.sequence(1,10)}" th:text="${i}" th:value="${i}">
+                  </option>
+                  <!-- 0～10が出力される -->
+                </select>
+                <div class="mt-3">&yen;<span
+                    th:text="${#numbers.formatInteger(goodsOne.price, 3, 'COMMA')}"
+                    class="h5"></span>
+                </div>
+              </div>
+              <div class="text-center">
+                <button class="w-50 p-3 mt-3 btn_detail text-white fw-bold" type="submit" th:text="#{cartIn}">
+                </button>
+              </div>
+              <th:block th:if="${session.totalQuantity > 0}">
+                <div class="text-center pt-3">
+                  <a class="text-reset text-decoration-underline" th:href="@{/}">商品一覧へ</a>
+                </div>
+              </th:block>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</body>
+
+</html>

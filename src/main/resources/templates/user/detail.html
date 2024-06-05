@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layout}">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!--CSS読み込み-->
+  <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+  <link rel="stylesheet" th:href="@{/css/user/style.css}">
+  <link href="https://use.fontawesome.com/releases/v6.5.2/css/all.css" rel="stylesheet">
+  <!--JS読み込み-->
+  <script th:src="@{/js/popper.min.js}" defer></script>
+  <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}" defer></script>
+  <title th:text="#{userDetail}"></title>
+</head>
+
+<body>
+  <div layout:fragment="content">
+    <div class="container">
+      <div class="w-75 mx-auto">
+        <h2 class="text-center mt-40" th:text="#{userDetail}"></h2>
+        <div class="mt-5 p-1">
+          <div class="row">
+            <p class="col-sm-9 fs-4 mb-0 p-1">ユーザーメールアドレス</p>
+            <div class="col-sm-3"><a class="btn btn-outline-secondary"
+                th:href="@{/account/addressUpdate}">メールアドレスの変更</a>
+            </div>
+          </div>
+          <dl class="row mt-3">
+            <dt class="col-sm-6 p-1">メールアドレス</dt>
+            <dd class="col-sm-6 p-1" th:text="${user.eMail}"></dd>
+          </dl>
+        </div>
+        <div class="border-top border-secondary-subtle p-1">
+          <div class="row mt-4">
+            <p class="col-sm-9 fs-4 mb-0 p-1">ユーザー情報詳細</p>
+            <div class="col-sm-3">
+              <a class="btn btn-outline-secondary" th:href="@{/account/detailUpdate}">ユーザー情報の変更</a>
+            </div>
+          </div>
+          <dl class="row mt-3">
+            <dt class="col-sm-6 p-1">名前</dt>
+            <dd class="col-sm-6 p-1" th:text="${user.userName}"></dd>
+            <dt class="col-sm-6 p-1">フリガナ</dt>
+            <dd class="col-sm-6 p-1" th:text="${user.furigana}"></dd>
+            <dt class="col-sm-6 p-1">郵便番号</dt>
+            <dd class="col-sm-6 p-1" th:text="${user.postalCode}"></dd>
+            <dt class="col-sm-6 p-1">都道府県</dt>
+            <dd class="col-sm-6 p-1" th:text="${user.prefectures}"></dd>
+            <dt class="col-sm-6 p-1">市区町村</dt>
+            <dd class="col-sm-6 p-1" th:text="${user.city}"></dd>
+            <dt class="col-sm-6 p-1">町名・番地</dt>
+            <dd class="col-sm-6 p-1" th:text="${user.townName}"></dd>
+            <dt class="col-sm-6 p-1">建物名・部屋番号</dt>
+            <dd class="col-sm-6 p-1"
+              th:text="${user.others == null || user.others.isEmpty() ? '未登録' : user.others}"></dd>
+            <dt class="col-sm-6 p-1">電話番号</dt>
+            <dd class="col-sm-6 p-1" th:text="${user.phoneNumber}"></dd>
+            <dt class="col-sm-6 p-1">性別 </dt>
+            <dd class="col-sm-6 p-1"
+              th:text="${user.gender == 1 ? '男性' : (user.gender == 2 ? '女性' : 'その他')}"></dd>
+            <dt class="col-sm-6 p-1">誕生日</dt>
+            <dd class="col-sm-6 p-1" th:text="${#dates.format(user.birthday,'YYYY/MM/dd')}"></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

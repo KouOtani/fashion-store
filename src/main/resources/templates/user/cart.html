@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layout}">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!--CSS読み込み-->
+  <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+  <link rel="stylesheet" th:href="@{/css/user/style.css}">
+  <link href="https://use.fontawesome.com/releases/v6.5.2/css/all.css" rel="stylesheet">
+  <!--JS読み込み-->
+  <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}" defer></script>
+  <script th:src="@{/js/cart.js}" defer></script>
+  <title th:text="#{cartPage}"></title>
+</head>
+
+<body>
+  <div layout:fragment="content">
+    <div class="container">
+      <h2 class="text-center mt-40" th:text="#{cartPage}"></h2>
+      <th:block th:if="${#lists.isEmpty(session.cart)}">
+        <div class="d-flex align-items-center justify-content-center" style="height: 200px;">
+          <div>
+            <div class="text-danger text-center">ショッピングカートの中に商品がありません。</div>
+            <div class="mt-4 text-center">
+              <a class="text-reset text-decoration-underline" th:href="@{/}">商品一覧へ</a>
+            </div>
+          </div>
+        </div>
+      </th:block>
+
+      <th:block th:if="!${#lists.isEmpty(session.cart)}">
+        <div class="mt-5">
+          <div class="row">
+            <div class="col">
+              <th:block th:each="item, itemStat : ${session.cart}">
+                <div class="row mt-3 me-5 border-bottom border-secondary-subtle">
+                  <div class="col img">
+                    <a th:href="@{'/goods/detail/' + ${item.goodsId}}">
+                      <img class="mx-auto" th:src="'/img/' + ${item.imageUrl}" alt="アイテム画像"
+                        height="80%" style="max-width: 100%;" />
+                    </a>
+                  </div>
+                  <div class="col item_name pt-3">
+                    <h5 th:text="${item.goodsName}"></h5>
+                    <div class="mt-3"><span
+                        th:text="${'&yen;' + #numbers.formatInteger(item.price, 3, 'COMMA')}"
+                        class="h5"></span>
+                    </div>
+                  </div>
+                  <div class="col quantity pt-3 ms-auto">
+                    <form th:id="'updateForm_' + ${itemStat.index}"
+                      th:action="@{/goods/update-quantity}" method="post">
+                      <th:block th:if="${#authorization.expression('isAuthenticated()')}">
+                        <input type="hidden" name="userId"
+                          th:value="${#authentication.principal.userId}" />
+                      </th:block>
+                      <input type="hidden" name="goodsId" th:value="${item.goodsId}" />
+                      <p class="mb-0">数量</p>
+                      <select class="form-select form-select-sm" name="quantity"
+                        th:onchange="'submitForm(' + ${itemStat.index} + ')'">
+                        <option th:each="i : ${#numbers.sequence(1,10)}" th:text="${i}"
+                          th:value="${i}" th:selected="${item.quantity == i}">
+                        </option>
+                      </select>
+                    </form>
+                    <div class="mt-2">
+                      <span>小計<span class="h5"
+                          th:text="${' ' +  '&yen;' + #numbers.formatInteger(item.subtotal, 3, 'COMMA')}"></span></span>
+                    </div>
+                    <form th:action="@{/goods/removeItem}" method="get">
+                      <input type="hidden" name="goodsId" th:value="${item.goodsId}" />
+                      <p class="mt-5">
+                        <button class="btn text-danger text-decoration-underline" type="submit"
+                          th:text="#{delete}"></button>
+                      </p>
+                    </form>
+                  </div>
+                </div>
+              </th:block>
+            </div>
+
+            <div class="col">
+              <div class="bg-body-tertiary w-75 m-auto">
+                <div class="p-3">
+                  <h4>お支払い金額</h4>
+                  <div class="pt-3">
+                    <span>商品合計</span><span class="fs-5"
+                      th:text="${session.totalQuantity}"></span><span>点</span>
+                    <span class="fs-5"
+                      th:text="${'&yen;' + #numbers.formatInteger(session.totalAmount, 3, 'COMMA')}"></span>
+                  </div>
+                </div>
+              </div>
+              <div class="text-center">
+                <a class="btn w-50 p-3 mt-5 btn_detail text-white fw-bold"
+                  th:href="@{/goods/casher}">レジへ進む</a>
+              </div>
+              <div class="text-center pt-3">
+                <a class="text-reset text-decoration-underline" th:href="@{/}">ショッピングを続ける</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </th:block>
+    </div>
+  </div>
+
+</body>
+
+</html>

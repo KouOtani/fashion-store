@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layout}">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!--CSS読み込み-->
+  <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+  <link rel="stylesheet" th:href="@{/css/user/style.css}">
+  <link href="https://use.fontawesome.com/releases/v6.5.2/css/all.css" rel="stylesheet">
+  <!--JS読み込み-->
+  <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}" defer></script>
+  <title th:text="#{complete}"></title>
+</head>
+
+<body>
+  <div layout:fragment="content">
+    <div class="d-flex align-items-center justify-content-center" style="height: 200px;">
+      <h4 class="text-center">ご注文ありがとうございました</h4>
+    </div>
+    <th:block th:if="${orderNumber != null}">
+      <p class="text-center fw-bold" th:text="'お客様のご注文番号は「' + ${orderNumber} + '」です'"></p>
+    </th:block>
+    <div class="text-center">
+      <a class="btn btn-secondary p-3 mt-5 text-white" th:href="@{/}">トップページへ</a>
+    </div>
+</div>
+
+
+</body>
+
+</html>

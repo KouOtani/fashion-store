@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layout}">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!--CSS読み込み-->
+  <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+  <link rel="stylesheet" th:href="@{/css/user/style.css}">
+  <link href="https://use.fontawesome.com/releases/v6.5.2/css/all.css" rel="stylesheet">
+  <!--JS読み込み-->
+  <script th:src="@{/js/popper.min.js}" defer></script>
+  <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}" defer></script>
+  <title th:text="#{title}"></title>
+</head>
+
+<body>
+  <div layout:fragment="content">
+    <div class="container mt-40">
+      <div class="row">
+        <th:block th:each="item : ${goodsList}">
+          <a th:href="@{'/goods/detail/' + ${item.id}}" class="col-3 pb-2 text-black">
+            <div class="box d-flex justify-content-center align-items-center">
+              <img th:src="'/img/' + ${item.imageUrl}" alt="アイテム画像" />
+            </div>
+            <p class="text-center h5" th:text="${item.goodsName}"></p>
+            <p class="text-center" th:text="${'&yen;' + #numbers.formatInteger(item.price, 3, 'COMMA')}">
+            </p>
+          </a>
+        </th:block>
+      </div>
+      <div class="row">
+        <div class="col-12 text-center">
+          <ul class="pagination justify-content-center">
+            <li class="page-item" th:if="${page > 1}">
+              <a class="page-link" th:href="@{'/?page=' + (${page} - 1) + '&size=' + ${size}}"
+                aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+            <th:block th:each="pageNum : ${pageNumbers}">
+              <li class="page-item" th:classappend="${pageNum == page} ? 'active'">
+                <a class="page-link" th:text="${pageNum}"
+                  th:href="@{'/?page=' + ${pageNum} + '&size=' + ${size}}"></a>
+              </li>
+            </th:block>
+            <li class="page-item" th:if="${page < totalPages}">
+              <a class="page-link" th:href="@{'/?page=' + (${page} + 1) + '&size=' + ${size}}"
+                aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

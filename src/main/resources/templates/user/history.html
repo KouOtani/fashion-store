@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layout}">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!--CSS読み込み-->
+  <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+  <link rel="stylesheet" th:href="@{/css/user/style.css}">
+  <link href="https://use.fontawesome.com/releases/v6.5.2/css/all.css" rel="stylesheet">
+  <!--JS読み込み-->
+  <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}" defer></script>
+  <title th:text="#{history}"></title>
+</head>
+
+<body>
+  <div layout:fragment="content">
+    <div class="container">
+      <h2 class="text-center mt-40" th:text="#{history}"></h2>
+      <th:block th:if="${#lists.isEmpty(historyList)}">
+        <div class="d-flex align-items-center justify-content-center" style="height: 200px;">
+          <div class="text-danger">購入履歴がありません</div>
+        </div>
+      </th:block>
+      <!-- 注文のループ開始 -->
+      <div th:if="${historyList != null and not #lists.isEmpty(historyList)}" class="mt-5">
+        <th:block th:each="item : ${historyList}">
+          <div class="row">
+            <div class="col"></div>
+            <div class="col-8">
+              <div class="border rounded mb-3">
+                <div class="bg-light rounded">
+                  <div class="p-2 row">
+                    <div class="col">
+                      <div>
+                        <span>注文日</span>
+                      </div>
+                      <div>
+                        <span th:text="${#dates.format(item.orderDate, 'yyyy/MM/dd')}"></span>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <div>
+                        <span>支払い金額</span>
+                      </div>
+                      <div>
+                        <span
+                          th:text="${'&yen;' + #numbers.formatInteger(item.totalPrice, 3, 'COMMA')}"></span>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <div>
+                        <span>注文番号</span>
+                      </div>
+                      <div>
+                        <span
+                          th:text="${item.orderNumber}"></span>
+                      </div>
+                    </div>
+                    <div class="col d-flex flex-column justify-content-end">
+                      <div>
+                        <a th:href="@{'/account/history/' + ${item.id}}">注文詳細を表示</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- 商品リストのループ開始 -->
+                <th:block th:each="orderDetail : ${item.orderDetailsList}">
+                  <div class="border-top">
+                    <div class="p-3 row">
+                      <div class="col-4 d-flex align-items-center">
+                        <a class="mx-auto"
+                          th:href="@{'/goods/detail/' + ${orderDetail.goodsId}}">
+                          <img class="mx-auto" th:src="'/img/' + ${orderDetail.goods.imageUrl}"
+                            alt="アイテム画像" width="70%" height="70%" />
+                        </a>
+                      </div>
+                      <div class="col-4">
+                        <p class="mt-3" th:text="${orderDetail.goods.goodsName}"></p>
+                        <p th:text="${'数量 : ' + orderDetail.quantity}"></p>
+                        <p
+                          th:text="${'&yen;' + #numbers.formatInteger(orderDetail.subPrice, 3, 'COMMA')}">
+                        </p>
+                      </div>
+
+                    </div>
+                  </div>
+                </th:block>
+                <!-- 商品リストのループ終了 -->
+              </div>
+            </div>
+            <div class="col"></div>
+          </div>
+        </th:block>
+      </div>
+      <!-- 注文のループ終了 -->
+    </div>
+  </div>
+</body>
+
+</html>

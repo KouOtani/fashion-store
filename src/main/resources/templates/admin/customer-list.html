@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layout-admin}">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!--CSS読み込み-->
+  <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+  <link rel="stylesheet" th:href="@{/css/user/style.css}">
+  <link href="https://use.fontawesome.com/releases/v6.5.2/css/all.css" rel="stylesheet">
+  <!--JS読み込み-->
+  <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}" defer></script>
+  <title th:text="#{casher}"></title>
+</head>
+
+<body>
+  <div layout:fragment="content">
+    <div class="border-bottom">
+      <h1 class="h2">顧客管理</h1>
+    </div>
+
+    <div class="container mt-3">
+      <form class="d-flex pe-3" role="search" th:action="@{/admin/customer-list}" method="get">
+        <input class="form-control me-2 w-auto" type="search" placeholder="検索" aria-label="Search" name="query">
+        <button class="btn btn-primary text-white" type="submit">検索</button>
+      </form>
+      <table class="table table-striped table-bordered table-hover mt-3">
+        <thead class="thead-light">
+          <tr>
+            <th>メールアドレス（ID）</th>
+            <th>顧客名</th>
+            <th>フリガナ</th>
+            <th>電話番号</th>
+            <th>郵便番号</th>
+            <th>住所</th>
+            <th>性別</th>
+            <th>誕生日</th>
+            <th>登録日</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <div th:each="item: ${customerList}">
+            <tr>
+              <td class="align-middle" th:text="${item.eMail}"></td>
+              <td class="align-middle" th:text="${item.userName}"></td>
+              <td class="align-middle" th:text="${item.furigana}"></td>
+              <td class="align-middle" th:text="${item.phoneNumber}"></td>
+              <td class="align-middle" th:text="${item.postalCode}"></td>
+              <td class="align-middle" th:text="${item.shippingAddress}"></td>
+              <td class="align-middle"
+                th:text="${item.gender == 1 ? '男性' : (item.gender == 2 ? '女性' : 'その他')}"></td>
+              <td class="align-middle" th:text="${#dates.format(item.birthday, 'yyyy/MM/dd')}">
+              </td>
+              <td class="align-middle" th:text="${#dates.format(item.createdAt, 'yyyy/MM/dd')}">
+              </td>
+              <td class="align-middle button text-center">
+                <a class="btn btn-primary" th:href="@{'/admin/customer-edit/' + ${item.id}}">編集</a>
+              </td>
+            </tr>
+          </div>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+
+</html>

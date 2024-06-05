@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layout-admin}">
+
+<head>
+</head>
+
+<body>
+  <div layout:fragment="menu" class="bg-light">
+    <ul class="nav flex-column">
+      <div class="border-bottom">
+        <h1 class="h4">管理者専用</h1>
+      </div>
+      <li class="nav-tem">
+        <a class="nav-link" th:href="@{/admin/goods-management}">商品管理</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" th:href="@{/admin/order-list}">注文管理</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" th:href="@{/admin/customer-list}">顧客管理</a>
+      </li>
+    </ul>
+  </div>
+</body>
+
+</html>

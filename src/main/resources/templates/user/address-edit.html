@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layout}">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!--CSS読み込み-->
+  <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+  <link rel="stylesheet" th:href="@{/css/user/style.css}">
+  <link href="https://use.fontawesome.com/releases/v6.5.2/css/all.css" rel="stylesheet">
+  <!--JS読み込み-->
+  <script th:src="@{/js/popper.min.js}" defer></script>
+  <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}" defer></script>
+  <title th:text="#{addressUpdate}"></title>
+</head>
+
+<body>
+  <div layout:fragment="content">
+    <div class="align-items-center py-4">
+      <h2 class="text-center my-3" th:text="#{addressUpdate}"></h2>
+      <form method="post" th:action="@{/account/addressUpdate}" class="form-login text-center"
+        th:object="${addressEditForm}">
+        <!--メールアドレス-->
+        <div class="form-group py-3">
+          <label for="eMail" class="form-label fw-bold">新しいメールアドレス</label>
+          <input type="email" class="form-control" placeholder="name@example.com" th:field="*{eMail}"
+            th:errorclass="is-invalid" />
+          <div class="invalid-feedback" th:errors="*{eMail}"></div>
+        </div>
+        <!--メールアドレス(確認用)-->
+        <div class="form-group py-3">
+          <label for="confirmationEmail" class="form-label fw-bold">新しいメールアドレス(確認用)</label>
+          <input type="email" class="form-control" placeholder="もう一度入力してください"
+            th:field="*{confirmationEmail}" th:errorclass="is-invalid" />
+          <div class="invalid-feedback" th:errors="*{confirmationEmail}"></div>
+        </div>
+        <button class="btn btn-primary w-50 py-2 mt-3" type="submit">変更する</button>
+      </form>
+
+      <div class="text-center">
+        <a th:href="@{/account/detail}">ユーザー情報詳細へ戻る</a>
+      </div>
+
+    </div>
+  </div>
+</body>
+
+</html>
