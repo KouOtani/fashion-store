@@ -22,7 +22,7 @@
         <th:block th:each="item : ${goodsList}">
           <a th:href="@{'/goods/detail/' + ${item.id}}" class="col-3 pb-2 text-black">
             <div class="box d-flex justify-content-center align-items-center">
-              <img th:src="'/img/' + ${item.imageUrl}" alt="アイテム画像" />
+              <img th:src="'/img/' + ${item.imageUrl}" alt="アイテム画像" style="background-color: #f5f5f5;"/>
             </div>
             <p class="text-center h5" th:text="${item.goodsName}"></p>
             <p class="text-center" th:text="${'&yen;' + #numbers.formatInteger(item.price, 3, 'COMMA')}">
