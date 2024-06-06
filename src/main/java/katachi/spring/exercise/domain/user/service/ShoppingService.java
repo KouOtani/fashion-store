@@ -64,7 +64,7 @@ public interface ShoppingService {
 			Integer quantity);
 
 	//カート取得
-	public List<CartItem> getCartList(String userName);
+	public List<CartItem> getCartList(Integer userId);
 
 	//カート内の商品を1件削除
 	public void deleteItem(Integer userId, Integer goodsId);

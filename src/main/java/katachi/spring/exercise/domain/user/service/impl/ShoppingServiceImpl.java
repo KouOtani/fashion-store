@@ -131,8 +131,8 @@ public class ShoppingServiceImpl implements ShoppingService {
 
 	//カート取得
 	@Override
-	public List<CartItem> getCartList(String userName) {
-		return mapper.findCartInformation(userName);
+	public List<CartItem> getCartList(Integer userId) {
+		return mapper.findCartInformation(userId);
 	}
 
 	//カート内の商品を1件削除

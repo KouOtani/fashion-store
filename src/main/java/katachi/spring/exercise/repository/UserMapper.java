@@ -57,7 +57,7 @@ public interface UserMapper {
 			Integer quantity);
 
 	//カートを取得する
-	public List<CartItem> findCartInformation(String eMail);
+	public List<CartItem> findCartInformation(Integer userId);
 
 	//アイテム削除（１件）
 	public int deleteItem(Integer userId, Integer goodsId);

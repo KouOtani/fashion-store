@@ -25,6 +25,8 @@ import katachi.spring.exercise.form.PasswordEditForm;
 import katachi.spring.exercise.form.ShippingAddressEditForm;
 import katachi.spring.exercise.form.SignupForm;
 import katachi.spring.exercise.form.UserDetailEditForm;
+import katachi.spring.exercise.userwithcode.UserWithCode;
+import katachi.spring.exercise.util.SecurityUtil;
 
 /**
  * ユーザー詳細および情報更新に関連するリクエストを処理するコントローラークラスです。
@@ -45,6 +47,9 @@ public class UserDetailController {
 	@Autowired
 	private HttpSession session;
 
+	@Autowired
+	private SecurityUtil securityUtil;
+
 	/**
 	 * ユーザー詳細画面を表示します。
 	 *
@@ -55,9 +60,12 @@ public class UserDetailController {
 	@GetMapping("/detail")
 	public String getUserDetail(Model model, SignupForm form) {
 
+		UserWithCode userDetails = securityUtil.getCurrentUserDetails();
+
 		// ユーザー1件を取得
-		MUser user = shoppingService.getLoginUserById((Integer) session.getAttribute("userId"));
+		MUser user = shoppingService.getLoginUserById(userDetails.getUserId());
 		model.addAttribute("user", user);
+
 		return "user/detail";
 	}
 
@@ -84,6 +92,7 @@ public class UserDetailController {
 	 */
 	@PostMapping("/addressUpdate")
 	public String postAddressUpdate(Locale locale, @ModelAttribute @Validated(GroupOrder.class) AddressEditForm form, BindingResult bindingResult) {
+
 		// 入力チェック結果
 		if (bindingResult.hasErrors()) {
 			// NG:メールアドレス変更画面に戻る
@@ -95,7 +104,9 @@ public class UserDetailController {
 			return getAddressUpdate(form, locale);
 		}
 
-		shoppingService.addressUpdate((Integer) session.getAttribute("userId"), form.getEMail());
+		UserWithCode userDetails = securityUtil.getCurrentUserDetails();
+
+		shoppingService.addressUpdate(userDetails.getUserId(), form.getEMail());
 		return "redirect:/account/detail";
 	}
 
@@ -132,7 +143,9 @@ public class UserDetailController {
 			return getPasswordUpdate(form, locale);
 		}
 
-		shoppingService.passwordUpdate((Integer) session.getAttribute("userId"), form.getPassword());
+		UserWithCode userDetails = securityUtil.getCurrentUserDetails();
+
+		shoppingService.passwordUpdate(userDetails.getUserId(), form.getPassword());
 		return "redirect:/account/detail";
 	}
 
@@ -146,8 +159,10 @@ public class UserDetailController {
 	 */
 	@GetMapping("/shippingAddressUpdate")
 	public String getShippingAddressUpdate(@ModelAttribute ShippingAddressEditForm form, Locale locale, Model model) {
+
 		List<String> prefecturesList = userApplicationService.getPrefecturesList();
 		model.addAttribute("prefecturesList", prefecturesList);
+
 		return "user/shippingaddress-edit";
 	}
 
@@ -162,6 +177,7 @@ public class UserDetailController {
 	 */
 	@PostMapping("/shippingAddressUpdate")
 	public String postShippingAddressUpdate(Locale locale, @ModelAttribute @Validated(GroupOrder.class) ShippingAddressEditForm form, BindingResult bindingResult, Model model) {
+
 		// 入力チェック結果
 		if (bindingResult.hasErrors()) {
 			// NG:配送先住所変更画面に戻る
@@ -171,7 +187,9 @@ public class UserDetailController {
 		MUser user = modelMapper.map(form, MUser.class);
 
 		if (form.getIsEverytime()) {
-			shoppingService.shippingAddressUpdate((Integer) session.getAttribute("userId"), user);
+			UserWithCode userDetails = securityUtil.getCurrentUserDetails();
+			shoppingService.shippingAddressUpdate(userDetails.getUserId(), user);
+
 		} else {
 			session.setAttribute("user", user);
 		}
@@ -220,7 +238,9 @@ public class UserDetailController {
 		// formをMUserクラスに変換
 		MUser user = modelMapper.map(form, MUser.class);
 
-		shoppingService.detailUpdate((Integer) session.getAttribute("userId"), user);
+		UserWithCode userDetails = securityUtil.getCurrentUserDetails();
+
+		shoppingService.detailUpdate(userDetails.getUserId(), user);
 		return "redirect:/account/detail";
 	}
 }

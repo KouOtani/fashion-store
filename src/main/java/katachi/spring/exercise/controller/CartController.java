@@ -17,6 +17,8 @@ import katachi.spring.exercise.domain.user.model.Cart;
 import katachi.spring.exercise.domain.user.model.CartItem;
 import katachi.spring.exercise.domain.user.model.MGoods;
 import katachi.spring.exercise.domain.user.service.ShoppingService;
+import katachi.spring.exercise.userwithcode.UserWithCode;
+import katachi.spring.exercise.util.SecurityUtil;
 
 /**
  * カートに関連するリクエストを処理するコントローラークラスです。
@@ -36,6 +38,9 @@ public class CartController {
 
 	@Autowired
 	private HttpSession session;
+
+	@Autowired
+	private SecurityUtil securityUtil;
 
 	/**
 	 * カートの内容を表示します。
@@ -122,8 +127,10 @@ public class CartController {
 	 */
 	@GetMapping("/removeItem")
 	public String deleteFromCart(@RequestParam Integer goodsId, Authentication authentication) {
+
 		if (authentication != null && authentication.isAuthenticated()) {
-			shoppingService.deleteItem((Integer) session.getAttribute("userId"), goodsId);
+			UserWithCode userDetails = securityUtil.getCurrentUserDetails();
+			shoppingService.deleteItem(userDetails.getUserId(), goodsId);
 		}
 
 		// カートから商品を削除する処理

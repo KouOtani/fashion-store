@@ -23,6 +23,8 @@ import katachi.spring.exercise.domain.user.model.Order;
 import katachi.spring.exercise.domain.user.model.OrderDetails;
 import katachi.spring.exercise.domain.user.model.SessionGuestData;
 import katachi.spring.exercise.domain.user.service.ShoppingService;
+import katachi.spring.exercise.userwithcode.UserWithCode;
+import katachi.spring.exercise.util.SecurityUtil;
 
 /**
  * 注文に関連するリクエストを処理するコントローラークラスです。
@@ -46,6 +48,9 @@ public class OrderController {
 	@Autowired
 	private ModelMapper modelMapper;
 
+	@Autowired
+	private SecurityUtil securityUtil;
+
 	/**
 	 * レジ画面に進むための処理を行います。
 	 *
@@ -55,13 +60,17 @@ public class OrderController {
 	 */
 	@GetMapping("/casher")
 	public String proceedToCheckout(Model model, Authentication authentication) {
+
 		if (sessionGuestData.getGuestData() != null) {
 			model.addAttribute("guestData", sessionGuestData.getGuestData());
 			return "user/casher";
+
 		} else if (authentication != null && authentication.isAuthenticated()) {
-			MUser user = shoppingService.getLoginUserById((Integer) session.getAttribute("userId"));
+			UserWithCode userDetails = securityUtil.getCurrentUserDetails();
+			MUser user = shoppingService.getLoginUserById(userDetails.getUserId());
 			model.addAttribute("user", user);
 			return "user/casher";
+
 		} else {
 			return "redirect:/login";
 		}
@@ -76,13 +85,19 @@ public class OrderController {
 	@GetMapping("/complete")
 	public String getComplete(Authentication authentication,
 			RedirectAttributes redirectAttributes) {
+
+		UserWithCode userDetails = securityUtil.getCurrentUserDetails();
+
 		// 購入完了時に購入者を登録する
 		Order order = new Order();
-		if (session.getAttribute("userId") == null) {
+
+		if (userDetails.getUserId() == null) {
 			order.setUserId(0);
+
 		} else {
-			order.setUserId((Integer) session.getAttribute("userId"));
+			order.setUserId(userDetails.getUserId());
 		}
+
 		order.setOrderDate(new Date());
 
 		// 一意の注文番号を生成
@@ -96,6 +111,7 @@ public class OrderController {
 		// 購入完了時に購入した商品の詳細を登録する
 		List<CartItem> cartItemsList = cart.getCartList();
 		List<OrderDetails> orderDetailsList = new ArrayList<>();
+
 		for (CartItem cartItem : cartItemsList) {
 			Integer goodsId = cartItem.getGoodsId();
 			Integer quantity = cartItem.getQuantity();
@@ -115,8 +131,9 @@ public class OrderController {
 		if (session.getAttribute("user") != null) {
 			address = modelMapper.map((MUser) session.getAttribute("user"), DeliveryAddress.class);
 			address.setOrderId(order.getId());
+
 		} else {
-			MUser user = shoppingService.getLoginUserById((Integer) session.getAttribute("userId"));
+			MUser user = shoppingService.getLoginUserById(userDetails.getUserId());
 			address = modelMapper.map(user, DeliveryAddress.class);
 			address.setOrderId(order.getId());
 		}
@@ -124,7 +141,7 @@ public class OrderController {
 
 		// 認証済みの場合はカートをクリアする
 		if (authentication != null && authentication.isAuthenticated()) {
-			shoppingService.allClearCart((Integer) session.getAttribute("userId"));
+			shoppingService.allClearCart(userDetails.getUserId());
 		}
 
 		// セッションとカートをクリアする

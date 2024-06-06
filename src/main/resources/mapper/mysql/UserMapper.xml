@@ -227,7 +227,7 @@
     join m_goods on cart.goods_id = m_goods.id
     join m_users on cart.user_id = m_users.id
     where
-    e_mail = #{eMail}
+    user_id = #{userId}
   </select>
 
   <!-- アイテム１件削除 -->
