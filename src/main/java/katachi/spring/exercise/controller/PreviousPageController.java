@@ -45,10 +45,6 @@ public class PreviousPageController {
 
 		UserWithCode userDetails = (UserWithCode) authen.getPrincipal();
 
-		//		MUser user = shoppingService.getLoginUserByEmail(authentication.getName());
-		//		session.setAttribute("userId", user.getId());
-		//		System.out.println("ログイン後" + user.getId());
-
 		// カートのアイテムをユーザーのカートに転送
 		cart.transferCartItems(userDetails.getUserId(), cart.getCartList());
 

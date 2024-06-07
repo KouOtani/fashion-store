@@ -86,16 +86,15 @@ public class OrderController {
 	public String getComplete(Authentication authentication,
 			RedirectAttributes redirectAttributes) {
 
-		UserWithCode userDetails = securityUtil.getCurrentUserDetails();
-
 		// 購入完了時に購入者を登録する
 		Order order = new Order();
+		UserWithCode userDetails = null;
 
-		if (userDetails.getUserId() == null) {
-			order.setUserId(0);
-
-		} else {
+		if (authentication != null && authentication.isAuthenticated()) {
+			userDetails = securityUtil.getCurrentUserDetails();
 			order.setUserId(userDetails.getUserId());
+		} else {
+			order.setUserId(0);
 		}
 
 		order.setOrderDate(new Date());
@@ -132,15 +131,22 @@ public class OrderController {
 			address = modelMapper.map((MUser) session.getAttribute("user"), DeliveryAddress.class);
 			address.setOrderId(order.getId());
 
-		} else {
+		} else if (session.getAttribute("user") == null && userDetails != null) {
+			userDetails = securityUtil.getCurrentUserDetails();
 			MUser user = shoppingService.getLoginUserById(userDetails.getUserId());
 			address = modelMapper.map(user, DeliveryAddress.class);
 			address.setOrderId(order.getId());
+
+		} else {
+			address = modelMapper.map(sessionGuestData.getGuestData(), DeliveryAddress.class);
+			address.setOrderId(order.getId());
 		}
+
 		shoppingService.saveDeliveryAddress(address);
 
 		// 認証済みの場合はカートをクリアする
 		if (authentication != null && authentication.isAuthenticated()) {
+			userDetails = securityUtil.getCurrentUserDetails();
 			shoppingService.allClearCart(userDetails.getUserId());
 		}
 

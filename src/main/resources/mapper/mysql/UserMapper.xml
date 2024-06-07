@@ -100,7 +100,7 @@
   </insert>
 
   <!-- メールアドレス重複チェック -->
-  <select id="findByEmail" resultType="MUser">
+  <select id="findByEmail">
     SELECT
     *
     FROM

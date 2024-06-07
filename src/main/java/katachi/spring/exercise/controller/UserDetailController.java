@@ -101,6 +101,14 @@ public class UserDetailController {
 
 		if (!form.getEMail().equals(form.getConfirmationEmail())) {
 			// NG:確認メールアドレスと一致しない
+			bindingResult.rejectValue("eMail", "error.addressEditForm", "確認用のメールアドレスと一致しません。");
+			return getAddressUpdate(form, locale);
+		}
+
+		if (shoppingService.isEmailRegistered(form.getEMail())) {
+
+			// NG:メールアドレスが重複
+			bindingResult.rejectValue("eMail", "error.addressEditForm", "このメールアドレスは既に登録されています。");
 			return getAddressUpdate(form, locale);
 		}
 
@@ -140,6 +148,7 @@ public class UserDetailController {
 
 		if (!form.getPassword().equals(form.getRePassword())) {
 			// NG:確認パスワードと一致しない
+			bindingResult.rejectValue("password", "error.passwordEditForm", "確認用のパスワードと一致しません。");
 			return getPasswordUpdate(form, locale);
 		}
 

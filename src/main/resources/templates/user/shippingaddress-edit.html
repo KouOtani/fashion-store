@@ -31,7 +31,7 @@
         <div class="mb-3">
           <label for="prefectures" th:text="#{prefectures}" class="form-label fw-bold"></label>
           <select class="form-control" th:field="*{prefectures}" th:errorclass="is-invalid">
-            <option value="" selected></option>
+            <option value="" selected>選択してください</option>
             <option th:each="item : ${prefecturesList}" th:text="${item}" th:value="${item}"
               id="prefectures" />
             </option>

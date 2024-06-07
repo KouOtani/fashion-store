@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import jakarta.servlet.http.HttpSession;
 import katachi.spring.exercise.application.service.UserApplicationService;
 import katachi.spring.exercise.domain.user.model.Cart;
 import katachi.spring.exercise.domain.user.model.MUser;
@@ -47,6 +48,9 @@ public class SignupController {
 
 	@Autowired
 	private SessionGuestData sessionGuestData;
+
+	@Autowired
+	private HttpSession session;
 
 	/**
 	 * ユーザー登録画面を表示します。
@@ -88,13 +92,16 @@ public class SignupController {
 		}
 
 		if (!form.getPassword().equals(form.getRePassword())) {
+
 			// NG:確認パスワードと一致しない
+			bindingResult.rejectValue("password", "error.signupForm", "確認用のパスワードと一致しません。");
 			return getSignup(model, locale, form);
 		}
 
 		if (shoppingService.isEmailRegistered(form.getEMail())) {
-			// NG:メールアドレスが既に登録されている
-			model.addAttribute("error", "メールアドレスがすでに登録されています");
+
+			// NG:メールアドレスが重複
+			bindingResult.rejectValue("eMail", "error.signupForm", "このメールアドレスは既に登録されています。");
 			return getSignup(model, locale, form);
 		}
 
@@ -146,11 +153,18 @@ public class SignupController {
 			return getGuestSignup(model, locale, form);
 		}
 
+		if (shoppingService.isEmailRegistered(form.getEMail())) {
+
+			// NG:メールアドレスが重複
+			bindingResult.rejectValue("eMail", "error.guestSignupForm", "このメールアドレスは既に登録されています。");
+			return getGuestSignup(model, locale, form);
+		}
+
 		sessionGuestData.setGuestData(form);
 
 		model.addAttribute("guestData", sessionGuestData.getGuestData());
-		model.addAttribute("cart", cart.getCartList());
-		model.addAttribute("totalAmount", cart.totalAmount());
+		session.setAttribute("cart", cart.getCartList());
+		session.setAttribute("totalAmount", cart.totalAmount());
 
 		// レジ画面に遷移
 		return "redirect:/goods/casher";

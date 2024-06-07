@@ -40,8 +40,9 @@ public class ShoppingServiceImpl implements ShoppingService {
 	}
 
 	//メールアドレスの重複チェックを
+	@Override
 	public boolean isEmailRegistered(String email) {
-		return mapper.findByEmail(email);
+		return mapper.findByEmail(email) != null;
 	}
 
 	//アイテム取得
@@ -112,11 +113,7 @@ public class ShoppingServiceImpl implements ShoppingService {
 	@Override
 	public boolean checkCartItemExistence(Integer userId,
 			Integer goodsId) {
-		if (mapper.findTwo(userId, goodsId) == null) {
-			return false;
-		} else {
-			return true;
-		}
+		return mapper.findTwo(userId, goodsId) != null;
 	}
 
 	//同じ商品に個数を加算する

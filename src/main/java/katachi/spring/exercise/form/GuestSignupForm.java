@@ -2,7 +2,6 @@ package katachi.spring.exercise.form;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
@@ -23,7 +22,7 @@ public class GuestSignupForm {
 	@Pattern(regexp = "^\\d{3}-\\d{4}$", groups = ValidGroup2.class)
 	private String postalCode;
 
-	@NotNull(groups = ValidGroup1.class)
+	@NotBlank(groups = ValidGroup1.class)
 	private String prefectures;
 
 	@NotBlank(groups = ValidGroup1.class)
