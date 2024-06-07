@@ -17,6 +17,9 @@ public interface ShoppingService {
 	//ユーザー登録
 	public void signup(MUser user);
 
+	//メールアドレスの重複チェックを
+	public boolean isEmailRegistered(String email);
+
 	//アイテム取得
 	public List<MGoods> getGoods(Integer page, Integer size);
 

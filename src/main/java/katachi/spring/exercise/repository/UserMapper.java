@@ -18,6 +18,9 @@ public interface UserMapper {
 	//ユーザー登録
 	public int insertOne(MUser user);
 
+	//ユーザー登録時のメールアドレス重複チェック
+	public boolean findByEmail(String email);
+
 	//アイテム一覧取得
 	public List<MGoods> selectGoodsWithPagination(@Param("offset") Integer offset,
 			@Param("limit") Integer limit);

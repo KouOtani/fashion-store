@@ -92,6 +92,12 @@ public class SignupController {
 			return getSignup(model, locale, form);
 		}
 
+		if (shoppingService.isEmailRegistered(form.getEMail())) {
+			// NG:メールアドレスが既に登録されている
+			model.addAttribute("error", "メールアドレスがすでに登録されています");
+			return getSignup(model, locale, form);
+		}
+
 		log.info(form.toString());
 
 		// formをMUserクラスに変換
@@ -133,6 +139,7 @@ public class SignupController {
 	 */
 	@PostMapping("/casher")
 	public String postGuestSignup(Model model, Locale locale, @ModelAttribute @Validated(GroupOrder.class) GuestSignupForm form, BindingResult bindingResult) {
+
 		// 入力チェック結果
 		if (bindingResult.hasErrors()) {
 			// NG:ゲスト登録画面に戻る
@@ -146,6 +153,6 @@ public class SignupController {
 		model.addAttribute("totalAmount", cart.totalAmount());
 
 		// レジ画面に遷移
-		return "user/cart";
+		return "redirect:/goods/casher";
 	}
 }

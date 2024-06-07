@@ -39,6 +39,11 @@ public class ShoppingServiceImpl implements ShoppingService {
 		mapper.insertOne(user);
 	}
 
+	//メールアドレスの重複チェックを
+	public boolean isEmailRegistered(String email) {
+		return mapper.findByEmail(email);
+	}
+
 	//アイテム取得
 	@Override
 	public List<MGoods> getGoods(Integer page, Integer size) {

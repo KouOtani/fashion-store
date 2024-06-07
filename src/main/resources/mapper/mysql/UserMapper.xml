@@ -99,6 +99,16 @@
     )
   </insert>
 
+  <!-- メールアドレス重複チェック -->
+  <select id="findByEmail" resultType="MUser">
+    SELECT
+    *
+    FROM
+    m_users
+    WHERE
+    e_mail = #{email}
+  </select>
+
   <!-- アイテム複数件取得 -->
   <select id="selectGoodsWithPagination" resultType="MGoods">
     SELECT
