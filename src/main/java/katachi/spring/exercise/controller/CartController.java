@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
+import katachi.spring.exercise.application.service.UserApplicationService;
 import katachi.spring.exercise.domain.user.model.Cart;
 import katachi.spring.exercise.domain.user.model.CartItem;
 import katachi.spring.exercise.domain.user.model.MGoods;
 import katachi.spring.exercise.domain.user.service.ShoppingService;
 import katachi.spring.exercise.userwithcode.UserWithCode;
-import katachi.spring.exercise.util.SecurityUtil;
 
 /**
  * カートに関連するリクエストを処理するコントローラークラスです。
@@ -40,7 +40,7 @@ public class CartController {
 	private HttpSession session;
 
 	@Autowired
-	private SecurityUtil securityUtil;
+	private UserApplicationService userApplicationService;
 
 	/**
 	 * カートの内容を表示します。
@@ -129,7 +129,7 @@ public class CartController {
 	public String deleteFromCart(@RequestParam Integer goodsId, Authentication authentication) {
 
 		if (authentication != null && authentication.isAuthenticated()) {
-			UserWithCode userDetails = securityUtil.getCurrentUserDetails();
+			UserWithCode userDetails = userApplicationService.getCurrentUserDetails();
 			shoppingService.deleteItem(userDetails.getUserId(), goodsId);
 		}
 

@@ -33,25 +33,29 @@
             <tr>
               <th>商品名</th>
               <td>
-                <input type="text" class="form-control" th:field="*{goodsName}" />
+                <input type="text" class="form-control" th:field="*{goodsName}" th:errorclass="is-invalid"/>
+                <div class="invalid-feedback" th:errors="*{goodsName}"></div>
               </td>
             </tr>
             <tr>
               <th>説明</th>
               <td>
-                <textarea class="form-control" th:field="*{description}"></textarea>
+                <textarea class="form-control" th:field="*{description}" th:errorclass="is-invalid"></textarea>
+                <div class="invalid-feedback" th:errors="*{description}"></div>
               </td>
             </tr>
             <tr>
               <th>価格</th>
               <td>
-                <input type="text" class="form-control" th:field="*{price}" />
+                <input type="text" class="form-control" th:field="*{price}" th:errorclass="is-invalid"/>
+                <div class="invalid-feedback" th:errors="*{price}"></div>
               </td>
             </tr>
             <tr>
               <th>画像URL</th>
               <td>
-                <input type="text" class="form-control" th:field="*{imageUrl}" />
+                <input type="text" class="form-control" th:field="*{imageUrl}" th:errorclass="is-invalid"/>
+                <div class="invalid-feedback" th:errors="*{imageUrl}"></div>
               </td>
             </tr>
           </tbody>

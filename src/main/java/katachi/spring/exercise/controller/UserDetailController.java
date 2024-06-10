@@ -26,7 +26,6 @@ import katachi.spring.exercise.form.ShippingAddressEditForm;
 import katachi.spring.exercise.form.SignupForm;
 import katachi.spring.exercise.form.UserDetailEditForm;
 import katachi.spring.exercise.userwithcode.UserWithCode;
-import katachi.spring.exercise.util.SecurityUtil;
 
 /**
  * ユーザー詳細および情報更新に関連するリクエストを処理するコントローラークラスです。
@@ -47,9 +46,6 @@ public class UserDetailController {
 	@Autowired
 	private HttpSession session;
 
-	@Autowired
-	private SecurityUtil securityUtil;
-
 	/**
 	 * ユーザー詳細画面を表示します。
 	 *
@@ -60,7 +56,7 @@ public class UserDetailController {
 	@GetMapping("/detail")
 	public String getUserDetail(Model model, SignupForm form) {
 
-		UserWithCode userDetails = securityUtil.getCurrentUserDetails();
+		UserWithCode userDetails = userApplicationService.getCurrentUserDetails();
 
 		// ユーザー1件を取得
 		MUser user = shoppingService.getLoginUserById(userDetails.getUserId());
@@ -112,7 +108,7 @@ public class UserDetailController {
 			return getAddressUpdate(form, locale);
 		}
 
-		UserWithCode userDetails = securityUtil.getCurrentUserDetails();
+		UserWithCode userDetails = userApplicationService.getCurrentUserDetails();
 
 		shoppingService.addressUpdate(userDetails.getUserId(), form.getEMail());
 		return "redirect:/account/detail";
@@ -152,7 +148,7 @@ public class UserDetailController {
 			return getPasswordUpdate(form, locale);
 		}
 
-		UserWithCode userDetails = securityUtil.getCurrentUserDetails();
+		UserWithCode userDetails = userApplicationService.getCurrentUserDetails();
 
 		shoppingService.passwordUpdate(userDetails.getUserId(), form.getPassword());
 		return "redirect:/account/detail";
@@ -196,7 +192,7 @@ public class UserDetailController {
 		MUser user = modelMapper.map(form, MUser.class);
 
 		if (form.getIsEverytime()) {
-			UserWithCode userDetails = securityUtil.getCurrentUserDetails();
+			UserWithCode userDetails = userApplicationService.getCurrentUserDetails();
 			shoppingService.shippingAddressUpdate(userDetails.getUserId(), user);
 
 		} else {
@@ -247,7 +243,7 @@ public class UserDetailController {
 		// formをMUserクラスに変換
 		MUser user = modelMapper.map(form, MUser.class);
 
-		UserWithCode userDetails = securityUtil.getCurrentUserDetails();
+		UserWithCode userDetails = userApplicationService.getCurrentUserDetails();
 
 		shoppingService.detailUpdate(userDetails.getUserId(), user);
 		return "redirect:/account/detail";

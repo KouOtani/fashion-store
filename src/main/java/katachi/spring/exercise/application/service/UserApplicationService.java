@@ -8,7 +8,11 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import katachi.spring.exercise.userwithcode.UserWithCode;
 
 /**
  * ユーザーアプリケーションのサービスを提供するクラスです。
@@ -95,4 +99,10 @@ public class UserApplicationService {
 
 		return prefecturesList;
 	}
+
+	public UserWithCode getCurrentUserDetails() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		return (UserWithCode) authentication.getPrincipal();
+	}
+
 }

@@ -39,7 +39,7 @@
       <div class="mb-3">
         <label for="rePassword" th:text="#{rePassword}" class="form-label fw-bold"></label>
         <span class="text-danger font-weight-bold">*</span>
-        <input type="password" class="form-control" th:field="*{rePassword}" th:errorclass="is-invalid" />
+        <input type="password" class="form-control" placeholder="もう一度入力してください" th:field="*{rePassword}" th:errorclass="is-invalid" />
         <div class="invalid-feedback" th:errors="*{rePassword}"></div>
       </div>
       <!--名前-->
@@ -62,7 +62,7 @@
       <div class="mb-3">
         <label for="postalCode" th:text="#{postalCode}" class="form-label fw-bold"></label>
         <span class="text-danger font-weight-bold">*</span>
-        <input type="text" class="form-control" th:field="*{postalCode}" th:errorclass="is-invalid" />
+        <input type="text" class="form-control" placeholder="例: 100-1001" th:field="*{postalCode}" th:errorclass="is-invalid" />
         <div class="invalid-feedback" th:errors="*{postalCode}"></div>
       </div>
       <!--都道府県-->
