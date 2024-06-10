@@ -14,12 +14,21 @@
 
 <body>
   <!--ヘッダー-->
-  <th:block th:if="${#authorization.expression('isAuthenticated()')}">
+  <!-- ゲストデータが存在する場合 -->
+  <th:block th:if="${session.guestData}">
+    <nav layout:replace="~{layout/header-guest::guestHeader}"></nav>
+  </th:block>
+
+  <!-- ゲストデータが存在せず、認証されている場合 -->
+  <th:block th:if="${session.guestData == null and #authorization.expression('isAuthenticated()')}">
     <nav layout:replace="~{layout/header-afterlogin::afterLoginHeader}"></nav>
   </th:block>
-  <th:block th:unless="${#authorization.expression('isAuthenticated()')}">
+
+  <!-- ゲストデータが存在せず、認証されていない場合 -->
+  <th:block th:if="${session.guestData == null and !#authorization.expression('isAuthenticated()')}">
     <nav layout:replace="~{layout/header-beforelogin::beforeLoginHeader}"></nav>
   </th:block>
+
   <!--コンテンツ-->
   <div style="min-height: 550px;" layout:fragment="content">
   </div>

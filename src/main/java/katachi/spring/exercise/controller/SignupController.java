@@ -162,7 +162,7 @@ public class SignupController {
 
 		sessionGuestData.setGuestData(form);
 
-		model.addAttribute("guestData", sessionGuestData.getGuestData());
+		session.setAttribute("guestData", sessionGuestData.getGuestData());
 		session.setAttribute("cart", cart.getCartList());
 		session.setAttribute("totalAmount", cart.totalAmount());
 

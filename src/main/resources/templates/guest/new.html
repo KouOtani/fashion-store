@@ -47,7 +47,7 @@
       <div class="mb-3">
         <label for="postalCode" th:text="#{postalCode}" class="form-label fw-bold"></label>
         <span class="text-danger font-weight-bold">*</span>
-        <input type="text" class="form-control"  placeholder="例: 100-1001" th:field="*{postalCode}" th:errorclass="is-invalid" />
+        <input type="text" class="form-control" placeholder="例: 100-1001" th:field="*{postalCode}" th:errorclass="is-invalid" />
         <div class="invalid-feedback" th:errors="*{postalCode}"></div>
       </div>
       <!--都道府県-->

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
+import katachi.spring.exercise.application.service.UserApplicationService;
 import katachi.spring.exercise.domain.user.model.Cart;
 import katachi.spring.exercise.domain.user.model.CartItem;
 import katachi.spring.exercise.domain.user.model.DeliveryAddress;
@@ -24,7 +25,6 @@ import katachi.spring.exercise.domain.user.model.OrderDetails;
 import katachi.spring.exercise.domain.user.model.SessionGuestData;
 import katachi.spring.exercise.domain.user.service.ShoppingService;
 import katachi.spring.exercise.userwithcode.UserWithCode;
-import katachi.spring.exercise.util.SecurityUtil;
 
 /**
  * 注文に関連するリクエストを処理するコントローラークラスです。
@@ -49,7 +49,7 @@ public class OrderController {
 	private ModelMapper modelMapper;
 
 	@Autowired
-	private SecurityUtil securityUtil;
+	private UserApplicationService userApplicationService;
 
 	/**
 	 * レジ画面に進むための処理を行います。
@@ -66,7 +66,7 @@ public class OrderController {
 			return "user/casher";
 
 		} else if (authentication != null && authentication.isAuthenticated()) {
-			UserWithCode userDetails = securityUtil.getCurrentUserDetails();
+			UserWithCode userDetails = userApplicationService.getCurrentUserDetails();
 			MUser user = shoppingService.getLoginUserById(userDetails.getUserId());
 			model.addAttribute("user", user);
 			return "user/casher";
@@ -91,7 +91,7 @@ public class OrderController {
 		UserWithCode userDetails = null;
 
 		if (authentication != null && authentication.isAuthenticated()) {
-			userDetails = securityUtil.getCurrentUserDetails();
+			userDetails = userApplicationService.getCurrentUserDetails();
 			order.setUserId(userDetails.getUserId());
 		} else {
 			order.setUserId(0);
@@ -132,7 +132,7 @@ public class OrderController {
 			address.setOrderId(order.getId());
 
 		} else if (session.getAttribute("user") == null && userDetails != null) {
-			userDetails = securityUtil.getCurrentUserDetails();
+			userDetails = userApplicationService.getCurrentUserDetails();
 			MUser user = shoppingService.getLoginUserById(userDetails.getUserId());
 			address = modelMapper.map(user, DeliveryAddress.class);
 			address.setOrderId(order.getId());
@@ -146,15 +146,13 @@ public class OrderController {
 
 		// 認証済みの場合はカートをクリアする
 		if (authentication != null && authentication.isAuthenticated()) {
-			userDetails = securityUtil.getCurrentUserDetails();
+			userDetails = userApplicationService.getCurrentUserDetails();
 			shoppingService.allClearCart(userDetails.getUserId());
 		}
 
 		// セッションとカートをクリアする
 		cart.clearCart();
-		session.removeAttribute("totalQuantity");
-		session.removeAttribute("totalAmount");
-		session.removeAttribute("cart");
+		session.invalidate();
 
 		return "redirect:/goods/complete-order";
 	}

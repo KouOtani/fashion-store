@@ -29,78 +29,94 @@
             <tr>
               <th>メールアドレス（ID）</th>
               <td>
-                <input type="text" class="form-control" th:field="*{eMail}" />
+                <input type="text" class="form-control" th:field="*{eMail}"
+                  th:errorclass="is-invalid" />
+                <div class="invalid-feedback" th:errors="*{eMail}"></div>
               </td>
             </tr>
             <tr>
               <th>ユーザー名</th>
               <td>
-                <input type="text" class="form-control" th:field="*{userName}" />
+                <input type="text" class="form-control" th:field="*{userName}"
+                  th:errorclass="is-invalid" />
+                <div class="invalid-feedback" th:errors="*{userName}"></div>
               </td>
             </tr>
             <tr>
               <th>フリガナ</th>
               <td>
-                <input type="text" class="form-control" th:field="*{furigana}" />
+                <input type="text" class="form-control" th:field="*{furigana}"
+                  th:errorclass="is-invalid" />
+                <div class="invalid-feedback" th:errors="*{furigana}"></div>
               </td>
             </tr>
             <tr>
               <th>電話番号</th>
               <td>
-                <input type="text" class="form-control" th:field="*{phoneNumber}" />
+                <input type="text" class="form-control" th:field="*{phoneNumber}"
+                  th:errorclass="is-invalid" />
+                <div class="invalid-feedback" th:errors="*{phoneNumber}"></div>
               </td>
             </tr>
             <tr>
               <th>郵便番号</th>
               <td>
-                <input type="text" class="form-control" th:field="*{postalCode}" />
+                <input type="text" class="form-control" th:field="*{postalCode}"
+                  th:errorclass="is-invalid" />
+                <div class="invalid-feedback" th:errors="*{postalCode}"></div>
               </td>
             </tr>
             <tr>
               <th>都道府県</th>
               <td>
-                <select class="form-control" th:field="*{prefectures}">
+                <select class="form-control" th:field="*{prefectures}" th:errorclass="is-invalid">
                   <option value="" selected></option>
                   <option th:each="item : ${prefecturesList}" th:text="${item}" th:value="${item}">
                   </option>
                 </select>
-
+                <div class="invalid-feedback" th:errors="*{prefectures}"></div>
               </td>
             </tr>
             <tr>
               <th>市町村</th>
               <td>
-                <input type="text" class="form-control" th:field="*{city}" />
+                <input type="text" class="form-control" th:field="*{city}" th:errorclass="is-invalid" />
+                <div class="invalid-feedback" th:errors="*{city}"></div>
               </td>
             </tr>
             <tr>
               <th>町名・番地</th>
               <td>
-                <input type="text" class="form-control" th:field="*{townName}" />
+                <input type="text" class="form-control" th:field="*{townName}"
+                  th:errorclass="is-invalid" />
+                <div class="invalid-feedback" th:errors="*{townName}"></div>
               </td>
             </tr>
             <tr>
               <th>建物名・部屋番号</th>
               <td>
                 <input type="text" class="form-control" th:field="*{others}" />
+                <div class="invalid-feedback" th:errors="*{eMail}"></div>
               </td>
             </tr>
             <tr>
               <th>性別</th>
               <td>
-                <select class="form-control" th:field="*{gender}">
+                <select class="form-control" th:field="*{gender}" th:errorclass="is-invalid">
                   <option value="" selected></option>
                   <option th:each="item : ${genderMap}" th:text="${item.key}"
                     th:value="${item.value}">
                   </option>
                 </select>
+                <div class="invalid-feedback" th:errors="*{gender}"></div>
               </td>
             </tr>
             <tr>
               <th>生年月日</th>
               <td>
-                <input type="text" class="form-control" placeholder="yyyy/MM/dd"
-                  th:field="*{birthday}" />
+                <input type="text" class="form-control" placeholder="yyyy/MM/dd" th:field="*{birthday}"
+                  th:errorclass="is-invalid" />
+                <div class="invalid-feedback" th:errors="*{birthday}"></div>
               </td>
             </tr>
           </tbody>

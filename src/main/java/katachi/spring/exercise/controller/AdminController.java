@@ -8,6 +8,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +24,7 @@ import katachi.spring.exercise.domain.user.model.Order;
 import katachi.spring.exercise.domain.user.service.ShoppingService;
 import katachi.spring.exercise.form.CustomerEditForm;
 import katachi.spring.exercise.form.GoodsEditForm;
+import katachi.spring.exercise.form.GroupOrder;
 
 /**
  * 管理者用コントローラークラス。
@@ -66,9 +69,11 @@ public class AdminController {
 	public String getGoods(GoodsEditForm form,
 			Model model,
 			@PathVariable("goodsId") Integer goodsId) {
+
 		MGoods goods = shoppingService.getGoodsOne(goodsId);
 		form = modelMapper.map(goods, GoodsEditForm.class);
 		model.addAttribute("goodsEditForm", form);
+
 		return "admin/goods-edit";
 	}
 
@@ -90,9 +95,17 @@ public class AdminController {
 	 * @return 商品管理ページへのリダイレクト
 	 */
 	@PostMapping("/goods-register")
-	public String postRegisterGoods(@ModelAttribute GoodsEditForm form) {
+	public String postRegisterGoods(@ModelAttribute @Validated(GroupOrder.class) GoodsEditForm form, BindingResult bindingResult) {
+
+		// 入力チェック結果
+		if (bindingResult.hasErrors()) {
+			// NG:ゲスト登録画面に戻る
+			return getRegisterGoods(form);
+		}
+
 		MGoods goods = modelMapper.map(form, MGoods.class);
 		shoppingService.registerNewGoods(goods);
+
 		return "redirect:/admin/goods-management";
 	}
 
@@ -104,9 +117,17 @@ public class AdminController {
 	 * @return 商品管理ページへのリダイレクト
 	 */
 	@PostMapping(value = "/goods-management", params = "update")
-	public String updateGoods(GoodsEditForm form) {
+	public String updateGoods(@Validated(GroupOrder.class) GoodsEditForm form, BindingResult bindingResult) {
+
+		// 入力チェック結果
+		if (bindingResult.hasErrors()) {
+
+			return "admin/goods-edit";
+		}
+
 		MGoods goods = modelMapper.map(form, MGoods.class);
 		shoppingService.updateGoodsOne(goods);
+
 		return "redirect:/admin/goods-management";
 	}
 
@@ -194,9 +215,17 @@ public class AdminController {
 	 * @return 顧客管理ページへのリダイレクト
 	 */
 	@PostMapping(value = "/customer-edit", params = "update")
-	public String updateCustomer(CustomerEditForm form) {
+	public String updateCustomer(@Validated(GroupOrder.class) CustomerEditForm form, BindingResult bindingResult) {
+
+		// 入力チェック結果
+		if (bindingResult.hasErrors()) {
+			// NG:ゲスト登録画面に戻る
+			return "admin/customer-edit";
+		}
+
 		MUser user = modelMapper.map(form, MUser.class);
 		shoppingService.updateCustomer(user);
+
 		return "redirect:/admin/customer-list";
 	}
 
@@ -209,6 +238,7 @@ public class AdminController {
 	 */
 	@PostMapping(value = "/customer-edit", params = "delete")
 	public String deleteCustomer(CustomerEditForm form) {
+
 		shoppingService.deleteCustomer(form.getId());
 		return "redirect:/admin/customer-list";
 	}
