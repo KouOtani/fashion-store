@@ -111,6 +111,7 @@ public class UserDetailController {
 		UserWithCode userDetails = userApplicationService.getCurrentUserDetails();
 
 		shoppingService.addressUpdate(userDetails.getUserId(), form.getEMail());
+
 		return "redirect:/account/detail";
 	}
 
@@ -247,5 +248,13 @@ public class UserDetailController {
 
 		shoppingService.detailUpdate(userDetails.getUserId(), user);
 		return "redirect:/account/detail";
+	}
+
+	@GetMapping("/success")
+	public String handleSuccess(Model model) {
+		model.addAttribute("registered", true);
+		model.addAttribute("updated", true);
+		model.addAttribute("deleted", true);
+		return "user/success";
 	}
 }

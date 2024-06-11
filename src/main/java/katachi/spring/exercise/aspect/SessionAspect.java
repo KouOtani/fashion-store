@@ -30,11 +30,28 @@ public class SessionAspect {
 	 * ログイン前のリクエストURLをセッションに保存します。
 	 */
 	@Before("execution(* katachi.spring.exercise.controller.LoginController.*(..))")
-	public void getPreUrl() {
-		String prevUrl = request.getHeader("Referer");
-		if (prevUrl != null && !prevUrl.endsWith("/login")) {
-			session.setAttribute("prevUrl", prevUrl);
+	public void savePreviousUrl() {
+		// リクエストのリファラヘッダーから前のURLを取得
+		String previousUrl = request.getHeader("Referer");
+
+		// URLが有効かどうかをチェック
+		if (isValidPreviousUrl(previousUrl)) {
+			// 前のURLをセッションに保存
+			session.setAttribute("previousUrl", previousUrl);
 		}
+	}
+
+	/**
+	 * URLが有効かどうかを判断します。
+	 *
+	 * @param url チェックするURL
+	 * @return URLが有効であればtrue、無効であればfalse
+	 */
+	private boolean isValidPreviousUrl(String url) {
+		if (url == null) {
+			return false;
+		}
+		return !(url.endsWith("/login") || url.endsWith("/signup") || url.endsWith("/guestSignup"));
 	}
 
 	/**

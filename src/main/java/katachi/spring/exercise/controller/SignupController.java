@@ -169,4 +169,5 @@ public class SignupController {
 		// レジ画面に遷移
 		return "redirect:/goods/casher";
 	}
+
 }

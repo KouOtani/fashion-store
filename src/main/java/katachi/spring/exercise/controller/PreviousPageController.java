@@ -57,7 +57,7 @@ public class PreviousPageController {
 		session.setAttribute("totalAmount", cart.totalAmount());
 
 		// 前のURLにリダイレクト
-		String prevUrl = (String) session.getAttribute("prevUrl");
-		return "redirect:" + (prevUrl != null ? prevUrl : "/");
+		String previousUrl = (String) session.getAttribute("previousUrl");
+		return "redirect:" + (previousUrl != null ? previousUrl : "/");
 	}
 }

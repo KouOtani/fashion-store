@@ -150,15 +150,18 @@ public class OrderController {
 			shoppingService.allClearCart(userDetails.getUserId());
 		}
 
-		// セッションとカートをクリアする
-		cart.clearCart();
-		session.invalidate();
-
 		return "redirect:/goods/complete-order";
 	}
 
 	@GetMapping("/complete-order")
 	public String viewComplete() {
+
+		// セッションとカートをクリアする
+		cart.clearCart();
+		session.removeAttribute("cart");
+		session.removeAttribute("totalQuantity");
+		session.removeAttribute("totalAmount");
+
 		return "user/complete";
 	}
 

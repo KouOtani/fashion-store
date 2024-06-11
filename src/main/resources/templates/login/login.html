@@ -18,7 +18,7 @@
   <div layout:fragment="content">
   <div class="align-items-center py-4">
     <form method="post" th:action="@{/login}" class="form-login text-center">
-      <h1 class="h5 mb-3">会員の方</h1>
+      <h1 class="h4 mb-3">会員の方</h1>
 
       <p th:if="${session['SPRING_SECURITY_LAST_EXCEPTION']} != null"
         th:text="${session['SPRING_SECURITY_LAST_EXCEPTION'].message}" class="text-danger">
