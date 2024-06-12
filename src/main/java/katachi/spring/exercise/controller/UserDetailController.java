@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
 import katachi.spring.exercise.application.service.UserApplicationService;
@@ -54,7 +55,8 @@ public class UserDetailController {
 	 * @return ユーザー詳細画面のビュー名
 	 */
 	@GetMapping("/detail")
-	public String getUserDetail(Model model, SignupForm form) {
+	public String getUserDetail(Model model,
+			SignupForm form) {
 
 		UserWithCode userDetails = userApplicationService.getCurrentUserDetails();
 
@@ -73,7 +75,8 @@ public class UserDetailController {
 	 * @return 住所更新画面のビュー名
 	 */
 	@GetMapping("/addressUpdate")
-	public String getAddressUpdate(@ModelAttribute AddressEditForm form, Locale locale) {
+	public String getAddressUpdate(@ModelAttribute AddressEditForm form,
+			Locale locale) {
 
 		return "user/address-edit";
 	}
@@ -87,7 +90,10 @@ public class UserDetailController {
 	 * @return 入力チェックが成功した場合はユーザー詳細画面へのリダイレクトURL、失敗した場合は住所更新画面のビュー名
 	 */
 	@PostMapping("/addressUpdate")
-	public String postAddressUpdate(Locale locale, @ModelAttribute @Validated(GroupOrder.class) AddressEditForm form, BindingResult bindingResult) {
+	public String postAddressUpdate(Locale locale,
+			@ModelAttribute @Validated(GroupOrder.class) AddressEditForm form,
+			BindingResult bindingResult,
+			RedirectAttributes redirectAttributes) {
 
 		// 入力チェック結果
 		if (bindingResult.hasErrors()) {
@@ -111,6 +117,7 @@ public class UserDetailController {
 		UserWithCode userDetails = userApplicationService.getCurrentUserDetails();
 
 		shoppingService.addressUpdate(userDetails.getUserId(), form.getEMail());
+		redirectAttributes.addFlashAttribute("message", "メールアドレスを更新しました。");
 
 		return "redirect:/account/detail";
 	}
@@ -136,7 +143,10 @@ public class UserDetailController {
 	 * @return 入力チェックが成功した場合はユーザー詳細画面へのリダイレクトURL、失敗した場合はパスワード更新画面のビュー名
 	 */
 	@PostMapping("/passwordUpdate")
-	public String postPasswordUpdate(Locale locale, @ModelAttribute @Validated(GroupOrder.class) PasswordEditForm form, BindingResult bindingResult) {
+	public String postPasswordUpdate(Locale locale,
+			@ModelAttribute @Validated(GroupOrder.class) PasswordEditForm form,
+			BindingResult bindingResult,
+			RedirectAttributes redirectAttributes) {
 		// 入力チェック結果
 		if (bindingResult.hasErrors()) {
 			// NG:ユーザー登録画面に戻る
@@ -152,6 +162,8 @@ public class UserDetailController {
 		UserWithCode userDetails = userApplicationService.getCurrentUserDetails();
 
 		shoppingService.passwordUpdate(userDetails.getUserId(), form.getPassword());
+		redirectAttributes.addFlashAttribute("message", "パスワードを更新しました。");
+
 		return "redirect:/account/detail";
 	}
 
@@ -164,7 +176,9 @@ public class UserDetailController {
 	 * @return 配送先住所更新画面のビュー名
 	 */
 	@GetMapping("/shippingAddressUpdate")
-	public String getShippingAddressUpdate(@ModelAttribute ShippingAddressEditForm form, Locale locale, Model model) {
+	public String getShippingAddressUpdate(@ModelAttribute ShippingAddressEditForm form,
+			Locale locale,
+			Model model) {
 
 		List<String> prefecturesList = userApplicationService.getPrefecturesList();
 		model.addAttribute("prefecturesList", prefecturesList);
@@ -182,7 +196,11 @@ public class UserDetailController {
 	 * @return 入力チェックが成功した場合はレジ画面へのリダイレクトURL、失敗した場合は配送先住所更新画面のビュー名
 	 */
 	@PostMapping("/shippingAddressUpdate")
-	public String postShippingAddressUpdate(Locale locale, @ModelAttribute @Validated(GroupOrder.class) ShippingAddressEditForm form, BindingResult bindingResult, Model model) {
+	public String postShippingAddressUpdate(Locale locale,
+			@ModelAttribute @Validated(GroupOrder.class) ShippingAddressEditForm form,
+			BindingResult bindingResult,
+			Model model,
+			RedirectAttributes redirectAttributes) {
 
 		// 入力チェック結果
 		if (bindingResult.hasErrors()) {
@@ -200,6 +218,8 @@ public class UserDetailController {
 			session.setAttribute("user", user);
 		}
 
+		redirectAttributes.addFlashAttribute("message", "配送先住所を更新しました。");
+
 		return "redirect:/goods/casher";
 	}
 
@@ -212,7 +232,9 @@ public class UserDetailController {
 	 * @return ユーザー詳細情報更新画面のビュー名
 	 */
 	@GetMapping("/detailUpdate")
-	public String getDetailUpdate(@ModelAttribute UserDetailEditForm form, Locale locale, Model model) {
+	public String getDetailUpdate(@ModelAttribute UserDetailEditForm form,
+			Locale locale,
+			Model model) {
 		// 性別を取得
 		Map<String, Integer> genderMap = userApplicationService.getGenderMap(locale);
 		model.addAttribute("genderMap", genderMap);
@@ -234,7 +256,11 @@ public class UserDetailController {
 	 * @return 入力チェックが成功した場合はユーザー詳細画面へのリダイレクトURL、失敗した場合は詳細情報更新画面のビュー名
 	 */
 	@PostMapping("/detailUpdate")
-	public String postDetailUpdate(Model model, Locale locale, @ModelAttribute @Validated(GroupOrder.class) UserDetailEditForm form, BindingResult bindingResult) {
+	public String postDetailUpdate(Model model,
+			Locale locale,
+			@ModelAttribute @Validated(GroupOrder.class) UserDetailEditForm form,
+			BindingResult bindingResult,
+			RedirectAttributes redirectAttributes) {
 		// 入力チェック結果
 		if (bindingResult.hasErrors()) {
 			// NG:詳細情報更新画面に戻る
@@ -247,14 +273,9 @@ public class UserDetailController {
 		UserWithCode userDetails = userApplicationService.getCurrentUserDetails();
 
 		shoppingService.detailUpdate(userDetails.getUserId(), user);
+
+		redirectAttributes.addFlashAttribute("message", "ユーザー情報を更新しました。");
 		return "redirect:/account/detail";
 	}
 
-	@GetMapping("/success")
-	public String handleSuccess(Model model) {
-		model.addAttribute("registered", true);
-		model.addAttribute("updated", true);
-		model.addAttribute("deleted", true);
-		return "user/success";
-	}
 }

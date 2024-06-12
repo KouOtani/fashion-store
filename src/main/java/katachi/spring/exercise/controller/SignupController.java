@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
 import katachi.spring.exercise.application.service.UserApplicationService;
@@ -24,14 +25,12 @@ import katachi.spring.exercise.domain.user.service.ShoppingService;
 import katachi.spring.exercise.form.GroupOrder;
 import katachi.spring.exercise.form.GuestSignupForm;
 import katachi.spring.exercise.form.SignupForm;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * ユーザーおよびゲストのサインアップに関連するリクエストを処理するコントローラークラスです。
  */
 @Controller
 @RequestMapping("/user")
-@Slf4j
 public class SignupController {
 
 	@Autowired
@@ -61,7 +60,9 @@ public class SignupController {
 	 * @return ユーザー登録画面のビュー名
 	 */
 	@GetMapping("/signup")
-	public String getSignup(Model model, Locale locale, @ModelAttribute SignupForm form) {
+	public String getSignup(Model model,
+			Locale locale,
+			@ModelAttribute SignupForm form) {
 		// 性別を取得
 		Map<String, Integer> genderMap = userApplicationService.getGenderMap(locale);
 		model.addAttribute("genderMap", genderMap);
@@ -84,7 +85,11 @@ public class SignupController {
 	 * @return 入力チェックが成功した場合はログイン画面へのリダイレクトURL、失敗した場合はユーザー登録画面のビュー名
 	 */
 	@PostMapping("/signup")
-	public String postSignup(Model model, Locale locale, @ModelAttribute @Validated(GroupOrder.class) SignupForm form, BindingResult bindingResult) {
+	public String postSignup(Model model,
+			Locale locale,
+			@ModelAttribute @Validated(GroupOrder.class) SignupForm form,
+			BindingResult bindingResult,
+			RedirectAttributes redirectAttributes) {
 		// 入力チェック結果
 		if (bindingResult.hasErrors()) {
 			// NG:ユーザー登録画面に戻る
@@ -105,13 +110,13 @@ public class SignupController {
 			return getSignup(model, locale, form);
 		}
 
-		log.info(form.toString());
-
 		// formをMUserクラスに変換
 		MUser user = modelMapper.map(form, MUser.class);
 
 		// ユーザー登録
 		shoppingService.signup(user);
+
+		redirectAttributes.addFlashAttribute("message", "ユーザーを登録しました。");
 
 		// ログイン画面にリダイレクト
 		return "redirect:/login";
@@ -126,13 +131,15 @@ public class SignupController {
 	 * @return ゲスト登録画面のビュー名
 	 */
 	@GetMapping("/guestSignup")
-	public String getGuestSignup(Model model, Locale locale, @ModelAttribute GuestSignupForm form) {
+	public String getGuestSignup(Model model,
+			Locale locale,
+			@ModelAttribute GuestSignupForm form) {
 		// 都道府県を取得
 		List<String> prefecturesList = userApplicationService.getPrefecturesList();
 		model.addAttribute("prefecturesList", prefecturesList);
 
 		// ゲスト登録画面に遷移
-		return "guest/new";
+		return "guest/guest-signup";
 	}
 
 	/**
@@ -145,7 +152,11 @@ public class SignupController {
 	 * @return 入力チェックが成功した場合はレジ画面のビュー名、失敗した場合はゲスト登録画面のビュー名
 	 */
 	@PostMapping("/casher")
-	public String postGuestSignup(Model model, Locale locale, @ModelAttribute @Validated(GroupOrder.class) GuestSignupForm form, BindingResult bindingResult) {
+	public String postGuestSignup(Model model,
+			Locale locale,
+			@ModelAttribute @Validated(GroupOrder.class) GuestSignupForm form,
+			BindingResult bindingResult,
+			RedirectAttributes redirectAttributes) {
 
 		// 入力チェック結果
 		if (bindingResult.hasErrors()) {
@@ -165,6 +176,8 @@ public class SignupController {
 		session.setAttribute("guestData", sessionGuestData.getGuestData());
 		session.setAttribute("cart", cart.getCartList());
 		session.setAttribute("totalAmount", cart.totalAmount());
+
+		redirectAttributes.addFlashAttribute("message", "ゲスト情報を登録しました。");
 
 		// レジ画面に遷移
 		return "redirect:/goods/casher";

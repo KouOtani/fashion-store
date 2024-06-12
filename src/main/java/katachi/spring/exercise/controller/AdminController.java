@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import katachi.spring.exercise.application.service.UserApplicationService;
 import katachi.spring.exercise.domain.user.model.MGoods;
@@ -41,6 +42,7 @@ public class AdminController {
 	@Autowired
 	private ModelMapper modelMapper;
 
+	/** アプリケーションサービス */
 	@Autowired
 	private UserApplicationService userApplicationService;
 
@@ -95,7 +97,9 @@ public class AdminController {
 	 * @return 商品管理ページへのリダイレクト
 	 */
 	@PostMapping("/goods-register")
-	public String postRegisterGoods(@ModelAttribute @Validated(GroupOrder.class) GoodsEditForm form, BindingResult bindingResult) {
+	public String postRegisterGoods(@ModelAttribute @Validated(GroupOrder.class) GoodsEditForm form,
+			BindingResult bindingResult,
+			RedirectAttributes redirectAttributes) {
 
 		// 入力チェック結果
 		if (bindingResult.hasErrors()) {
@@ -105,6 +109,8 @@ public class AdminController {
 
 		MGoods goods = modelMapper.map(form, MGoods.class);
 		shoppingService.registerNewGoods(goods);
+
+		redirectAttributes.addFlashAttribute("message", "新規商品を登録しました。");
 
 		return "redirect:/admin/goods-management";
 	}
@@ -117,7 +123,9 @@ public class AdminController {
 	 * @return 商品管理ページへのリダイレクト
 	 */
 	@PostMapping(value = "/goods-management", params = "update")
-	public String updateGoods(@Validated(GroupOrder.class) GoodsEditForm form, BindingResult bindingResult) {
+	public String updateGoods(@Validated(GroupOrder.class) GoodsEditForm form,
+			BindingResult bindingResult,
+			RedirectAttributes redirectAttributes) {
 
 		// 入力チェック結果
 		if (bindingResult.hasErrors()) {
@@ -127,6 +135,8 @@ public class AdminController {
 
 		MGoods goods = modelMapper.map(form, MGoods.class);
 		shoppingService.updateGoodsOne(goods);
+
+		redirectAttributes.addFlashAttribute("message", "商品を更新しました。");
 
 		return "redirect:/admin/goods-management";
 	}
@@ -139,8 +149,10 @@ public class AdminController {
 	 * @return 商品管理ページへのリダイレクト
 	 */
 	@PostMapping(value = "/goods-management", params = "delete")
-	public String deleteGoods(GoodsEditForm form) {
+	public String deleteGoods(GoodsEditForm form,
+			RedirectAttributes redirectAttributes) {
 		shoppingService.deleteGoodsOne(form.getId());
+		redirectAttributes.addFlashAttribute("message", "商品を削除しました。");
 		return "redirect:/admin/goods-management";
 	}
 
@@ -152,7 +164,8 @@ public class AdminController {
 	 * @return 注文一覧のビュー名
 	 */
 	@GetMapping("/order-list")
-	public String getOrderList(@RequestParam(required = false) String query, Model model) {
+	public String getOrderList(@RequestParam(required = false) String query,
+			Model model) {
 		List<Order> orderList = shoppingService.getAllOrders(query);
 		model.addAttribute("orderList", orderList);
 		return "admin/order-list";
@@ -215,7 +228,9 @@ public class AdminController {
 	 * @return 顧客管理ページへのリダイレクト
 	 */
 	@PostMapping(value = "/customer-edit", params = "update")
-	public String updateCustomer(@Validated(GroupOrder.class) CustomerEditForm form, BindingResult bindingResult) {
+	public String updateCustomer(@Validated(GroupOrder.class) CustomerEditForm form,
+			BindingResult bindingResult,
+			RedirectAttributes redirectAttributes) {
 
 		// 入力チェック結果
 		if (bindingResult.hasErrors()) {
@@ -225,6 +240,8 @@ public class AdminController {
 
 		MUser user = modelMapper.map(form, MUser.class);
 		shoppingService.updateCustomer(user);
+
+		redirectAttributes.addFlashAttribute("message", "顧客情報を更新しました。");
 
 		return "redirect:/admin/customer-list";
 	}
@@ -237,9 +254,12 @@ public class AdminController {
 	 * @return 顧客管理ページへのリダイレクト
 	 */
 	@PostMapping(value = "/customer-edit", params = "delete")
-	public String deleteCustomer(CustomerEditForm form) {
+	public String deleteCustomer(CustomerEditForm form,
+			RedirectAttributes redirectAttributes) {
 
 		shoppingService.deleteCustomer(form.getId());
+
+		redirectAttributes.addFlashAttribute("message", "顧客を削除しました。");
 		return "redirect:/admin/customer-list";
 	}
 }

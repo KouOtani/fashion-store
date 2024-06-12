@@ -5,12 +5,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <!--CSS読み込み-->
-  <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
-  <link rel="stylesheet" th:href="@{/css/user/style.css}">
-  <link href="https://use.fontawesome.com/releases/v6.5.2/css/all.css" rel="stylesheet">
-  <!--JS読み込み-->
-  <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}" defer></script>
   <title th:text="#{newRegister}"></title>
 </head>
 
@@ -119,7 +113,7 @@
       <div class="mb-3">
         <label for="birthday" th:text="#{birthday}" class="form-label fw-bold"></label>
         <span class="text-danger fw-bold">*</span>
-        <input type="text" class="form-control" placeholder="yyyy/MM/dd" th:field="*{birthday}"
+        <input type="text" id="birthday" class="form-control" placeholder="例: 1990/01/01" maxlength="10" th:field="*{birthday}"
           th:errorclass="is-invalid" />
         <div class="invalid-feedback" th:errors="*{birthday}"></div>
       </div>
