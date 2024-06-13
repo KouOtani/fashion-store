@@ -63,7 +63,7 @@
                 th:text="${'&yen;' + #numbers.formatInteger(item.price, 3, 'COMMA')}"></td>
               <td class="align-middle" th:text="${item.imageUrl}"></td>
               <td class="align-middle button">
-                <a class="btn btn-primary" th:href="@{'/admin/goods-list/' + ${item.id}}">編集</a>
+                <a class="btn btn-primary" th:href="@{'/admin/goods-edit/' + ${item.id}}">編集</a>
               </td>
             </tr>
           </div>
