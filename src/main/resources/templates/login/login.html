@@ -13,7 +13,7 @@
 
     <!-- メッセージが存在する場合にアラートを表示 -->
     <th:block th:if="${message}">
-      <div class="alert alert-primary alert-dismissible fade show d-flex align-items-center w-50 mx-auto mt-4"
+      <div class="alert alert-primary alert-dismissible fade show d-flex align-items-center w-25 mx-auto mt-4"
         role="alert">
         <!-- アラートアイコン -->
         <svg xmlns="http://www.w3.org/2000/svg"
@@ -47,6 +47,7 @@
         <div class="form-group mb-5">
           <label for="password" class="sr-only py-2" th:text="#{password}"></label>
           <input type="password" class="form-control" placeholder="パスワード" name="password" id="password" />
+          <input type="checkbox" id="showPassword"> Show Password
         </div>
         <button class="btn btn-primary w-50 py-2" type="submit" th:text="#{login}"></button>
       </form>
@@ -55,7 +56,7 @@
       </div>
       <th:block th:if="${session.totalQuantity > 0}">
         <div class="text-center mt-5">
-          <a class="btn btn-link text-black" th:href="@{/user/guestSignup}">登録せずにゲスト購入する</a>
+          <a class="btn btn-link text-black" th:href="@{/user/guest-signup}">登録せずにゲスト購入する</a>
         </div>
       </th:block>
     </div>

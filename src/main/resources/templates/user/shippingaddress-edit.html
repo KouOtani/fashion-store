@@ -12,7 +12,7 @@
   <div layout:fragment="content">
     <div class="align-items-center py-4">
       <h2 class="text-center my-3" th:text="#{shippingAddressUpdate}"></h2>
-      <form method="post" th:action="@{/account/shippingAddressUpdate}" class="form-signup"
+      <form method="post" th:action="@{/account/shipping-address-update-comfirm}" class="form-signup"
         th:object="${shippingAddressEditForm}">
         <!--郵便番号-->
         <div class="mb-3">

@@ -84,12 +84,11 @@ public class SignupController {
 	 * @param bindingResult 入力チェックの結果
 	 * @return 入力チェックが成功した場合はログイン画面へのリダイレクトURL、失敗した場合はユーザー登録画面のビュー名
 	 */
-	@PostMapping("/signup")
-	public String postSignup(Model model,
+	@PostMapping("/signup-comfirm")
+	public String postSignupComfirm(Model model,
 			Locale locale,
 			@ModelAttribute @Validated(GroupOrder.class) SignupForm form,
-			BindingResult bindingResult,
-			RedirectAttributes redirectAttributes) {
+			BindingResult bindingResult) {
 		// 入力チェック結果
 		if (bindingResult.hasErrors()) {
 			// NG:ユーザー登録画面に戻る
@@ -110,6 +109,14 @@ public class SignupController {
 			return getSignup(model, locale, form);
 		}
 
+		return "user/signup-comfirm";
+	}
+
+	@PostMapping("/signup")
+	public String postSignup(Model model,
+			Locale locale,
+			@ModelAttribute SignupForm form,
+			RedirectAttributes redirectAttributes) {
 		// formをMUserクラスに変換
 		MUser user = modelMapper.map(form, MUser.class);
 
@@ -118,7 +125,6 @@ public class SignupController {
 
 		redirectAttributes.addFlashAttribute("message", "ユーザーを登録しました。");
 
-		// ログイン画面にリダイレクト
 		return "redirect:/login";
 	}
 
@@ -130,7 +136,7 @@ public class SignupController {
 	 * @param form ゲストサインアップフォームのデータを保持するオブジェクト
 	 * @return ゲスト登録画面のビュー名
 	 */
-	@GetMapping("/guestSignup")
+	@GetMapping("/guest-signup")
 	public String getGuestSignup(Model model,
 			Locale locale,
 			@ModelAttribute GuestSignupForm form) {
@@ -151,12 +157,11 @@ public class SignupController {
 	 * @param bindingResult 入力チェックの結果
 	 * @return 入力チェックが成功した場合はレジ画面のビュー名、失敗した場合はゲスト登録画面のビュー名
 	 */
-	@PostMapping("/casher")
-	public String postGuestSignup(Model model,
+	@PostMapping("/guest-signup-comfirm")
+	public String postGuestSignupComfirm(Model model,
 			Locale locale,
 			@ModelAttribute @Validated(GroupOrder.class) GuestSignupForm form,
-			BindingResult bindingResult,
-			RedirectAttributes redirectAttributes) {
+			BindingResult bindingResult) {
 
 		// 入力チェック結果
 		if (bindingResult.hasErrors()) {
@@ -171,8 +176,17 @@ public class SignupController {
 			return getGuestSignup(model, locale, form);
 		}
 
-		sessionGuestData.setGuestData(form);
+		// レジ画面に遷移
+		return "guest/guest-signup-comfirm";
+	}
 
+	@PostMapping("/guest-signup")
+	public String postGuestSignup(Model model,
+			Locale locale,
+			@ModelAttribute GuestSignupForm form,
+			RedirectAttributes redirectAttributes) {
+
+		sessionGuestData.setGuestData(form);
 		session.setAttribute("guestData", sessionGuestData.getGuestData());
 		session.setAttribute("cart", cart.getCartList());
 		session.setAttribute("totalAmount", cart.totalAmount());

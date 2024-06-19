@@ -125,7 +125,7 @@ public class CartController {
 	 * @param authentication 認証情報を含むオブジェクト
 	 * @return カートページへのリダイレクトURL
 	 */
-	@GetMapping("/removeItem")
+	@GetMapping("/remove-item")
 	public String deleteFromCart(@RequestParam Integer goodsId, Authentication authentication) {
 
 		if (authentication != null && authentication.isAuthenticated()) {

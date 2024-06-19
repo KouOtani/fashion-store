@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layout}">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title th:text="#{shippingAddressUpdate}"></title>
+</head>
+
+<body>
+  <div layout:fragment="content">
+
+    <div class="container">
+      <div class="row mt-3">
+        <div class="col-sm-4"></div>
+        <div class="col-sm-4 alert alert-primary text-center mb-0">
+          下記内容に変更します。<br>
+          よろしいですか？
+        </div>
+        <div class="col-sm-4"></div>
+      </div>
+    </div>
+
+    <div class="my-3">
+      <form method="post" th:action="@{/account/shipping-address-update}" class="form-signup"
+        th:object="${shippingAddressEditForm}">
+        <!--郵便番号-->
+        <div class="mb-3">
+          <h1 th:text="#{postalCode}" class="h5 fw-bold"></h1>
+          <input type="hidden" class="form-control" th:field="*{postalCode}" />
+          <p th:text="*{postalCode}"></p>
+        </div>
+        <!--都道府県-->
+        <div class="mb-3">
+          <h1 th:text="#{prefectures}" class="h5 fw-bold"></h1>
+          <input type="hidden" class="form-control" th:field="*{prefectures}" />
+          <p th:text="*{prefectures}"></p>
+        </div>
+        <!--市町村-->
+        <div class="mb-3">
+          <h1 th:text="#{city}" class="h5 fw-bold"></h1>
+          <input type="hidden" class="form-control" th:field="*{city}" />
+          <p th:text="*{city}"></p>
+        </div>
+        <!--町名・番地-->
+        <div class="mb-3">
+          <h1 th:text="#{townName}" class="h5 fw-bold"></h1>
+          <input type="hidden" class="form-control" th:field="*{townName}" />
+          <p th:text="*{townName}"></p>
+        </div>
+        <!--建物名・部屋番号 -->
+        <div class="mb-3">
+          <h1 th:text="#{others}" class="h5 fw-bold"></h1>
+          <input type="hidden" class="form-control" th:field="*{others}" />
+          <p th:text="*{#strings.isEmpty(others) ? '未入力' : others}"></p>
+        </div>
+        <!--チェック-->
+        <div class="mb-3">
+          <input type="hidden" class="form-check-input" th:field="*{isEverytime}" />
+          <th:block th:if="*{isEverytime}">
+            <span class="fw-bold">いつもこの住所に届ける</span>
+          </th:block>
+        </div>
+
+        <div class="text-center">
+          <button class="btn btn-primary mt-3 w-75" type="submit">変更する</button>
+        </div>
+      </form>
+
+      <div class="text-center">
+        <a th:href="@{/account/shipping-address-update}">住所変更画面に戻る</a>
+      </div>
+
+    </div>
+  </div>
+</body>
+
+</html>

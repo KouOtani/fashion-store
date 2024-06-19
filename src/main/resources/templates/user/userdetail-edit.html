@@ -11,11 +11,14 @@
 <body>
   <div layout:fragment="content">
     <div class="align-items-center py-4">
-      <h2 class="text-center my-3" th:text="#{detailUpdate}"></h2>
-      <form method="post" th:action="@{/account/detailUpdate}" class="form-signup" th:object="${userDetailEditForm}">
+      <h1 class="h2 text-center my-3" th:text="#{detailUpdate}"></h1>
+      <p class="text-danger text-center fw-bold">* は必須入力です</p>
+      <form method="post" th:action="@{/account/detail-update-comfirm}" class="form-signup"
+        th:object="${userDetailEditForm}">
         <!--名前-->
         <div class="mb-3">
           <label for="userName" th:text="#{userName}" class="form-label fw-bold"></label>
+          <span class="text-danger fw-bold">*</span>
           <input type="text" class="form-control" placeholder="例: 山田太郎" th:field="*{userName}"
             th:errorclass="is-invalid" />
           <div class="invalid-feedback" th:errors="*{userName}"></div>
@@ -23,6 +26,7 @@
         <!--フリガナ-->
         <div class="mb-3">
           <label for="furigana" th:text="#{furigana}" class="form-label fw-bold"></label>
+          <span class="text-danger fw-bold">*</span>
           <input type="text" class="form-control" placeholder="例: ヤマダタロウ" th:field="*{furigana}"
             th:errorclass="is-invalid" />
           <div class="invalid-feedback" th:errors="*{furigana}"></div>
@@ -30,12 +34,15 @@
         <!--郵便番号-->
         <div class="mb-3">
           <label for="postalCode" th:text="#{postalCode}" class="form-label fw-bold"></label>
-          <input type="text" class="form-control" placeholder="例: 100-1001" th:field="*{postalCode}" th:errorclass="is-invalid" />
+          <span class="text-danger fw-bold">*</span>
+          <input type="text" class="form-control" placeholder="例: 100-1001" th:field="*{postalCode}"
+            th:errorclass="is-invalid" />
           <div class="invalid-feedback" th:errors="*{postalCode}"></div>
         </div>
         <!--都道府県-->
         <div class="mb-3">
           <label for="prefectures" th:text="#{prefectures}" class="form-label fw-bold"></label>
+          <span class="text-danger fw-bold">*</span>
           <select class="form-control" th:field="*{prefectures}" th:errorclass="is-invalid">
             <option value="" selected>選択してください</option>
             <option th:each="item : ${prefecturesList}" th:text="${item}" th:value="${item}"
@@ -47,12 +54,14 @@
         <!--市町村-->
         <div class="mb-3">
           <label for="city" th:text="#{city}" class="form-label fw-bold"></label>
+          <span class="text-danger fw-bold">*</span>
           <input type="text" class="form-control" th:field="*{city}" th:errorclass="is-invalid" />
           <div class="invalid-feedback" th:errors="*{city}"></div>
         </div>
         <!--町名・番地-->
         <div class="mb-3">
           <label for="townName" th:text="#{townName}" class="form-label fw-bold"></label>
+          <span class="text-danger fw-bold">*</span>
           <input type="text" class="form-control" th:field="*{townName}" th:errorclass="is-invalid" />
           <div class="invalid-feedback" th:errors="*{townName}"></div>
         </div>
@@ -65,13 +74,15 @@
         <!--電話番号-->
         <div class="mb-3">
           <label for="phoneNumber" th:text="#{phoneNumber}" class="form-label fw-bold"></label>
+          <span class="text-danger fw-bold">*</span>
           <input type="text" class="form-control" placeholder="例: 09012345678" th:field="*{phoneNumber}"
             th:errorclass="is-invalid" />
           <div class="invalid-feedback" th:errors="*{phoneNumber}"></div>
         </div>
         <!--性別-->
         <div class="mb-3">
-          <label for="gender" th:text="#{gender}" class="form-label fw-bold"></label><br>
+          <label for="gender" th:text="#{gender}" class="form-label fw-bold"></label>
+          <span class="text-danger fw-bold">*</span><br>
           <div th:each="item : ${genderMap}" class="form-check-inline">
             <input type="radio" class="form-check-input" th:value="${item.value}" th:field="*{gender}"
               th:errorclass="is-invalid" />
@@ -82,8 +93,9 @@
         <!--生年月日-->
         <div class="mb-3">
           <label for="birthday" th:text="#{birthday}" class="form-label fw-bold"></label>
-          <input type="text" id="birthday" class="form-control" placeholder="例: 1990/01/01" maxlength="10" th:field="*{birthday}"
-            th:errorclass="is-invalid" />
+          <span class="text-danger fw-bold">*</span>
+          <input type="text" id="birthday" class="form-control" placeholder="例: 1990/01/01" maxlength="10"
+            th:field="*{birthday}" th:errorclass="is-invalid" />
           <div class="invalid-feedback" th:errors="*{birthday}"></div>
         </div>
         <div class="text-center">
