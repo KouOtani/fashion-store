@@ -20,9 +20,12 @@
         <ul class="navbar-nav ms-auto">
 
           <li class="nav-item pe-3">
-            <figure class="text-white mb-0 text-center position-relative">
-              <i class="text-white fa-solid fa-user fa-lg dropdown-toggle mb-2" data-bs-toggle="dropdown"
-                aria-expanded="false"></i>
+            <div class="dropdown">
+              <figure class="text-white mb-0 text-center position-relative" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                <i class="text-white fa-solid fa-user fa-lg dropdown-toggle mb-2"></i>
+                <figcaption>アカウント</figcaption>
+              </figure>
               <ul class="dropdown-menu">
                 <li><a class="dropdown-item" th:href="@{/account/detail}">ユーザー情報詳細</a></li>
                 <li><a class="dropdown-item" th:href="@{/account/password-update}">パスワード変更</a></li>
@@ -36,8 +39,7 @@
                   </form>
                 </li>
               </ul>
-              <figcaption>アカウント</figcaption>
-            </figure>
+            </div>
           </li>
 
           <li class="nav-item li pe-3">

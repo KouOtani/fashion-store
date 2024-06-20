@@ -38,21 +38,21 @@ public class PreviousPageController {
 	 * @return 前のページまたはホームページへのリダイレクトURL
 	 */
 	@GetMapping("/redirect")
-	public String redirect(HttpServletRequest request, Authentication authentication) {
+	public String redirectToPreviousPage(HttpServletRequest request, Authentication authentication) {
 
 		// 現在の認証情報を取得
-		Authentication authen = SecurityContextHolder.getContext().getAuthentication();
+		Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
 
-		UserWithCode userDetails = (UserWithCode) authen.getPrincipal();
+		UserWithCode userDetails = (UserWithCode) currentAuth.getPrincipal();
 
 		// カートのアイテムをユーザーのカートに転送
 		cart.transferCartItems(userDetails.getUserId(), cart.getCartList());
 
 		// ユーザーのカートリストを取得して設定
-		List<CartItem> cartList = shoppingService.getCartList(userDetails.getUserId());
-		cart.setCartList(cartList);
+		List<CartItem> userCartList = shoppingService.getCartList(userDetails.getUserId());
+		cart.setCartList(userCartList);
 
-		session.setAttribute("cart", cartList);
+		session.setAttribute("cart", userCartList);
 		session.setAttribute("totalQuantity", cart.totalQuantity());
 		session.setAttribute("totalAmount", cart.totalAmount());
 

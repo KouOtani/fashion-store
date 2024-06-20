@@ -20,15 +20,17 @@
         <ul class="navbar-nav ms-auto">
 
           <li class="nav-item pe-3">
-            <figure class="text-white mb-0 text-center position-relative">
-              <i class="text-white fa-solid fa-user fa-lg dropdown-toggle mb-2" data-bs-toggle="dropdown"
-                aria-expanded="false"></i>
+            <div class="dropdown">
+              <figure class="text-white mb-0 text-center position-relative"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="text-white fa-solid fa-user fa-lg mb-2 dropdown-toggle"></i>
+                <figcaption th:text="#{login}"></figcaption>
+              </figure>
               <ul class="dropdown-menu">
                 <li><a class="dropdown-item" th:href="@{/login}">ログイン</a></li>
                 <li><a class="dropdown-item" th:href="@{/user/signup}">新規登録</a></li>
               </ul>
-              <figcaption th:text="#{login}"></figcaption>
-            </figure>
+            </div>
           </li>
 
           <li class="nav-item li pe-3">

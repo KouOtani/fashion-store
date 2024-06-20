@@ -68,7 +68,7 @@ public class AdminController {
 	 * @return 商品編集のビュー名
 	 */
 	@GetMapping("/goods-edit/{goodsId}")
-	public String getGoods(GoodsEditForm form,
+	public String getGoodsDetails(GoodsEditForm form,
 			Model model,
 			@PathVariable("goodsId") Integer goodsId) {
 
@@ -90,16 +90,23 @@ public class AdminController {
 		return "admin/goods-register";
 	}
 
-	@PostMapping("/goods-register-comfirm")
-	public String comfirmGoodsData(@ModelAttribute @Validated(GroupOrder.class) GoodsEditForm form,
+	/**
+	 * 商品登録データを確認する。
+	 *
+	 * @param form 商品登録フォーム
+	 * @param bindingResult バインディング結果
+	 * @return 商品登録確認ページまたは商品登録ページ
+	 */
+	@PostMapping("/goods-register-confirm")
+	public String confirmGoodsData(@ModelAttribute @Validated(GroupOrder.class) GoodsEditForm form,
 			BindingResult bindingResult) {
 		// 入力チェック結果
 		if (bindingResult.hasErrors()) {
-			// NG:ゲスト登録画面に戻る
+			// NG:商品登録画面に戻る
 			return getRegisterGoods(form);
 		}
 
-		return "admin/goods-register-comfirm";
+		return "admin/goods-register-confirm";
 	}
 
 	/**
@@ -109,7 +116,7 @@ public class AdminController {
 	 * @return 商品管理ページへのリダイレクト
 	 */
 	@PostMapping("/goods-register")
-	public String postRegisterGoods(@ModelAttribute GoodsEditForm form,
+	public String registerGoods(@ModelAttribute GoodsEditForm form,
 			RedirectAttributes redirectAttributes) {
 
 		MGoods goods = modelMapper.map(form, MGoods.class);
@@ -121,14 +128,14 @@ public class AdminController {
 	}
 
 	/**
-	 * 商品更新処理を行う。
+	 * 商品更新確認処理を行う。
 	 *
 	 * @param form  更新する商品の情報を含むフォーム
-	 * @param model モデル
-	 * @return 商品管理ページへのリダイレクト
+	 * @param bindingResult バインディング結果
+	 * @return 商品更新確認ページまたは商品編集ページ
 	 */
-	@PostMapping(value = "/goods-management-comfirm", params = "update")
-	public String updateGoodsComfirm(@ModelAttribute @Validated(GroupOrder.class) GoodsEditForm form,
+	@PostMapping(value = "/goods-management-confirm", params = "update")
+	public String confirmGoodsUpdate(@ModelAttribute @Validated(GroupOrder.class) GoodsEditForm form,
 			BindingResult bindingResult) {
 
 		// 入力チェック結果
@@ -137,15 +144,22 @@ public class AdminController {
 			return "admin/goods-edit";
 		}
 
-		return "admin/goods-update-comfirm";
+		return "admin/goods-update-confirm";
 	}
 
+	/**
+	 * 商品を更新する。
+	 *
+	 * @param form 商品編集フォーム
+	 * @param redirectAttributes リダイレクト属性
+	 * @return 商品管理ページへのリダイレクト
+	 */
 	@PostMapping("/goods-update")
 	public String updateGoods(@ModelAttribute GoodsEditForm form,
 			RedirectAttributes redirectAttributes) {
 
 		MGoods goods = modelMapper.map(form, MGoods.class);
-		shoppingService.updateGoodsOne(goods);
+		shoppingService.updateGoods(goods);
 
 		redirectAttributes.addFlashAttribute("message", "商品を更新しました。");
 
@@ -153,23 +167,29 @@ public class AdminController {
 	}
 
 	/**
-	 * 商品削除処理を行う。
+	 * 商品削除確認処理を行う。
 	 *
 	 * @param form  削除する商品の情報を含むフォーム
-	 * @param model モデル
-	 * @return 商品管理ページへのリダイレクト
+	 * @return 商品削除確認ページ
 	 */
-	@PostMapping(value = "/goods-management-comfirm", params = "delete")
-	public String deleteGoodsComfirm(@ModelAttribute GoodsEditForm form) {
+	@PostMapping(value = "/goods-management-confirm", params = "delete")
+	public String confirmGoodsDelete(@ModelAttribute GoodsEditForm form) {
 
-		return "admin/goods-delete-comfirm";
+		return "admin/goods-delete-confirm";
 	}
 
+	/**
+	 * 商品を削除する。
+	 *
+	 * @param form 商品編集フォーム
+	 * @param redirectAttributes リダイレクト属性
+	 * @return 商品管理ページへのリダイレクト
+	 */
 	@PostMapping("/goods-delete")
 	public String deleteGoods(@ModelAttribute GoodsEditForm form,
 			RedirectAttributes redirectAttributes) {
 
-		shoppingService.deleteGoodsOne(form.getId());
+		shoppingService.deleteGoods(form.getId());
 
 		redirectAttributes.addFlashAttribute("message", "商品を削除しました。");
 
@@ -199,7 +219,7 @@ public class AdminController {
 	 * @return 注文詳細のビュー名
 	 */
 	@GetMapping("/order-details/{orderId}")
-	public String getOrderDetails(Model model, @PathVariable("orderId") Integer orderId) {
+	public String getOrderDetail(Model model, @PathVariable("orderId") Integer orderId) {
 		Order orderDetailsOne = shoppingService.getUserOrders(orderId);
 		model.addAttribute("orderDetailsOne", orderDetailsOne);
 		return "admin/order-details";
@@ -213,14 +233,23 @@ public class AdminController {
 	 * @return 顧客一覧のビュー名
 	 */
 	@GetMapping("/customer-list")
-	public String getUserList(@RequestParam(required = false) String query, Model model) {
+	public String getCustomerList(@RequestParam(required = false) String query, Model model) {
 		List<MUser> customerList = shoppingService.getUsers(query);
 		model.addAttribute("customerList", customerList);
 		return "admin/customer-list";
 	}
 
+	/**
+	 * 指定された顧客の詳細を取得し、編集フォームに表示する。
+	 *
+	 * @param form     顧客編集フォーム
+	 * @param model    モデル
+	 * @param userId   ユーザーID
+	 * @param locale   ロケール情報
+	 * @return 顧客編集のビュー名
+	 */
 	@GetMapping("/customer-edit/{userId}")
-	public String getGoods(CustomerEditForm form,
+	public String getCustomerDetails(CustomerEditForm form,
 			Model model,
 			@PathVariable("userId") Integer userId,
 			Locale locale) {
@@ -241,25 +270,32 @@ public class AdminController {
 	}
 
 	/**
-	 * 顧客更新処理を行う。
+	 * 顧客更新確認処理を行う。
 	 *
 	 * @param form  更新する顧客の情報を含むフォーム
-	 * @param model モデル
-	 * @return 顧客管理ページへのリダイレクト
+	 * @param bindingResult バインディング結果
+	 * @return 顧客更新確認ページまたは顧客編集ページ
 	 */
-	@PostMapping(value = "/customer-edit-comfirm", params = "update")
-	public String updateCustomerComfirm(@ModelAttribute @Validated(GroupOrder.class) CustomerEditForm form,
+	@PostMapping(value = "/customer-edit-confirm", params = "update")
+	public String confirmCustomerUpdate(@ModelAttribute @Validated(GroupOrder.class) CustomerEditForm form,
 			BindingResult bindingResult) {
 
 		// 入力チェック結果
 		if (bindingResult.hasErrors()) {
-			// NG:ゲスト登録画面に戻る
+			// NG:顧客編集画面に戻る
 			return "admin/customer-edit";
 		}
 
-		return "admin/customer-update-comfirm";
+		return "admin/customer-update-confirm";
 	}
 
+	/**
+	 * 顧客を更新する。
+	 *
+	 * @param form 顧客編集フォーム
+	 * @param redirectAttributes リダイレクト属性
+	 * @return 顧客管理ページへのリダイレクト
+	 */
 	@PostMapping("/customer-update")
 	public String updateCustomer(@ModelAttribute CustomerEditForm form,
 			RedirectAttributes redirectAttributes) {
@@ -272,18 +308,24 @@ public class AdminController {
 	}
 
 	/**
-	 * 顧客削除処理を行う。
+	 * 顧客削除確認処理を行う。
 	 *
 	 * @param form  削除する顧客の情報を含むフォーム
-	 * @param model モデル
-	 * @return 顧客管理ページへのリダイレクト
+	 * @return 顧客削除確認ページ
 	 */
-	@PostMapping(value = "/customer-edit-comfirm", params = "delete")
-	public String deleteCustomerComfirm(@ModelAttribute CustomerEditForm form) {
+	@PostMapping(value = "/customer-edit-confirm", params = "delete")
+	public String confirmCustomerDelete(@ModelAttribute CustomerEditForm form) {
 
-		return "admin/customer-delete-comfirm";
+		return "admin/customer-delete-confirm";
 	}
 
+	/**
+	 * 顧客を削除する。
+	 *
+	 * @param form 顧客編集フォーム
+	 * @param redirectAttributes リダイレクト属性
+	 * @return 顧客管理ページへのリダイレクト
+	 */
 	@PostMapping("/customer-delete")
 	public String deleteCustomer(@ModelAttribute CustomerEditForm form,
 			RedirectAttributes redirectAttributes) {

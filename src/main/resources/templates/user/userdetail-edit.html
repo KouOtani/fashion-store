@@ -13,7 +13,7 @@
     <div class="align-items-center py-4">
       <h1 class="h2 text-center my-3" th:text="#{detailUpdate}"></h1>
       <p class="text-danger text-center fw-bold">* は必須入力です</p>
-      <form method="post" th:action="@{/account/detail-update-comfirm}" class="form-signup"
+      <form method="post" th:action="@{/account/detail-update-confirm}" class="form-signup"
         th:object="${userDetailEditForm}">
         <!--名前-->
         <div class="mb-3">

@@ -16,17 +16,17 @@ import katachi.spring.exercise.domain.user.model.OrderDetails;
 public interface UserMapper {
 
 	//ユーザー登録
-	public int insertOne(MUser user);
+	public int insertUser(MUser user);
 
 	//ユーザー登録時のメールアドレス重複チェック
-	public String findByEmail(String email);
+	public String findUserByEmail(String email);
 
 	//アイテム一覧取得
-	public List<MGoods> selectGoodsWithPagination(@Param("offset") Integer offset,
+	public List<MGoods> findGoodsWithPagination(@Param("offset") Integer offset,
 			@Param("limit") Integer limit);
 
 	//アイテムの合計数を取得
-	public Integer getTotalGoodsCount();
+	public Integer countAllGoods();
 
 	//アイテム取得（1数）
 	public MGoods selectOneGoods(Integer goodsId);
@@ -46,11 +46,11 @@ public interface UserMapper {
 			Integer quantity);
 
 	//カートに同じuserIdとgoodsIdがあるか調べる
-	public Integer findTwo(Integer userId,
+	public Integer checkCartItemExistence(Integer userId,
 			Integer goodsId);
 
 	//同じuserIdとgoodsIdに個数を加算する
-	public void addQuantity(Integer userId,
+	public void incrementCartItemQuantity(Integer userId,
 			Integer goodsId,
 			Integer quantity);
 
@@ -60,7 +60,7 @@ public interface UserMapper {
 			Integer quantity);
 
 	//カートを取得する
-	public List<CartItem> findCartInformation(Integer userId);
+	public List<CartItem> findUserCartItems(Integer userId);
 
 	//アイテム削除（１件）
 	public int deleteItem(Integer userId, Integer goodsId);
@@ -94,10 +94,10 @@ public interface UserMapper {
 			@Param("user") MUser user);
 
 	//購入ユーザーを登録
-	public int insertOrderOne(Order order);
+	public int insertOrder(Order order);
 
 	//オーダーの詳細を登録
-	public int insertOrderDetail(OrderDetails orderDetails);
+	public int insertOrderDetails(OrderDetails orderDetails);
 
 	//オーダーの配送先を登録
 	public int insertDeliveryAddress(DeliveryAddress address);

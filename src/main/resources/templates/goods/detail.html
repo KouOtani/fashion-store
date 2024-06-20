@@ -11,7 +11,7 @@
 <body>
   <div layout:fragment="content">
     <div class="container mt-40">
-      <form th:action="@{/goods/addToCart}" method="post">
+      <form th:action="@{/goods/add-to-cart}" method="post">
         <th:block th:if="${#authorization.expression('isAuthenticated()')}">
           <input type="hidden" name="userId" th:value="${#authentication.principal.userId}" />
         </th:block>

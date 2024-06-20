@@ -58,18 +58,18 @@ public class OrderController {
 	 * @param authentication 認証情報を含むオブジェクト
 	 * @return レジ画面のビュー名またはログイン画面へのリダイレクトURL
 	 */
-	@GetMapping("/casher")
+	@GetMapping("/checkout")
 	public String proceedToCheckout(Model model, Authentication authentication) {
 
 		if (sessionGuestData.getGuestData() != null) {
 			model.addAttribute("guestData", sessionGuestData.getGuestData());
-			return "user/casher";
+			return "user/checkout";
 
 		} else if (authentication != null && authentication.isAuthenticated()) {
 			UserWithCode userDetails = userApplicationService.getCurrentUserDetails();
 			MUser user = shoppingService.getLoginUserById(userDetails.getUserId());
 			model.addAttribute("user", user);
-			return "user/casher";
+			return "user/checkout";
 
 		} else {
 			return "redirect:/login";
@@ -80,10 +80,11 @@ public class OrderController {
 	 * 購入完了ページを表示します。
 	 *
 	 * @param authentication 認証情報を含むオブジェクト
+	 * @param redirectAttributes リダイレクト後のフラッシュメッセージを設定するためのオブジェクト
 	 * @return 購入完了ページのビュー名
 	 */
 	@GetMapping("/complete")
-	public String getComplete(Authentication authentication,
+	public String completeOrder(Authentication authentication,
 			RedirectAttributes redirectAttributes) {
 
 		// 購入完了時に購入者を登録する
@@ -153,8 +154,13 @@ public class OrderController {
 		return "redirect:/goods/complete-order";
 	}
 
+	/**
+	 * 購入完了ページを表示します。
+	 *
+	 * @return 購入完了ページのビュー名
+	 */
 	@GetMapping("/complete-order")
-	public String viewComplete() {
+	public String showCompleteOrderPage() {
 
 		// セッションとカートをクリアする
 		cart.clearCart();

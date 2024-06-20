@@ -12,7 +12,7 @@
   <div layout:fragment="content">
     <h1 class="h2 mt-40 text-center">新規会員登録</h1>
     <p class="text-danger text-center fw-bold">* は必須入力です</p>
-    <form th:action="@{/user/signup-comfirm}" method="post" class="form-signup" th:object="${signupForm}">
+    <form th:action="@{/user/signup-confirm}" method="post" class="form-signup" th:object="${signupForm}">
       <!--メールアドレス-->
       <div class="mb-3">
         <label for="eMail" th:text="#{eMail}" class="form-label fw-bold"></label>

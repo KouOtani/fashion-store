@@ -15,13 +15,13 @@ import katachi.spring.exercise.domain.user.model.OrderDetails;
 public interface ShoppingService {
 
 	//ユーザー登録
-	public void signup(MUser user);
+	public void registerUser(MUser user);
 
 	//メールアドレスの重複チェックを
 	public boolean isEmailRegistered(String email);
 
 	//アイテム取得
-	public List<MGoods> getGoods(Integer page, Integer size);
+	public List<MGoods> getGoodsWithPagination(Integer page, Integer size);
 
 	//アイテムの合計数を取得
 	public Integer getTotalGoodsCount();
@@ -33,10 +33,10 @@ public interface ShoppingService {
 	public List<MGoods> getGoods();
 
 	//アイテム更新（1件）
-	public void updateGoodsOne(MGoods goods);
+	public void updateGoods(MGoods goods);
 
 	//アイテム削除（1件）
-	public void deleteGoodsOne(Integer id);
+	public void deleteGoods(Integer id);
 
 	//アイテム登録
 	public void registerNewGoods(MGoods goods);

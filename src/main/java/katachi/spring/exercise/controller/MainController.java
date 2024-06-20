@@ -31,12 +31,12 @@ public class MainController {
 	 * @return メインページのビュー名
 	 */
 	@GetMapping("/")
-	public String getMain(Model model,
+	public String showMainPage(Model model,
 			@RequestParam(name = "page", defaultValue = "1") Integer page,
 			@RequestParam(name = "size", defaultValue = "8") Integer size) {
 
 		// 商品/アイテムのリストを取得します。
-		List<MGoods> goodsList = shoppingService.getGoods(page, size);
+		List<MGoods> goodsList = shoppingService.getGoodsWithPagination(page, size);
 
 		// アイテムの総数とアイテム数に基づいて総ページ数を計算します。
 		Integer totalItems = shoppingService.getTotalGoodsCount();

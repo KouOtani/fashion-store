@@ -54,147 +54,165 @@ public class SignupController {
 	/**
 	 * ユーザー登録画面を表示します。
 	 *
-	 * @param model ビューにデータを提供するためのモデル
+	 * @param model ビューに渡すためのモデル
 	 * @param locale ロケール情報
-	 * @param form サインアップフォームのデータを保持するオブジェクト
+	 * @param signupForm サインアップフォームのデータを保持するオブジェクト
 	 * @return ユーザー登録画面のビュー名
 	 */
 	@GetMapping("/signup")
-	public String getSignup(Model model,
+	public String showSignupForm(Model model,
 			Locale locale,
-			@ModelAttribute SignupForm form) {
-		// 性別を取得
+			@ModelAttribute SignupForm signupForm) {
+		// 性別の選択肢を取得
 		Map<String, Integer> genderMap = userApplicationService.getGenderMap(locale);
 		model.addAttribute("genderMap", genderMap);
 
-		// 都道府県を取得
+		// 都道府県の選択肢を取得
 		List<String> prefecturesList = userApplicationService.getPrefecturesList();
 		model.addAttribute("prefecturesList", prefecturesList);
 
-		// ユーザー登録画面に遷移
+		// ユーザー登録画面を表示
 		return "user/signup";
 	}
 
 	/**
-	 * ユーザー登録処理を行います。
+	 * ユーザー登録フォームの入力チェックを行い、確認画面に遷移します。
 	 *
-	 * @param model ビューにデータを提供するためのモデル
+	 * @param model ビューに渡すためのモデル
 	 * @param locale ロケール情報
-	 * @param form サインアップフォームのデータを保持するオブジェクト
-	 * @param bindingResult 入力チェックの結果
-	 * @return 入力チェックが成功した場合はログイン画面へのリダイレクトURL、失敗した場合はユーザー登録画面のビュー名
+	 * @param signupForm サインアップフォームのデータを保持するオブジェクト
+	 * @param bindingResult 入力チェック結果
+	 * @return 入力チェックが成功した場合は確認画面のビュー名、失敗した場合はユーザー登録画面のビュー名
 	 */
-	@PostMapping("/signup-comfirm")
-	public String postSignupComfirm(Model model,
+	@PostMapping("/signup-confirm")
+	public String confirmSignup(Model model,
 			Locale locale,
-			@ModelAttribute @Validated(GroupOrder.class) SignupForm form,
+			@ModelAttribute @Validated(GroupOrder.class) SignupForm signupForm,
 			BindingResult bindingResult) {
-		// 入力チェック結果
+		// 入力チェック結果を確認
 		if (bindingResult.hasErrors()) {
 			// NG:ユーザー登録画面に戻る
-			return getSignup(model, locale, form);
+			return showSignupForm(model, locale, signupForm);
 		}
 
-		if (!form.getPassword().equals(form.getRePassword())) {
-
-			// NG:確認パスワードと一致しない
+		// パスワードと確認用パスワードの一致を確認
+		if (!signupForm.getPassword().equals(signupForm.getRePassword())) {
 			bindingResult.rejectValue("password", "error.signupForm", "確認用のパスワードと一致しません。");
-			return getSignup(model, locale, form);
+			return showSignupForm(model, locale, signupForm);
 		}
 
-		if (shoppingService.isEmailRegistered(form.getEMail())) {
-
-			// NG:メールアドレスが重複
+		// メールアドレスの重複を確認
+		if (shoppingService.isEmailRegistered(signupForm.getEMail())) {
 			bindingResult.rejectValue("eMail", "error.signupForm", "このメールアドレスは既に登録されています。");
-			return getSignup(model, locale, form);
+			return showSignupForm(model, locale, signupForm);
 		}
 
-		return "user/signup-comfirm";
+		// 確認画面に遷移
+		return "user/signup-confirm";
 	}
 
+	/**
+	 * ユーザーを登録し、ログイン画面にリダイレクトします。
+	 *
+	 * @param model ビューに渡すためのモデル
+	 * @param locale ロケール情報
+	 * @param signupForm サインアップフォームのデータを保持するオブジェクト
+	 * @param redirectAttributes リダイレクト先にデータを渡すためのオブジェクト
+	 * @return ログイン画面へのリダイレクトURL
+	 */
 	@PostMapping("/signup")
-	public String postSignup(Model model,
+	public String processSignup(Model model,
 			Locale locale,
-			@ModelAttribute SignupForm form,
+			@ModelAttribute SignupForm signupForm,
 			RedirectAttributes redirectAttributes) {
-		// formをMUserクラスに変換
-		MUser user = modelMapper.map(form, MUser.class);
+		// サインアップフォームをMUserクラスにマッピング
+		MUser user = modelMapper.map(signupForm, MUser.class);
 
-		// ユーザー登録
-		shoppingService.signup(user);
+		// ユーザーを登録
+		shoppingService.registerUser(user);
 
 		redirectAttributes.addFlashAttribute("message", "ユーザーを登録しました。");
 
+		// ログイン画面にリダイレクト
 		return "redirect:/login";
 	}
 
 	/**
 	 * ゲスト情報入力画面を表示します。
 	 *
-	 * @param model ビューにデータを提供するためのモデル
+	 * @param model ビューに渡すためのモデル
 	 * @param locale ロケール情報
-	 * @param form ゲストサインアップフォームのデータを保持するオブジェクト
-	 * @return ゲスト登録画面のビュー名
+	 * @param guestSignupForm ゲストサインアップフォームのデータを保持するオブジェクト
+	 * @return ゲスト情報入力画面のビュー名
 	 */
 	@GetMapping("/guest-signup")
-	public String getGuestSignup(Model model,
+	public String showGuestSignupForm(Model model,
 			Locale locale,
-			@ModelAttribute GuestSignupForm form) {
-		// 都道府県を取得
+			@ModelAttribute GuestSignupForm guestSignupForm) {
+		// 都道府県の選択肢を取得
 		List<String> prefecturesList = userApplicationService.getPrefecturesList();
 		model.addAttribute("prefecturesList", prefecturesList);
 
-		// ゲスト登録画面に遷移
+		// ゲスト情報入力画面を表示
 		return "guest/guest-signup";
 	}
 
 	/**
-	 * ゲスト情報の登録処理を行います。
+	 * ゲスト情報の入力チェックを行い、レジ画面に遷移します。
 	 *
-	 * @param model ビューにデータを提供するためのモデル
+	 * @param model ビューに渡すためのモデル
 	 * @param locale ロケール情報
-	 * @param form ゲストサインアップフォームのデータを保持するオブジェクト
-	 * @param bindingResult 入力チェックの結果
-	 * @return 入力チェックが成功した場合はレジ画面のビュー名、失敗した場合はゲスト登録画面のビュー名
+	 * @param guestSignupForm ゲストサインアップフォームのデータを保持するオブジェクト
+	 * @param bindingResult 入力チェック結果
+	 * @return 入力チェックが成功した場合はレジ画面のビュー名、失敗した場合はゲスト情報入力画面のビュー名
 	 */
-	@PostMapping("/guest-signup-comfirm")
-	public String postGuestSignupComfirm(Model model,
+	@PostMapping("/guest-signup-confirm")
+	public String confirmGuestSignup(Model model,
 			Locale locale,
-			@ModelAttribute @Validated(GroupOrder.class) GuestSignupForm form,
+			@ModelAttribute @Validated(GroupOrder.class) GuestSignupForm guestSignupForm,
 			BindingResult bindingResult) {
 
-		// 入力チェック結果
+		// 入力チェック結果を確認
 		if (bindingResult.hasErrors()) {
-			// NG:ゲスト登録画面に戻る
-			return getGuestSignup(model, locale, form);
+			// NG:ゲスト情報入力画面に戻る
+			return showGuestSignupForm(model, locale, guestSignupForm);
 		}
 
-		if (shoppingService.isEmailRegistered(form.getEMail())) {
-
-			// NG:メールアドレスが重複
+		// メールアドレスの重複を確認
+		if (shoppingService.isEmailRegistered(guestSignupForm.getEMail())) {
 			bindingResult.rejectValue("eMail", "error.guestSignupForm", "このメールアドレスは既に登録されています。");
-			return getGuestSignup(model, locale, form);
+			return showGuestSignupForm(model, locale, guestSignupForm);
 		}
 
 		// レジ画面に遷移
-		return "guest/guest-signup-comfirm";
+		return "guest/guest-signup-confirm";
 	}
 
+	/**
+	 * ゲスト情報を登録し、レジ画面にリダイレクトします。
+	 *
+	 * @param model ビューに渡すためのモデル
+	 * @param locale ロケール情報
+	 * @param guestSignupForm ゲストサインアップフォームのデータを保持するオブジェクト
+	 * @param redirectAttributes リダイレクト先にデータを渡すためのオブジェクト
+	 * @return レジ画面へのリダイレクトURL
+	 */
 	@PostMapping("/guest-signup")
-	public String postGuestSignup(Model model,
+	public String processGuestSignup(Model model,
 			Locale locale,
-			@ModelAttribute GuestSignupForm form,
+			@ModelAttribute GuestSignupForm guestSignupForm,
 			RedirectAttributes redirectAttributes) {
 
-		sessionGuestData.setGuestData(form);
+		// ゲストデータをセッションに設定
+		sessionGuestData.setGuestData(guestSignupForm);
 		session.setAttribute("guestData", sessionGuestData.getGuestData());
 		session.setAttribute("cart", cart.getCartList());
 		session.setAttribute("totalAmount", cart.totalAmount());
 
 		redirectAttributes.addFlashAttribute("message", "ゲスト情報を登録しました。");
 
-		// レジ画面に遷移
-		return "redirect:/goods/casher";
+		// レジ画面にリダイレクト
+		return "redirect:/goods/checkout";
 	}
 
 }

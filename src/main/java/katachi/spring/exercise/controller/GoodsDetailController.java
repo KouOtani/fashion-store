@@ -28,7 +28,7 @@ public class GoodsDetailController {
 	 * @return 商品詳細ページのビュー名
 	 */
 	@GetMapping("/detail/{id}")
-	public String getGoods(Model model, @PathVariable("id") Integer id) {
+	public String showGoodsDetail(Model model, @PathVariable("id") Integer id) {
 
 		// 商品を1件取得
 		MGoods goodsOne = shoppingService.getGoodsOne(id);

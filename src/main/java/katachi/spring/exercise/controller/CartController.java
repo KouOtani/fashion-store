@@ -50,7 +50,7 @@ public class CartController {
 	 * @return カートページのビュー名
 	 */
 	@GetMapping("/cart")
-	public String viewCart(Model model, Authentication authentication) {
+	public String showCartContents(Model model, Authentication authentication) {
 		session.setAttribute("totalAmount", cart.totalAmount());
 		return "user/cart";
 	}
@@ -65,8 +65,8 @@ public class CartController {
 	 * @param authentication 認証情報を含むオブジェクト
 	 * @return 商品詳細ページへのリダイレクトURL
 	 */
-	@PostMapping("/addToCart")
-	public String addToCart(@Nullable @RequestParam Integer userId,
+	@PostMapping("/add-to-cart")
+	public String addItemToCart(@Nullable @RequestParam Integer userId,
 			@RequestParam Integer goodsId,
 			@RequestParam Integer quantity,
 			RedirectAttributes redirectAttributes,
@@ -74,7 +74,8 @@ public class CartController {
 
 		// ログインユーザーのカートに商品を追加する処理
 		if (authentication != null && authentication.isAuthenticated()) {
-			if (shoppingService.checkCartItemExistence(userId, goodsId)) {
+			boolean itemExists = shoppingService.checkCartItemExistence(userId, goodsId);
+			if (itemExists) {
 				shoppingService.addToCartItemQuantity(userId, goodsId, quantity);
 			} else {
 				shoppingService.addToCart(userId, goodsId, quantity);
@@ -126,7 +127,8 @@ public class CartController {
 	 * @return カートページへのリダイレクトURL
 	 */
 	@GetMapping("/remove-item")
-	public String deleteFromCart(@RequestParam Integer goodsId, Authentication authentication) {
+	public String removeItemFromCart(@RequestParam Integer goodsId,
+			Authentication authentication) {
 
 		if (authentication != null && authentication.isAuthenticated()) {
 			UserWithCode userDetails = userApplicationService.getCurrentUserDetails();

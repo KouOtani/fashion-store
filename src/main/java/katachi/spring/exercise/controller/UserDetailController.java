@@ -51,65 +51,52 @@ public class UserDetailController {
 	 * ユーザー詳細画面を表示します。
 	 *
 	 * @param model ビューにデータを提供するためのモデル
-	 * @param form サインアップフォームのデータを保持するオブジェクト
+	 * @param form  サインアップフォームのデータを保持するオブジェクト
 	 * @return ユーザー詳細画面のビュー名
 	 */
 	@GetMapping("/detail")
-	public String getUserDetail(Model model,
-			SignupForm form) {
-
+	public String getUserDetail(Model model, SignupForm form) {
 		UserWithCode userDetails = userApplicationService.getCurrentUserDetails();
-
-		// ユーザー1件を取得
 		MUser user = shoppingService.getLoginUserById(userDetails.getUserId());
 		model.addAttribute("user", user);
-
 		return "user/detail";
 	}
 
 	/**
 	 * ユーザーの住所更新画面を表示します。
 	 *
-	 * @param form アドレス編集フォームのデータを保持するオブジェクト
+	 * @param form   アドレス編集フォームのデータを保持するオブジェクト
 	 * @param locale ロケール情報
 	 * @return 住所更新画面のビュー名
 	 */
 	@GetMapping("/address-update")
-	public String getAddressUpdate(@ModelAttribute AddressEditForm form,
-			Locale locale) {
-
+	public String getAddressUpdate(@ModelAttribute AddressEditForm form, Locale locale) {
 		return "user/address-edit";
 	}
 
 	/**
 	 * ユーザーの住所更新処理を行います。
 	 *
-	 * @param locale ロケール情報
-	 * @param form アドレス編集フォームのデータを保持するオブジェクト
-	 * @param bindingResult 入力チェックの結果
+	 * @param locale         ロケール情報
+	 * @param form           アドレス編集フォームのデータを保持するオブジェクト
+	 * @param bindingResult  入力チェックの結果
+	 * @param model          ビューにデータを提供するためのモデル
 	 * @return 入力チェックが成功した場合はユーザー詳細画面へのリダイレクトURL、失敗した場合は住所更新画面のビュー名
 	 */
-	@PostMapping("/address-update-comfirm")
-	public String addressUpdateComfirm(Locale locale,
-			@ModelAttribute @Validated(GroupOrder.class) AddressEditForm form,
-			BindingResult bindingResult,
-			Model model) {
+	@PostMapping("/address-update-confirm")
+	public String confirmAddressUpdate(Locale locale, @ModelAttribute @Validated(GroupOrder.class) AddressEditForm form,
+			BindingResult bindingResult, Model model) {
 
-		// 入力チェック結果
 		if (bindingResult.hasErrors()) {
-			// NG:メールアドレス変更画面に戻る
 			return getAddressUpdate(form, locale);
 		}
 
 		if (!form.getEMail().equals(form.getConfirmationEmail())) {
-			// NG:確認メールアドレスと一致しない
 			bindingResult.rejectValue("eMail", "error.addressEditForm", "確認用のメールアドレスと一致しません。");
 			return getAddressUpdate(form, locale);
 		}
 
 		if (shoppingService.isEmailRegistered(form.getEMail())) {
-
-			// NG:メールアドレスが重複
 			bindingResult.rejectValue("eMail", "error.addressEditForm", "このメールアドレスは既に登録されています。");
 			return getAddressUpdate(form, locale);
 		}
@@ -118,25 +105,28 @@ public class UserDetailController {
 		MUser user = shoppingService.getLoginUserById(userDetails.getUserId());
 		model.addAttribute("beforeEmail", user.getEMail());
 
-		return "user/address-update-comfirm";
+		return "user/address-update-confirm";
 	}
 
+	/**
+	 * ユーザーの住所更新処理を行います。
+	 *
+	 * @param form              アドレス編集フォームのデータを保持するオブジェクト
+	 * @param redirectAttributes リダイレクト先にデータを渡すためのオブジェクト
+	 * @return ユーザー詳細画面へのリダイレクトURL
+	 */
 	@PostMapping("/address-update")
-	public String addressUpdate(@ModelAttribute AddressEditForm form,
-			RedirectAttributes redirectAttributes) {
+	public String addressUpdate(@ModelAttribute AddressEditForm form, RedirectAttributes redirectAttributes) {
 		UserWithCode userDetails = userApplicationService.getCurrentUserDetails();
-
 		shoppingService.addressUpdate(userDetails.getUserId(), form.getEMail());
-
 		redirectAttributes.addFlashAttribute("message", "メールアドレスを更新しました。");
-
 		return "redirect:/account/detail";
 	}
 
 	/**
 	 * ユーザーのパスワード更新画面を表示します。
 	 *
-	 * @param form パスワード編集フォームのデータを保持するオブジェクト
+	 * @param form   パスワード編集フォームのデータを保持するオブジェクト
 	 * @param locale ロケール情報
 	 * @return パスワード更新画面のビュー名
 	 */
@@ -148,52 +138,43 @@ public class UserDetailController {
 	/**
 	 * ユーザーのパスワード更新処理を行います。
 	 *
-	 * @param locale ロケール情報
-	 * @param form パスワード編集フォームのデータを保持するオブジェクト
-	 * @param bindingResult 入力チェックの結果
-	 * @return 入力チェックが成功した場合はユーザー詳細画面へのリダイレクトURL、失敗した場合はパスワード更新画面のビュー名
+	 * @param locale         ロケール情報
+	 * @param form           パスワード編集フォームのデータを保持するオブジェクト
+	 * @param bindingResult  入力チェックの結果
+	 * @param redirectAttributes リダイレクト先にデータを渡すためのオブジェクト
+	 * @return ユーザー詳細画面へのリダイレクトURL、またはパスワード更新画面のビュー名
 	 */
 	@PostMapping("/password-update")
-	public String postPasswordUpdate(Locale locale,
-			@ModelAttribute @Validated(GroupOrder.class) PasswordEditForm form,
-			BindingResult bindingResult,
-			RedirectAttributes redirectAttributes) {
-		// 入力チェック結果
+	public String passwordUpdate(Locale locale, @ModelAttribute @Validated(GroupOrder.class) PasswordEditForm form,
+			BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+
 		if (bindingResult.hasErrors()) {
-			// NG:ユーザー登録画面に戻る
 			return getPasswordUpdate(form, locale);
 		}
 
 		if (!form.getPassword().equals(form.getRePassword())) {
-			// NG:確認パスワードと一致しない
 			bindingResult.rejectValue("password", "error.passwordEditForm", "確認用のパスワードと一致しません。");
 			return getPasswordUpdate(form, locale);
 		}
 
 		UserWithCode userDetails = userApplicationService.getCurrentUserDetails();
-
 		shoppingService.passwordUpdate(userDetails.getUserId(), form.getPassword());
 		redirectAttributes.addFlashAttribute("message", "パスワードを更新しました。");
-
 		return "redirect:/account/detail";
 	}
 
 	/**
 	 * ユーザーの配送先住所更新画面を表示します。
 	 *
-	 * @param form 配送先住所編集フォームのデータを保持するオブジェクト
+	 * @param form  配送先住所編集フォームのデータを保持するオブジェクト
 	 * @param locale ロケール情報
 	 * @param model ビューにデータを提供するためのモデル
 	 * @return 配送先住所更新画面のビュー名
 	 */
 	@GetMapping("/shipping-address-update")
-	public String getShippingAddressUpdate(@ModelAttribute ShippingAddressEditForm form,
-			Locale locale,
-			Model model) {
-
+	public String getShippingAddressUpdate(@ModelAttribute ShippingAddressEditForm form, Locale locale, Model model) {
 		List<String> prefecturesList = userApplicationService.getPrefecturesList();
 		model.addAttribute("prefecturesList", prefecturesList);
-
 		return "user/shippingaddress-edit";
 	}
 
@@ -206,30 +187,29 @@ public class UserDetailController {
 	 * @param model ビューにデータを提供するためのモデル
 	 * @return 入力チェックが成功した場合はレジ画面へのリダイレクトURL、失敗した場合は配送先住所更新画面のビュー名
 	 */
-	@PostMapping("/shipping-address-update-comfirm")
-	public String postShippingAddressUpdateComfirm(Locale locale,
-			@ModelAttribute @Validated(GroupOrder.class) ShippingAddressEditForm form,
-			BindingResult bindingResult,
+	@PostMapping("/shipping-address-update-confirm")
+	public String confirmShippingAddressUpdate(Locale locale,
+			@ModelAttribute @Validated(GroupOrder.class) ShippingAddressEditForm form, BindingResult bindingResult,
 			Model model) {
 
-		System.out.println(form.getIsEverytime());
-
-		// 入力チェック結果
 		if (bindingResult.hasErrors()) {
-			// NG:配送先住所変更画面に戻る
 			return getShippingAddressUpdate(form, locale, model);
 		}
 
-		return "user/shippingaddress-update-comfirm";
+		return "user/shippingaddress-update-confirm";
 	}
 
+	/**
+	 * ユーザーの配送先住所更新処理を行います。
+	 *
+	 * @param locale ロケール情報
+	 * @param form 配送先住所編集フォームのデータを保持するオブジェクト
+	 * @param redirectAttributes リダイレクト先にデータを渡すためのオブジェクト
+	 * @return レジ画面へのリダイレクトURL
+	 */
 	@PostMapping("/shipping-address-update")
-	public String postShippingAddressUpdate(Locale locale,
-			@ModelAttribute ShippingAddressEditForm form,
+	public String shippingAddressUpdate(Locale locale, @ModelAttribute ShippingAddressEditForm form,
 			RedirectAttributes redirectAttributes) {
-
-		System.out.println(form.getIsEverytime());
-		System.out.println(form.getCity());
 
 		MUser user = modelMapper.map(form, MUser.class);
 
@@ -243,26 +223,22 @@ public class UserDetailController {
 
 		redirectAttributes.addFlashAttribute("message", "配送先住所を更新しました。");
 
-		return "redirect:/goods/casher";
+		return "redirect:/goods/checkout";
 	}
 
 	/**
 	 * ユーザーの詳細情報更新画面を表示します。
 	 *
-	 * @param form ユーザー詳細編集フォームのデータを保持するオブジェクト
+	 * @param form  ユーザー詳細編集フォームのデータを保持するオブジェクト
 	 * @param locale ロケール情報
 	 * @param model ビューにデータを提供するためのモデル
 	 * @return ユーザー詳細情報更新画面のビュー名
 	 */
 	@GetMapping("/detail-update")
-	public String getDetailUpdate(@ModelAttribute UserDetailEditForm form,
-			Locale locale,
-			Model model) {
-		// 性別を取得
+	public String getDetailUpdate(@ModelAttribute UserDetailEditForm form, Locale locale, Model model) {
 		Map<String, Integer> genderMap = userApplicationService.getGenderMap(locale);
 		model.addAttribute("genderMap", genderMap);
 
-		// 都道府県を取得
 		List<String> prefecturesList = userApplicationService.getPrefecturesList();
 		model.addAttribute("prefecturesList", prefecturesList);
 
@@ -272,36 +248,35 @@ public class UserDetailController {
 	/**
 	 * ユーザーの詳細情報更新処理を行います。
 	 *
-	 * @param model ビューにデータを提供するためのモデル
-	 * @param locale ロケール情報
-	 * @param form ユーザー詳細編集フォームのデータを保持するオブジェクト
-	 * @param bindingResult 入力チェックの結果
+	 * @param model          ビューにデータを提供するためのモデル
+	 * @param locale         ロケール情報
+	 * @param form           ユーザー詳細編集フォームのデータを保持するオブジェクト
+	 * @param bindingResult  入力チェックの結果
 	 * @return 入力チェックが成功した場合はユーザー詳細画面へのリダイレクトURL、失敗した場合は詳細情報更新画面のビュー名
 	 */
-	@PostMapping("/detail-update-comfirm")
-	public String postDetailUpdateComfirm(Model model,
-			Locale locale,
-			@ModelAttribute @Validated(GroupOrder.class) UserDetailEditForm form,
-			BindingResult bindingResult) {
-		// 入力チェック結果
+	@PostMapping("/detail-update-confirm")
+	public String ConfirmUserDetailUpdate(Model model, Locale locale,
+			@ModelAttribute @Validated(GroupOrder.class) UserDetailEditForm form, BindingResult bindingResult) {
+
 		if (bindingResult.hasErrors()) {
-			// NG:詳細情報更新画面に戻る
 			return getDetailUpdate(form, locale, model);
 		}
 
-		return "user/userdetail-update-comfirm";
+		return "user/userdetail-update-confirm";
 	}
 
+	/**
+	 * ユーザーの詳細情報更新処理を行います。
+	 *
+	 * @param form              ユーザー詳細編集フォームのデータを保持するオブジェクト
+	 * @param redirectAttributes リダイレクト先にデータを渡すためのオブジェクト
+	 * @return ユーザー詳細画面へのリダイレクトURL
+	 */
 	@PostMapping("/detail-update")
-	public String postDetailUpdate(@ModelAttribute UserDetailEditForm form,
-			RedirectAttributes redirectAttributes) {
-		// formをMUserクラスに変換
+	public String userDetailUpdate(@ModelAttribute UserDetailEditForm form, RedirectAttributes redirectAttributes) {
 		MUser user = modelMapper.map(form, MUser.class);
-
 		UserWithCode userDetails = userApplicationService.getCurrentUserDetails();
-
 		shoppingService.detailUpdate(userDetails.getUserId(), user);
-
 		redirectAttributes.addFlashAttribute("message", "ユーザー情報を更新しました。");
 		return "redirect:/account/detail";
 	}

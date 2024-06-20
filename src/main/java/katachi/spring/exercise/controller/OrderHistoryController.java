@@ -34,9 +34,9 @@ public class OrderHistoryController {
 	 * @return 注文履歴ページのビュー名
 	 */
 	@GetMapping("/history")
-	public String getOrderHistory(Model model) {
+	public String showOrderHistory(Model model) {
 
-		// 購入履歴を取得
+		// ユーザーの購入履歴を取得
 		UserWithCode userDetails = userApplicationService.getCurrentUserDetails();
 		List<Order> historyList = shoppingService.getHistories(userDetails.getUserId());
 		model.addAttribute("historyList", historyList);
@@ -51,14 +51,14 @@ public class OrderHistoryController {
 	 * @param orderId 表示する注文のID
 	 * @return 注文詳細ページのビュー名
 	 */
-	@GetMapping("/history/{id}")
-	public String getOrderHistoryDetail(Model model,
-			@PathVariable("id") Integer orderId) {
+	@GetMapping("/history/{orderId}")
+	public String showOrderHistoryDetail(Model model,
+			@PathVariable("orderId") Integer orderId) {
 
-		// 注文履歴を1件取得
+		// 指定された注文の詳細を取得
 		UserWithCode userDetails = userApplicationService.getCurrentUserDetails();
-		Order orderDetailsOne = shoppingService.getOrderDetailsOne(userDetails.getUserId(), orderId);
-		model.addAttribute("orderDetailsOne", orderDetailsOne);
+		Order orderDetails = shoppingService.getOrderDetailsOne(userDetails.getUserId(), orderId);
+		model.addAttribute("orderDetails", orderDetails);
 
 		return "user/history-detail";
 	}

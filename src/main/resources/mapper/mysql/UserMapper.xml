@@ -66,7 +66,7 @@
   </resultMap>
 
   <!-- ユーザー1件登録 -->
-  <insert id="insertOne">
+  <insert id="insertUser">
     insert into m_users(
     user_name,
     furigana,
@@ -100,7 +100,7 @@
   </insert>
 
   <!-- メールアドレス重複チェック -->
-  <select id="findByEmail">
+  <select id="findUserByEmail">
     SELECT
     *
     FROM
@@ -110,7 +110,7 @@
   </select>
 
   <!-- アイテム複数件取得 -->
-  <select id="selectGoodsWithPagination" resultType="MGoods">
+  <select id="findGoodsWithPagination" resultType="MGoods">
     SELECT
     id,
     goods_name,
@@ -124,7 +124,7 @@
   </select>
 
   <!-- アイテムの合計数を取得 -->
-  <select id="getTotalGoodsCount" resultType="int">
+  <select id="countAllGoods" resultType="int">
     SELECT COUNT(*) FROM m_goods
   </select>
 
@@ -188,7 +188,7 @@
   </insert>
 
   <!-- カートに同じ商品が存在するか確認 -->
-  <select id="findTwo">
+  <select id="checkCartItemExistence">
     select
     user_id,
     goods_id
@@ -201,7 +201,7 @@
   </select>
 
   <!-- 同じ商品に個数を加算する -->
-  <update id="addQuantity">
+  <update id="incrementCartItemQuantity">
     update
     cart
     set
@@ -225,7 +225,7 @@
   </update>
 
   <!-- カート取得 -->
-  <select id="findCartInformation" resultType="CartItem">
+  <select id="findUserCartItems" resultType="CartItem">
     select
     user_id,
     goods_id,
@@ -314,7 +314,7 @@
   </update>
 
   <!--購入者情報を保存する -->
-  <insert id="insertOrderOne" useGeneratedKeys="true"
+  <insert id="insertOrder" useGeneratedKeys="true"
     keyProperty="id">
     INSERT INTO `order` (
     user_id,
@@ -329,7 +329,7 @@
   </insert>
 
   <!--購入商品の詳細を保存する -->
-  <insert id="insertOrderDetail">
+  <insert id="insertOrderDetails">
     INSERT INTO `order_details` (
     order_id,
     goods_id,

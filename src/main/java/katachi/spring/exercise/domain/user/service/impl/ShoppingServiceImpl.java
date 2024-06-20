@@ -22,164 +22,276 @@ import katachi.spring.exercise.repository.UserMapper;
 public class ShoppingServiceImpl implements ShoppingService {
 
 	@Autowired
-	private UserMapper mapper;
+	private UserMapper userMapper;
 
 	@Autowired
 	private PasswordEncoder encoder;
 
-	//ユーザー登録
+	/**
+	 * ユーザーを新規登録します。
+	 *
+	 * @param user 登録するユーザー情報
+	 */
 	@Override
-	public void signup(MUser user) {
+	public void registerUser(MUser user) {
 		user.setRole("ROLE_GENERAL");
 
 		//パスワード暗号化
 		String rawPassword = user.getPassword();
 		user.setPassword(encoder.encode(rawPassword));
 
-		mapper.insertOne(user);
+		userMapper.insertUser(user);
 	}
 
-	//メールアドレスの重複チェックを
+	/**
+	* メールアドレスが登録済みかどうかを確認します。
+	*
+	* @param email 確認するメールアドレス
+	* @return 登録済みの場合はtrue、そうでない場合はfalse
+	*/
 	@Override
 	public boolean isEmailRegistered(String email) {
-		return mapper.findByEmail(email) != null;
+		return userMapper.findUserByEmail(email) != null;
 	}
 
-	//アイテム取得
+	/**
+	 * ページネーションを使用してアイテムを取得します。
+	 *
+	 * @param page ページ番号
+	 * @param size 1ページあたりのアイテム数
+	 * @return 指定されたページに表示されるアイテムのリスト
+	 */
 	@Override
-	public List<MGoods> getGoods(Integer page, Integer size) {
+	public List<MGoods> getGoodsWithPagination(Integer page, Integer size) {
 		Integer offset = (page - 1) * size;
-		return mapper.selectGoodsWithPagination(offset, size);
+		return userMapper.findGoodsWithPagination(offset, size);
 	}
 
-	//アイテムの合計数を取得
+	/**
+	 * アイテムの総数を取得します。
+	 *
+	 * @return アイテムの総数
+	 */
 	@Override
 	public Integer getTotalGoodsCount() {
-		return mapper.getTotalGoodsCount();
+		return userMapper.countAllGoods();
 	}
 
-	//アイテム取得（1件）
+	/**
+	 * 特定のアイテムを取得します。
+	 *
+	 * @param goodsId 取得するアイテムのID
+	 * @return 指定されたIDのアイテム情報
+	 */
 	@Override
 	public MGoods getGoodsOne(Integer goodsId) {
-		return mapper.selectOneGoods(goodsId);
+		return userMapper.selectOneGoods(goodsId);
 	}
 
-	//アイテム取得（全件）
+	/**
+	 * 全てのアイテムを取得します。
+	 *
+	 * @return 全てのアイテムのリスト
+	 */
 	@Override
 	public List<MGoods> getGoods() {
-		return mapper.selectAllGoods();
+		return userMapper.selectAllGoods();
 	}
 
-	/*アイテム更新(1件)*/
+	/**
+	 * 特定のアイテムを更新します。
+	 *
+	 * @param goods 更新するアイテム情報
+	 */
 	@Override
-	public void updateGoodsOne(MGoods goods) {
-		mapper.updateGoods(goods);
+	public void updateGoods(MGoods goods) {
+		userMapper.updateGoods(goods);
 	}
 
-	/*アイテム削除(1件)*/
+	/**
+	 * 特定のアイテムを削除します。
+	 *
+	 * @param goodsId 削除するアイテムのID
+	 */
 	@Override
-	public void deleteGoodsOne(Integer goodsId) {
-		mapper.deleteGoods(goodsId);
+	public void deleteGoods(Integer goodsId) {
+		userMapper.deleteGoods(goodsId);
 	}
 
-	/*アイテム登録*/
+	/**
+	 * 新しいアイテムを登録します。
+	 *
+	 * @param goods 登録するアイテム情報
+	 */
 	@Override
 	public void registerNewGoods(MGoods goods) {
-		mapper.insertGoods(goods);
+		userMapper.insertGoods(goods);
 	}
 
-	//ログインユーザー情報取得
+	/**
+	 * 指定されたメールアドレスに対応するログインユーザー情報を取得します。
+	 *
+	 * @param email 取得するログインユーザーのメールアドレス
+	 * @return 指定されたメールアドレスのログインユーザー情報
+	 */
 	@Override
 	public MUser getLoginUserByEmail(String eMail) {
-		return mapper.findLoginUserByEmail(eMail);
+		return userMapper.findLoginUserByEmail(eMail);
 	}
 
-	//ログインユーザー情報取得
+	/**
+	 * 指定されたユーザーIDに対応するログインユーザー情報を取得します。
+	 *
+	 * @param userId 取得するログインユーザーのID
+	 * @return 指定されたユーザーIDのログインユーザー情報
+	 */
 	@Override
 	public MUser getLoginUserById(Integer userId) {
-		return mapper.findLoginUserById(userId);
+		return userMapper.findLoginUserById(userId);
 	}
 
-	//カートに追加(ログインユーザー)
+	/**
+	 * ログインユーザーのカートにアイテムを追加します。
+	 *
+	 * @param userId   カートに追加するユーザーのID
+	 * @param goodsId  カートに追加するアイテムのID
+	 * @param quantity カートに追加するアイテムの数量
+	 */
 	@Override
 	public void addToCart(Integer userId,
 			Integer goodsId,
 			Integer quantity) {
 
-		mapper.saveToCart(userId, goodsId, quantity);
+		userMapper.saveToCart(userId, goodsId, quantity);
 	}
 
-	//カートに同じ商品があるか確認する
+	/**
+	* 指定されたユーザーのカートに同じ商品が存在するかを確認します。
+	*
+	* @param userId  カートを確認するユーザーのID
+	* @param goodsId 確認する商品のID
+	* @return 同じ商品がカートに存在する場合はtrue、そうでない場合はfalse
+	*/
 	@Override
 	public boolean checkCartItemExistence(Integer userId,
 			Integer goodsId) {
-		return mapper.findTwo(userId, goodsId) != null;
+		return userMapper.checkCartItemExistence(userId, goodsId) != null;
 	}
 
-	//同じ商品に個数を加算する
+	/**
+	 * 指定されたユーザーのカート内の同じ商品の数量を加算します。
+	 *
+	 * @param userId   カートを更新するユーザーのID
+	 * @param goodsId  更新する商品のID
+	 * @param quantity 加算する数量
+	 */
 	@Override
 	public void addToCartItemQuantity(Integer userId,
 			Integer goodsId,
 			Integer quantity) {
-		mapper.addQuantity(userId, goodsId, quantity);
+		userMapper.incrementCartItemQuantity(userId, goodsId, quantity);
 	}
 
-	//同じ商品の個数を変更する
+	/**
+	 * 指定されたユーザーのカート内の同じ商品の数量を変更します。
+	 *
+	 * @param userId   カートを更新するユーザーのID
+	 * @param goodsId  更新する商品のID
+	 * @param quantity 新しい数量
+	 */
 	public void changeCartItemQuantity(Integer userId,
 			Integer goodsId,
 			Integer quantity) {
-		mapper.updateQuantity(userId, goodsId, quantity);
+		userMapper.updateQuantity(userId, goodsId, quantity);
 	}
 
-	//カート取得
+	/**
+	* 指定されたユーザーのカート情報を取得します。
+	*
+	* @param userId 取得するカート情報のユーザーID
+	* @return 指定されたユーザーのカート情報
+	*/
 	@Override
 	public List<CartItem> getCartList(Integer userId) {
-		return mapper.findCartInformation(userId);
+		return userMapper.findUserCartItems(userId);
 	}
 
-	//カート内の商品を1件削除
+	/**
+	* 指定されたユーザーのカートから特定の商品を削除します。
+	*
+	* @param userId  カートから削除するユーザーのID
+	* @param goodsId 削除する商品のID
+	*/
 	@Override
 	public void deleteItem(Integer userId, Integer goodsId) {
-		mapper.deleteItem(userId, goodsId);
+		userMapper.deleteItem(userId, goodsId);
 	}
 
-	//カート内の商品を全件削除
+	/**
+	 * 指定されたユーザーのカート内の全ての商品を削除します。
+	 *
+	 * @param userId カートをクリアするユーザーのID
+	 */
 	@Override
 	public void allClearCart(Integer userId) {
-		mapper.deleteAllItem(userId);
+		userMapper.deleteAllItem(userId);
 	}
 
-	//ユーザー情報変更(メールアドレス)
+	/**
+	 * 指定されたユーザーの配送先住所を更新します。
+	 *
+	 * @param userId    更新するユーザーのID
+	 * @param newAdress 新しい配送先住所
+	 */
 	@Override
 	public void addressUpdate(Integer userId, String newAdress) {
-		mapper.updateAddress(userId, newAdress);
+		userMapper.updateAddress(userId, newAdress);
 	}
 
-	//ユーザー情報変更(パスワード)
+	/**
+	* 指定されたユーザーのパスワードを更新します。
+	*
+	* @param userId      更新するユーザーのID
+	* @param newPassword 新しいパスワード
+	*/
 	@Override
 	public void passwordUpdate(Integer userId, String newPassword) {
 
 		//パスワード暗号化
 		String encryptPassword = encoder.encode(newPassword);
-		mapper.updatePassword(userId, encryptPassword);
+		userMapper.updatePassword(userId, encryptPassword);
 	}
 
-	//ユーザー情報変更(詳細)
+	/**
+	* 指定されたユーザーの詳細情報を更新します。
+	*
+	* @param userId 更新するユーザーのID
+	* @param user   更新するユーザーの詳細情報
+	*/
 	@Override
 	public void detailUpdate(Integer userId, MUser user) {
-		mapper.updateMany(userId, user);
+		userMapper.updateMany(userId, user);
 	}
 
-	//ユーザー配送先住所変更
+	/**
+	* 指定されたユーザーの配送先住所を更新します。
+	*
+	* @param userId 更新するユーザーのID
+	* @param user   更新するユーザーの詳細情報（配送先住所のみ）
+	*/
 	@Override
 	public void shippingAddressUpdate(Integer userId, MUser user) {
-		mapper.updateShippingAddress(userId, user);
+		userMapper.updateShippingAddress(userId, user);
 	}
 
-	//商品購入者、日時登録
+	/**
+	 * 指定された注文情報を保存します。
+	 *
+	 * @param orderDetailsList 保存する注文情報のリスト
+	 */
 	@Override
 	public void saveCustomer(Order order) {
-		mapper.insertOrderOne(order);
+		userMapper.insertOrder(order);
 	}
 
 	//購入商品の詳細を登録
@@ -187,62 +299,105 @@ public class ShoppingServiceImpl implements ShoppingService {
 	public void saveOrder(List<OrderDetails> orderDetailsList) {
 
 		for (OrderDetails element : orderDetailsList) {
-			mapper.insertOrderDetail(element);
+			userMapper.insertOrderDetails(element);
 		}
 
 	}
 
-	//購入商品の配送先を登録
+	/**
+	 * 指定された配送先情報を保存します。
+	 *
+	 * @param address 保存する配送先情報
+	 */
 	@Override
 	public void saveDeliveryAddress(DeliveryAddress address) {
-		mapper.insertDeliveryAddress(address);
+		userMapper.insertDeliveryAddress(address);
 	}
 
-	//ユーザーの購入履歴を取得
+	/**
+	 * 指定されたユーザーの購入履歴を取得します。
+	 *
+	 * @param userId 取得する購入履歴のユーザーID
+	 * @return 指定されたユーザーの購入履歴のリスト
+	 */
 	@Override
 	public List<Order> getHistories(Integer userId) {
-		return mapper.findManyHistories(userId);
+		return userMapper.findManyHistories(userId);
 	}
 
-	//購入履歴を取得（1件）
+	/**
+	 * 指定されたユーザーと注文IDに対応する注文詳細情報を取得します。
+	 *
+	 * @param userId  取得する注文詳細情報のユーザーID
+	 * @param orderId 取得する注文詳細情報の注文ID
+	 * @return 指定されたユーザーと注文IDに対応する注文詳細情報
+	 */
 	@Override
 	public Order getOrderDetailsOne(Integer userId, Integer orderId) {
-		return mapper.findOneHistory(userId, orderId);
+		return userMapper.findOneHistory(userId, orderId);
 	}
 
-	//全ユーザーの注文履歴を取得
+	/**
+	 * 指定されたクエリに基づく全ての注文情報を取得します。
+	 *
+	 * @param query 検索クエリ
+	 * @return 指定されたクエリに基づく全ての注文情報のリスト
+	 */
 	@Override
 	public List<Order> getAllOrders(String query) {
-		return mapper.selectAllOrders(query);
+		return userMapper.selectAllOrders(query);
 	}
 
-	//注文の詳細を取得
+	/**
+	 * 指定された注文IDに対応する注文情報を取得します。
+	 *
+	 * @param orderId 取得する注文情報の注文ID
+	 * @return 指定された注文IDに対応する注文情報
+	 */
 	@Override
 	public Order getUserOrders(Integer orderId) {
-		return mapper.selectUserOrders(orderId);
+		return userMapper.selectUserOrders(orderId);
 	}
 
-	//ユーザー一覧を取得
+	/**
+	 * 指定されたクエリに基づく全てのユーザー情報を取得します。
+	 *
+	 * @param query 検索クエリ
+	 * @return 指定されたクエリに基づく全てのユーザー情報のリスト
+	 */
 	@Override
 	public List<MUser> getUsers(String query) {
-		return mapper.selectAllUsers(query);
+		return userMapper.selectAllUsers(query);
 	}
 
-	//顧客情報を取得（1件）
+	/**
+	 * 指定されたユーザーIDに対応する顧客情報を取得します。
+	 *
+	 * @param userId 取得する顧客情報のユーザーID
+	 * @return 指定されたユーザーIDに対応する顧客情報
+	 */
 	@Override
 	public MUser getCustomerOne(Integer userId) {
-		return mapper.selectUser(userId);
+		return userMapper.selectUser(userId);
 	}
 
-	//顧客情報を更新
+	/**
+	* 指定された顧客情報を更新します。
+	*
+	* @param user 更新する顧客情報
+	*/
 	@Override
 	public void updateCustomer(MUser user) {
-		mapper.updateUser(user);
+		userMapper.updateUser(user);
 	}
 
-	//顧客情報を削除
+	/**
+	* 指定されたユーザーIDに対応する顧客情報を削除します。
+	*
+	* @param userId 削除する顧客情報のユーザーID
+	*/
 	@Override
 	public void deleteCustomer(Integer userId) {
-		mapper.deleteUser(userId);
+		userMapper.deleteUser(userId);
 	}
 }

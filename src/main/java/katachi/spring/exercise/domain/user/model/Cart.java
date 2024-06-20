@@ -30,17 +30,17 @@ public class Cart implements Serializable {
 	 * カートに商品を追加します。
 	 * もし同じ商品が既にカートに存在する場合は、数量を更新します。
 	 *
-	 * @param goods    追加する商品情報
+	 * @param item    追加する商品情報
 	 * @param quantity 追加する数量
 	 */
-	public void addToCart(CartItem goods, Integer quantity) {
+	public void addToCart(CartItem item, Integer quantity) {
 		if (cartList == null) {
 			cartList = new ArrayList<>();
 		}
 
 		//すでに商品がカートに存在するかチェック
 		for (CartItem cartItem : cartList) {
-			if (cartItem.getGoodsId().equals(goods.getGoodsId())) {
+			if (cartItem.getGoodsId().equals(item.getGoodsId())) {
 				cartItem.setQuantity(cartItem.getQuantity() + quantity);
 				return;
 			}
@@ -48,25 +48,31 @@ public class Cart implements Serializable {
 
 		//カートに新しい商品を追加
 		CartItem newItem = new CartItem();
-		newItem.setUserId(goods.getUserId()); // ユーザーIDを設定
-		newItem.setGoodsId(goods.getGoodsId()); // 商品IDを設定
-		newItem.setQuantity(goods.getQuantity()); // 数量を設定
-		newItem.setGoodsName(goods.getGoodsName()); // 商品名を設定
-		newItem.setImageUrl(goods.getImageUrl()); // 画像URLを設定
-		newItem.setPrice(goods.getPrice()); //価格を設定
+		newItem.setUserId(item.getUserId()); // ユーザーIDを設定
+		newItem.setGoodsId(item.getGoodsId()); // 商品IDを設定
+		newItem.setQuantity(item.getQuantity()); // 数量を設定
+		newItem.setGoodsName(item.getGoodsName()); // 商品名を設定
+		newItem.setImageUrl(item.getImageUrl()); // 画像URLを設定
+		newItem.setPrice(item.getPrice()); //価格を設定
 		newItem.setQuantity(quantity); //個数を設定
 		cartList.add(newItem);
 	}
 
-	public void changeQuantity(Integer goodsId, Integer quantity) {
+	/**
+	 * カート内の特定の商品の数量を変更します。
+	 *
+	 * @param itemId   数量を変更する商品のID
+	 * @param quantity 新しい数量
+	 */
+	public void changeQuantity(Integer itemId, Integer quantity) {
 		// カート内の商品リストがnullであれば、何もせずに終了
 		if (cartList == null) {
 			return;
 		}
 
-		// カート内の各商品についてループし、goodsIdが一致する商品の個数を更新
+		// カート内の各商品についてループし、itemIdが一致する商品の数量を更新
 		for (CartItem cartItem : cartList) {
-			if (cartItem.getGoodsId().equals(goodsId)) {
+			if (cartItem.getGoodsId().equals(itemId)) {
 				cartItem.setQuantity(quantity);
 				return;
 			}
@@ -77,10 +83,10 @@ public class Cart implements Serializable {
 	 * ゲストカートの商品をユーザーカートに追加します。
 	 *
 	 * @param userId   ユーザーID
-	 * @param cartList ゲストカートの商品リスト
+	 * @param guestCartItems ゲストカートの商品リスト
 	 */
-	public void transferCartItems(Integer userId, List<CartItem> cartList) {
-		for (CartItem item : cartList) {
+	public void transferCartItems(Integer userId, List<CartItem> guestCartItems) {
+		for (CartItem item : guestCartItems) {
 
 			if (shoppingService.checkCartItemExistence(userId,
 					item.getGoodsId())) {
@@ -103,8 +109,8 @@ public class Cart implements Serializable {
 	 */
 	public int totalQuantity() {
 		int totalQuantity = 0;
-		for (CartItem cartItem : cartList) {
-			totalQuantity += cartItem.getQuantity();
+		for (CartItem item : cartList) {
+			totalQuantity += item.getQuantity();
 		}
 		return totalQuantity;
 	}
@@ -116,8 +122,8 @@ public class Cart implements Serializable {
 	 */
 	public int totalAmount() {
 		int amount = 0;
-		for (CartItem cartItem : cartList) {
-			amount += (cartItem.getPrice()) * (cartItem.getQuantity());
+		for (CartItem item : cartList) {
+			amount += (item.getPrice()) * (item.getQuantity());
 		}
 		return amount;
 	}
@@ -148,11 +154,11 @@ public class Cart implements Serializable {
 	 *
 	 * @param goodsId 削除する商品のID
 	 */
-	public void removeItemById(Integer goodsId) {
+	public void removeItemById(Integer itemId) {
 		Iterator<CartItem> iterator = cartList.iterator();
 		while (iterator.hasNext()) {
 			CartItem cartItem = iterator.next();
-			if (cartItem.getGoodsId() == goodsId) {
+			if (cartItem.getGoodsId() == itemId) {
 				iterator.remove();
 				break; // 見つかったらループを抜ける
 			}

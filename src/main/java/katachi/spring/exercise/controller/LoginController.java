@@ -21,14 +21,18 @@ public class LoginController {
 	 * @return ログインページのビュー名
 	 */
 	@GetMapping("/login")
-	public String getLogin() {
+	public String showLoginPage() {
 		return "login/login";
 	}
 
+	/**
+	 * ゲストユーザーをログアウトさせ、ログインページにリダイレクトします。
+	 *
+	 * @return ログインページへのリダイレクト
+	 */
 	@GetMapping("/guest/logout")
-	public String getGuestLogout() {
+	public String logoutGuestUser() {
 		session.invalidate();
-
 		return "redirect:/login";
 	}
 }
