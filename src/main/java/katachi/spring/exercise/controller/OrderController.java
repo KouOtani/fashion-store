@@ -3,7 +3,6 @@ package katachi.spring.exercise.controller;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,7 +100,7 @@ public class OrderController {
 		order.setOrderDate(new Date());
 
 		// 一意の注文番号を生成
-		String orderNumber = generateOrderNumber();
+		String orderNumber = userApplicationService.generateOrderNumber();
 		order.setOrderNumber(orderNumber);
 
 		shoppingService.saveCustomer(order);
@@ -169,24 +168,6 @@ public class OrderController {
 		session.removeAttribute("totalAmount");
 
 		return "user/complete";
-	}
-
-	/**
-	 * 注文番号を生成するメソッド。
-	 *
-	 * @return 生成された注文番号
-	 */
-	private String generateOrderNumber() {
-		// UUIDを生成
-		UUID uuid = UUID.randomUUID();
-		// UUIDを文字列に変換し、ハイフンを削除
-		String uuidString = uuid.toString().replaceAll("-", "");
-		// 数字のみに変換
-		String numericString = uuidString.replaceAll("[^0-9]", "");
-		// 先頭から12桁を取得（もし12桁未満の場合は0で埋める）
-		String orderNumber = String.format("%012d", Long.parseLong(numericString.substring(0, Math.min(numericString.length(), 12))));
-
-		return orderNumber;
 	}
 
 }

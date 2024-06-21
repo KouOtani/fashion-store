@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -100,9 +101,36 @@ public class UserApplicationService {
 		return prefecturesList;
 	}
 
+	/**
+	 * 現在の認証されたユーザーの詳細を取得します。
+	 *
+	 * このメソッドは、Spring SecurityのSecurityContextから現在の認証情報を取得し、
+	 * 認証されたユーザーの詳細（UserWithCodeオブジェクト）を返します。
+	 *
+	 * @return 現在認証されているユーザーの詳細（UserWithCodeオブジェクト）
+	 * @throws ClassCastException 認証されたユーザーがUserWithCode型にキャストできない場合
+	 */
 	public UserWithCode getCurrentUserDetails() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		return (UserWithCode) authentication.getPrincipal();
+	}
+
+	/**
+	 * 注文番号を生成するメソッド。
+	 *
+	 * @return 生成された注文番号
+	 */
+	public String generateOrderNumber() {
+		// UUIDを生成
+		UUID uuid = UUID.randomUUID();
+		// UUIDを文字列に変換し、ハイフンを削除
+		String uuidString = uuid.toString().replaceAll("-", "");
+		// 数字のみに変換
+		String numericString = uuidString.replaceAll("[^0-9]", "");
+		// 先頭から12桁を取得（もし12桁未満の場合は0で埋める）
+		String orderNumber = String.format("%012d", Long.parseLong(numericString.substring(0, Math.min(numericString.length(), 12))));
+
+		return orderNumber;
 	}
 
 }
