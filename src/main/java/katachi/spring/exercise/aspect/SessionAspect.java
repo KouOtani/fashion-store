@@ -51,7 +51,7 @@ public class SessionAspect {
 		if (url == null) {
 			return false;
 		}
-		return !(url.endsWith("/login") || url.endsWith("/signup") || url.endsWith("/guestSignup"));
+		return !(url.endsWith("/login") || url.endsWith("/signup") || url.endsWith("/guest-signup"));
 	}
 
 	/**

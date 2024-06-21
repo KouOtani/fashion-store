@@ -13,56 +13,66 @@
     <div class="container">
       <div class="w-75 mx-auto">
         <h2 class="text-center mt-40" th:text="#{historyDetails}"></h2>
-        <div class="mt-5">
-          <dl class="row mt-3">
-            <dt class="col-sm-6 p-1 py-4 border-top border-secondary-subtle">注文日</dt>
-            <dd class="col-sm-6 p-1 py-4 m-0 border-top border-secondary-subtle"
-              th:text="${#dates.format(orderDetails.orderDate, 'yyyy.MM.dd HH:mm:ss')}"></dd>
-            <dt class="col-sm-6 p-1 py-4 border-top border-secondary-subtle">注文番号</dt>
-            <dd class="col-sm-6 p-1 py-4 m-0 border-top border-secondary-subtle"
-              th:text="${orderDetails.orderNumber}"></dd>
-            <dt class="col-sm-6 d-flex align-items-center p-1 py-4 border-top border-secondary-subtle">お届け先
-            </dt>
-            <dd class="col-sm-6 p-1 py-4 m-0 border-top border-secondary-subtle">
-              <p th:text="${orderDetails.user.userName}"></p>
-              <p>
-                <span th:text="${'&#12306;' + orderDetails.deliveryAddress.postalCode}"></span></br>
-                <span th:text="${orderDetails.deliveryAddress.prefectures}"></span>
-                <span th:text="${orderDetails.deliveryAddress.city}"></span>
-                <span th:text="${orderDetails.deliveryAddress.townName}"></span>
-                <span th:text="${orderDetails.deliveryAddress.others}"></span>
-              </p>
-              <p th:text="${orderDetails.user.phoneNumber}"></p>
-            </dd>
-            <dt class="col-sm-6 d-flex align-items-center p-1 py-4 border-top border-secondary-subtle">商品情報
-            </dt>
-            <dd class="col-sm-6 p-1 py-4 m-0 border-top border-secondary-subtle">
-              <th:block th:each="item : ${orderDetails.orderDetailsList}">
-                <div class="d-flex my-3">
-                  <div class="col-4 d-flex align-items-center">
-                    <a class="mx-auto" th:href="@{'/goods/detail/' + ${item.goodsId}}">
-                      <img class="mx-auto" th:src="'/img/' + ${item.goods.imageUrl}" alt="アイテム画像"
-                        width="70%" height="70%" />
-                    </a>
+        <th:block th:if="${orderDetails == null}">
+          <div class="d-flex align-items-center justify-content-center" style="height: 200px;">
+            <div class="text-danger">指定の注文はありません</div>
+          </div>
+        </th:block>
+        <th:block th:if="${orderDetails != null}">
+          <div class="mt-5">
+            <dl class="row mt-3">
+              <dt class="col-sm-6 p-1 py-4 border-top border-secondary-subtle">注文日</dt>
+              <dd class="col-sm-6 p-1 py-4 m-0 border-top border-secondary-subtle"
+                th:text="${#dates.format(orderDetails.orderDate, 'yyyy.MM.dd HH:mm:ss')}"></dd>
+              <dt class="col-sm-6 p-1 py-4 border-top border-secondary-subtle">注文番号</dt>
+              <dd class="col-sm-6 p-1 py-4 m-0 border-top border-secondary-subtle"
+                th:text="${orderDetails.orderNumber}"></dd>
+              <dt class="col-sm-6 d-flex align-items-center p-1 py-4 border-top border-secondary-subtle">
+                お届け先
+              </dt>
+              <dd class="col-sm-6 p-1 py-4 m-0 border-top border-secondary-subtle">
+                <p th:text="${orderDetails.user.userName}"></p>
+                <p>
+                  <span th:text="${'&#12306;' + orderDetails.deliveryAddress.postalCode}"></span></br>
+                  <span th:text="${orderDetails.deliveryAddress.prefectures}"></span>
+                  <span th:text="${orderDetails.deliveryAddress.city}"></span>
+                  <span th:text="${orderDetails.deliveryAddress.townName}"></span>
+                  <span th:text="${orderDetails.deliveryAddress.others}"></span>
+                </p>
+                <p th:text="${orderDetails.user.phoneNumber}"></p>
+              </dd>
+              <dt class="col-sm-6 d-flex align-items-center p-1 py-4 border-top border-secondary-subtle">
+                商品情報
+              </dt>
+              <dd class="col-sm-6 p-1 py-4 m-0 border-top border-secondary-subtle">
+                <th:block th:each="item : ${orderDetails.orderDetailsList}">
+                  <div class="d-flex my-3">
+                    <div class="col-4 d-flex align-items-center">
+                      <a class="mx-auto" th:href="@{'/goods/detail/' + ${item.goodsId}}">
+                        <img class="mx-auto" th:src="'/img/' + ${item.goods.imageUrl}"
+                          alt="アイテム画像" width="70%" height="70%" />
+                      </a>
+                    </div>
+                    <div>
+                      <p th:text="${item.goods.goodsName}"></p>
+                      <p><span
+                          th:text="${'&yen;' + #numbers.formatInteger(item.subPrice, 3, 'COMMA')}"></span>
+                        <span th:text="${'/数量 : ' + item.quantity}"></span>
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p th:text="${item.goods.goodsName}"></p>
-                    <p><span
-                        th:text="${'&yen;' + #numbers.formatInteger(item.subPrice, 3, 'COMMA')}"></span>
-                      <span th:text="${'/数量 : ' + item.quantity}"></span>
-                    </p>
-                  </div>
-                </div>
-              </th:block>
-            </dd>
-            <dt class="col-sm-6 p-1 py-4 border-top border-secondary-subtle">お支払い金額</dt>
-            <dd class="col-sm-6 p-1 py-4 m-0 border-top border-secondary-subtle"
-              th:text="${'&yen;' + #numbers.formatInteger(orderDetails.totalPrice, 3, 'COMMA')}">
-            </dd>
-          </dl>
-        </div>
+                </th:block>
+              </dd>
+              <dt class="col-sm-6 p-1 py-4 border-top border-secondary-subtle">お支払い金額</dt>
+              <dd class="col-sm-6 p-1 py-4 m-0 border-top border-secondary-subtle"
+                th:text="${'&yen;' + #numbers.formatInteger(orderDetails.totalPrice, 3, 'COMMA')}">
+              </dd>
+            </dl>
+          </div>
+        </th:block>
       </div>
     </div>
+  </div>
 </body>
 
 </html>

@@ -51,7 +51,7 @@ public class OrderHistoryController {
 	 * @param orderId 表示する注文のID
 	 * @return 注文詳細ページのビュー名
 	 */
-	@GetMapping("/history/{orderId}")
+	@GetMapping("/history-details/{orderId}")
 	public String showOrderHistoryDetail(Model model,
 			@PathVariable("orderId") Integer orderId) {
 
