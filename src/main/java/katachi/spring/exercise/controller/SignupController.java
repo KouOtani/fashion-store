@@ -212,7 +212,7 @@ public class SignupController {
 		redirectAttributes.addFlashAttribute("message", "ゲスト情報を登録しました。");
 
 		// レジ画面にリダイレクト
-		return "redirect:/goods/checkout";
+		return "redirect:/order/checkout";
 	}
 
 }

@@ -30,7 +30,7 @@ import katachi.spring.exercise.domain.user.service.ShoppingService;
  * 注文に関連するリクエストを処理するコントローラークラスです。
  */
 @Controller
-@RequestMapping("/goods")
+@RequestMapping("/order")
 public class OrderController {
 
 	@Autowired
@@ -152,7 +152,7 @@ public class OrderController {
 			shoppingService.allClearCart(userDetails.getUserId());
 		}
 
-		return "redirect:/goods/complete-order";
+		return "redirect:/order/complete-order";
 	}
 
 	/**

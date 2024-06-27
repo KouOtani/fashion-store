@@ -92,7 +92,6 @@ a {
 /*トップページここまで*/
 
 /*詳細ページここから*/
-
 .item_img {
   width: 50%;
   height: 90%;
@@ -117,7 +116,6 @@ a {
 /*詳細ページここまで*/
 
 /*カートページここから*/
-
 .quantity select {
   width: 100px;
 }
@@ -165,7 +163,6 @@ a {
   bottom: 0;
   padding-left: 20px;
   overflow-y: auto;
-  /*  height: calc(100vh - 58px);*/
 }
 
 /*アドミンページここまで*/

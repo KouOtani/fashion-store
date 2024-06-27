@@ -234,7 +234,7 @@ public class UserDetailController {
 
 		redirectAttributes.addFlashAttribute("message", "配送先住所を更新しました。");
 
-		return "redirect:/goods/checkout";
+		return "redirect:/order/checkout";
 	}
 
 	/**

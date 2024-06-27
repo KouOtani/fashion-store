@@ -24,7 +24,7 @@ import katachi.spring.exercise.domain.user.service.ShoppingService;
  * カートに関連するリクエストを処理するコントローラークラスです。
  */
 @Controller
-@RequestMapping("/goods")
+@RequestMapping("/cart")
 public class CartController {
 
 	@Autowired
@@ -49,7 +49,7 @@ public class CartController {
 	 * @param authentication 認証情報を含むオブジェクト
 	 * @return カートページのビュー名
 	 */
-	@GetMapping("/cart")
+	@GetMapping
 	public String showCartContents(Model model, Authentication authentication) {
 		session.setAttribute("totalAmount", cart.totalAmount());
 		return "user/cart";
@@ -65,7 +65,7 @@ public class CartController {
 	 * @param authentication 認証情報を含むオブジェクト
 	 * @return 商品詳細ページへのリダイレクトURL
 	 */
-	@PostMapping("/add-to-cart")
+	@PostMapping("/add-item")
 	public String addItemToCart(@Nullable @RequestParam Integer userId,
 			@RequestParam Integer goodsId,
 			@RequestParam Integer quantity,
@@ -108,12 +108,12 @@ public class CartController {
 		cart.changeQuantity(goodsId, quantity);
 		session.setAttribute("cart", cart.getCartList());
 
-		// ログインユーザーであればデータベースに保存する
+		// ログインユーザーであればデータベースを更新する
 		if (authentication != null && authentication.isAuthenticated()) {
 			shoppingService.changeCartItemQuantity(userId, goodsId, quantity);
 		}
 
-		return "redirect:/goods/cart";
+		return "redirect:/cart";
 	}
 
 	/**
@@ -131,11 +131,12 @@ public class CartController {
 		cart.removeItemById(goodsId);
 		session.removeAttribute("totalQuantity");
 
+		// ログインユーザーであればデータベースも削除する
 		if (authentication != null && authentication.isAuthenticated()) {
 			ExtendedUser userDetails = userApplicationService.getCurrentUserDetails();
 			shoppingService.deleteItem(userDetails.getUserId(), goodsId);
 		}
 
-		return "redirect:/goods/cart";
+		return "redirect:/cart";
 	}
 }

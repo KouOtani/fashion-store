@@ -8,7 +8,6 @@ import lombok.Data;
 @Data
 public class CartItem {
 
-	private Integer userId; // ユーザーID
 	private Integer goodsId; // 商品ID
 	private Integer quantity; // 数量
 	private Integer price; // 価格
