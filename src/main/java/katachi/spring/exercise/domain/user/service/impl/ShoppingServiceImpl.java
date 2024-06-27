@@ -13,7 +13,7 @@ import katachi.spring.exercise.domain.user.model.MUser;
 import katachi.spring.exercise.domain.user.model.Order;
 import katachi.spring.exercise.domain.user.model.OrderDetails;
 import katachi.spring.exercise.domain.user.service.ShoppingService;
-import katachi.spring.exercise.repository.UserMapper;
+import katachi.spring.exercise.repository.EcMapper;
 
 /**
  * ユーザー関連のサービスを提供するクラスです。
@@ -22,7 +22,7 @@ import katachi.spring.exercise.repository.UserMapper;
 public class ShoppingServiceImpl implements ShoppingService {
 
 	@Autowired
-	private UserMapper userMapper;
+	private EcMapper mapper;
 
 	@Autowired
 	private PasswordEncoder encoder;
@@ -40,7 +40,7 @@ public class ShoppingServiceImpl implements ShoppingService {
 		String rawPassword = user.getPassword();
 		user.setPassword(encoder.encode(rawPassword));
 
-		userMapper.insertUser(user);
+		mapper.insertUser(user);
 	}
 
 	/**
@@ -51,7 +51,7 @@ public class ShoppingServiceImpl implements ShoppingService {
 	*/
 	@Override
 	public boolean isEmailRegistered(String email) {
-		return userMapper.findUserByEmail(email) != null;
+		return mapper.findUserByEmail(email) != null;
 	}
 
 	/**
@@ -64,7 +64,7 @@ public class ShoppingServiceImpl implements ShoppingService {
 	@Override
 	public List<MGoods> getGoodsWithPagination(Integer page, Integer size) {
 		Integer offset = (page - 1) * size;
-		return userMapper.findGoodsWithPagination(offset, size);
+		return mapper.findGoodsWithPagination(offset, size);
 	}
 
 	/**
@@ -74,7 +74,7 @@ public class ShoppingServiceImpl implements ShoppingService {
 	 */
 	@Override
 	public Integer getTotalGoodsCount() {
-		return userMapper.countAllGoods();
+		return mapper.countAllGoods();
 	}
 
 	/**
@@ -85,7 +85,7 @@ public class ShoppingServiceImpl implements ShoppingService {
 	 */
 	@Override
 	public MGoods getGoodsOne(Integer goodsId) {
-		return userMapper.selectOneGoods(goodsId);
+		return mapper.selectOneGoods(goodsId);
 	}
 
 	/**
@@ -95,7 +95,7 @@ public class ShoppingServiceImpl implements ShoppingService {
 	 */
 	@Override
 	public List<MGoods> getGoods() {
-		return userMapper.selectAllGoods();
+		return mapper.selectAllGoods();
 	}
 
 	/**
@@ -105,7 +105,7 @@ public class ShoppingServiceImpl implements ShoppingService {
 	 */
 	@Override
 	public void updateGoods(MGoods goods) {
-		userMapper.updateGoods(goods);
+		mapper.updateGoods(goods);
 	}
 
 	/**
@@ -115,7 +115,7 @@ public class ShoppingServiceImpl implements ShoppingService {
 	 */
 	@Override
 	public void deleteGoods(Integer goodsId) {
-		userMapper.deleteGoods(goodsId);
+		mapper.deleteGoods(goodsId);
 	}
 
 	/**
@@ -125,7 +125,7 @@ public class ShoppingServiceImpl implements ShoppingService {
 	 */
 	@Override
 	public void registerNewGoods(MGoods goods) {
-		userMapper.insertGoods(goods);
+		mapper.insertGoods(goods);
 	}
 
 	/**
@@ -136,7 +136,7 @@ public class ShoppingServiceImpl implements ShoppingService {
 	 */
 	@Override
 	public MUser getLoginUserByEmail(String eMail) {
-		return userMapper.findLoginUserByEmail(eMail);
+		return mapper.findLoginUserByEmail(eMail);
 	}
 
 	/**
@@ -147,7 +147,7 @@ public class ShoppingServiceImpl implements ShoppingService {
 	 */
 	@Override
 	public MUser getLoginUserById(Integer userId) {
-		return userMapper.findLoginUserById(userId);
+		return mapper.findLoginUserById(userId);
 	}
 
 	/**
@@ -161,35 +161,12 @@ public class ShoppingServiceImpl implements ShoppingService {
 	public void addToCart(Integer userId,
 			Integer goodsId,
 			Integer quantity) {
-
-		userMapper.saveToCart(userId, goodsId, quantity);
-	}
-
-	/**
-	* 指定されたユーザーのカートに同じ商品が存在するかを確認します。
-	*
-	* @param userId  カートを確認するユーザーのID
-	* @param goodsId 確認する商品のID
-	* @return 同じ商品がカートに存在する場合はtrue、そうでない場合はfalse
-	*/
-	@Override
-	public boolean checkCartItemExistence(Integer userId,
-			Integer goodsId) {
-		return userMapper.checkCartItemExistence(userId, goodsId) != null;
-	}
-
-	/**
-	 * 指定されたユーザーのカート内の同じ商品の数量を加算します。
-	 *
-	 * @param userId   カートを更新するユーザーのID
-	 * @param goodsId  更新する商品のID
-	 * @param quantity 加算する数量
-	 */
-	@Override
-	public void addToCartItemQuantity(Integer userId,
-			Integer goodsId,
-			Integer quantity) {
-		userMapper.incrementCartItemQuantity(userId, goodsId, quantity);
+		Integer cartItem = mapper.checkCartItemExistence(userId, goodsId);
+		if (cartItem != null) {
+			mapper.incrementCartItemQuantity(userId, goodsId, quantity);
+		} else {
+			mapper.saveToCart(userId, goodsId, quantity);
+		}
 	}
 
 	/**
@@ -202,7 +179,7 @@ public class ShoppingServiceImpl implements ShoppingService {
 	public void changeCartItemQuantity(Integer userId,
 			Integer goodsId,
 			Integer quantity) {
-		userMapper.updateQuantity(userId, goodsId, quantity);
+		mapper.updateQuantity(userId, goodsId, quantity);
 	}
 
 	/**
@@ -213,7 +190,7 @@ public class ShoppingServiceImpl implements ShoppingService {
 	*/
 	@Override
 	public List<CartItem> getCartList(Integer userId) {
-		return userMapper.findUserCartItems(userId);
+		return mapper.findUserCartItems(userId);
 	}
 
 	/**
@@ -224,7 +201,7 @@ public class ShoppingServiceImpl implements ShoppingService {
 	*/
 	@Override
 	public void deleteItem(Integer userId, Integer goodsId) {
-		userMapper.deleteItem(userId, goodsId);
+		mapper.deleteItem(userId, goodsId);
 	}
 
 	/**
@@ -234,7 +211,19 @@ public class ShoppingServiceImpl implements ShoppingService {
 	 */
 	@Override
 	public void allClearCart(Integer userId) {
-		userMapper.deleteAllItem(userId);
+		mapper.deleteAllItem(userId);
+	}
+
+	/**
+	 * ゲストカートの商品をユーザーカートに追加します。
+	 *
+	 * @param userId   ユーザーID
+	 * @param guestCartItems ゲストカートの商品リスト
+	 */
+	public void transferCartItems(Integer userId, List<CartItem> guestCartItems) {
+		for (CartItem item : guestCartItems) {
+			addToCart(userId, item.getGoodsId(), item.getQuantity());
+		}
 	}
 
 	/**
@@ -245,7 +234,7 @@ public class ShoppingServiceImpl implements ShoppingService {
 	 */
 	@Override
 	public void addressUpdate(Integer userId, String newAdress) {
-		userMapper.updateAddress(userId, newAdress);
+		mapper.updateAddress(userId, newAdress);
 	}
 
 	/**
@@ -259,7 +248,7 @@ public class ShoppingServiceImpl implements ShoppingService {
 
 		//パスワード暗号化
 		String encryptPassword = encoder.encode(newPassword);
-		userMapper.updatePassword(userId, encryptPassword);
+		mapper.updatePassword(userId, encryptPassword);
 	}
 
 	/**
@@ -270,7 +259,7 @@ public class ShoppingServiceImpl implements ShoppingService {
 	*/
 	@Override
 	public void detailUpdate(Integer userId, MUser user) {
-		userMapper.updateMany(userId, user);
+		mapper.updateMany(userId, user);
 	}
 
 	/**
@@ -281,7 +270,7 @@ public class ShoppingServiceImpl implements ShoppingService {
 	*/
 	@Override
 	public void shippingAddressUpdate(Integer userId, MUser user) {
-		userMapper.updateShippingAddress(userId, user);
+		mapper.updateShippingAddress(userId, user);
 	}
 
 	/**
@@ -291,17 +280,15 @@ public class ShoppingServiceImpl implements ShoppingService {
 	 */
 	@Override
 	public void saveCustomer(Order order) {
-		userMapper.insertOrder(order);
+		mapper.insertOrder(order);
 	}
 
-	//購入商品の詳細を登録
+	//注文商品の詳細を登録
 	@Override
 	public void saveOrder(List<OrderDetails> orderDetailsList) {
-
 		for (OrderDetails element : orderDetailsList) {
-			userMapper.insertOrderDetails(element);
+			mapper.insertOrderDetails(element);
 		}
-
 	}
 
 	/**
@@ -311,18 +298,18 @@ public class ShoppingServiceImpl implements ShoppingService {
 	 */
 	@Override
 	public void saveDeliveryAddress(DeliveryAddress address) {
-		userMapper.insertDeliveryAddress(address);
+		mapper.insertDeliveryAddress(address);
 	}
 
 	/**
-	 * 指定されたユーザーの購入履歴を取得します。
+	 * 指定されたユーザーの注文履歴を取得します。
 	 *
-	 * @param userId 取得する購入履歴のユーザーID
-	 * @return 指定されたユーザーの購入履歴のリスト
+	 * @param userId 取得する注文履歴のユーザーID
+	 * @return 指定されたユーザーの注文履歴のリスト
 	 */
 	@Override
 	public List<Order> getHistories(Integer userId) {
-		return userMapper.findManyHistories(userId);
+		return mapper.findManyHistories(userId);
 	}
 
 	/**
@@ -334,7 +321,7 @@ public class ShoppingServiceImpl implements ShoppingService {
 	 */
 	@Override
 	public Order getOrderDetailsOne(Integer userId, Integer orderId) {
-		return userMapper.findOneHistory(userId, orderId);
+		return mapper.findOneHistory(userId, orderId);
 	}
 
 	/**
@@ -345,7 +332,7 @@ public class ShoppingServiceImpl implements ShoppingService {
 	 */
 	@Override
 	public List<Order> getAllOrders(String query) {
-		return userMapper.selectAllOrders(query);
+		return mapper.selectAllOrders(query);
 	}
 
 	/**
@@ -356,7 +343,7 @@ public class ShoppingServiceImpl implements ShoppingService {
 	 */
 	@Override
 	public Order getUserOrders(Integer orderId) {
-		return userMapper.selectUserOrders(orderId);
+		return mapper.selectUserOrders(orderId);
 	}
 
 	/**
@@ -367,7 +354,7 @@ public class ShoppingServiceImpl implements ShoppingService {
 	 */
 	@Override
 	public List<MUser> getUsers(String query) {
-		return userMapper.selectAllUsers(query);
+		return mapper.selectAllUsers(query);
 	}
 
 	/**
@@ -378,7 +365,7 @@ public class ShoppingServiceImpl implements ShoppingService {
 	 */
 	@Override
 	public MUser getCustomerOne(Integer userId) {
-		return userMapper.selectUser(userId);
+		return mapper.selectUser(userId);
 	}
 
 	/**
@@ -388,7 +375,7 @@ public class ShoppingServiceImpl implements ShoppingService {
 	*/
 	@Override
 	public void updateCustomer(MUser user) {
-		userMapper.updateUser(user);
+		mapper.updateUser(user);
 	}
 
 	/**
@@ -398,6 +385,6 @@ public class ShoppingServiceImpl implements ShoppingService {
 	*/
 	@Override
 	public void deleteCustomer(Integer userId) {
-		userMapper.deleteUser(userId);
+		mapper.deleteUser(userId);
 	}
 }

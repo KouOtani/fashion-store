@@ -1,5 +1,7 @@
 package katachi.spring.exercise.form;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -18,7 +20,9 @@ public class GoodsEditForm {
 	@NotNull(groups = ValidGroup1.class)
 	private Integer price; // 商品の価格
 
-	@NotBlank(groups = ValidGroup1.class)
+	@NotNull(groups = ValidGroup1.class)
+	private MultipartFile imageFile; // 商品の画像ファイル
+
 	private String imageUrl; // 商品の画像URL
 
 }

@@ -12,8 +12,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import katachi.spring.exercise.domain.user.model.Cart;
 import katachi.spring.exercise.domain.user.model.CartItem;
+import katachi.spring.exercise.domain.user.model.ExtendedUser;
 import katachi.spring.exercise.domain.user.service.ShoppingService;
-import katachi.spring.exercise.userwithcode.UserWithCode;
 
 /**
  * ユーザーの前のページへのリダイレクトを管理するコントローラークラスです。
@@ -43,10 +43,10 @@ public class PreviousPageController {
 		// 現在の認証情報を取得
 		Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
 
-		UserWithCode userDetails = (UserWithCode) currentAuth.getPrincipal();
+		ExtendedUser userDetails = (ExtendedUser) currentAuth.getPrincipal();
 
 		// カートのアイテムをユーザーのカートに転送
-		cart.transferCartItems(userDetails.getUserId(), cart.getCartList());
+		shoppingService.transferCartItems(userDetails.getUserId(), cart.getCartList());
 
 		// ユーザーのカートリストを取得して設定
 		List<CartItem> userCartList = shoppingService.getCartList(userDetails.getUserId());

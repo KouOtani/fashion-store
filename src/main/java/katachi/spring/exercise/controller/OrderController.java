@@ -8,6 +8,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,12 +19,12 @@ import katachi.spring.exercise.application.service.UserApplicationService;
 import katachi.spring.exercise.domain.user.model.Cart;
 import katachi.spring.exercise.domain.user.model.CartItem;
 import katachi.spring.exercise.domain.user.model.DeliveryAddress;
+import katachi.spring.exercise.domain.user.model.ExtendedUser;
 import katachi.spring.exercise.domain.user.model.MUser;
 import katachi.spring.exercise.domain.user.model.Order;
 import katachi.spring.exercise.domain.user.model.OrderDetails;
 import katachi.spring.exercise.domain.user.model.SessionGuestData;
 import katachi.spring.exercise.domain.user.service.ShoppingService;
-import katachi.spring.exercise.userwithcode.UserWithCode;
 
 /**
  * 注文に関連するリクエストを処理するコントローラークラスです。
@@ -65,7 +66,7 @@ public class OrderController {
 			return "user/checkout";
 
 		} else if (authentication != null && authentication.isAuthenticated()) {
-			UserWithCode userDetails = userApplicationService.getCurrentUserDetails();
+			ExtendedUser userDetails = userApplicationService.getCurrentUserDetails();
 			MUser user = shoppingService.getLoginUserById(userDetails.getUserId());
 			model.addAttribute("user", user);
 			return "user/checkout";
@@ -76,19 +77,20 @@ public class OrderController {
 	}
 
 	/**
-	 * 購入完了ページを表示します。
+	 * 注文完了ページを表示します。
 	 *
 	 * @param authentication 認証情報を含むオブジェクト
 	 * @param redirectAttributes リダイレクト後のフラッシュメッセージを設定するためのオブジェクト
-	 * @return 購入完了ページのビュー名
+	 * @return 注文完了ページのビュー名
 	 */
+	@Transactional
 	@GetMapping("/complete")
 	public String completeOrder(Authentication authentication,
 			RedirectAttributes redirectAttributes) {
 
-		// 購入完了時に購入者を登録する
+		// 注文完了時に注文者を登録する
 		Order order = new Order();
-		UserWithCode userDetails = null;
+		ExtendedUser userDetails = null;
 
 		if (authentication != null && authentication.isAuthenticated()) {
 			userDetails = userApplicationService.getCurrentUserDetails();
@@ -107,7 +109,7 @@ public class OrderController {
 
 		redirectAttributes.addFlashAttribute("orderNumber", orderNumber);
 
-		// 購入完了時に購入した商品の詳細を登録する
+		// 注文完了時に注文した商品の詳細を登録する
 		List<CartItem> cartItemsList = cart.getCartList();
 		List<OrderDetails> orderDetailsList = new ArrayList<>();
 
@@ -154,9 +156,9 @@ public class OrderController {
 	}
 
 	/**
-	 * 購入完了ページを表示します。
+	 * 注文完了ページを表示します。
 	 *
-	 * @return 購入完了ページのビュー名
+	 * @return 注文完了ページのビュー名
 	 */
 	@GetMapping("/complete-order")
 	public String showCompleteOrderPage() {

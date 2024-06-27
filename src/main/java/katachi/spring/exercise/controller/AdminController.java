@@ -1,11 +1,17 @@
 package katachi.spring.exercise.controller;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,6 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import katachi.spring.exercise.application.service.UserApplicationService;
@@ -45,6 +52,10 @@ public class AdminController {
 	/** アプリケーションサービス */
 	@Autowired
 	private UserApplicationService userApplicationService;
+
+	/** プロフィール画像の保存先フォルダ */
+	@Value("${image.folder}")
+	private String imgFolder;
 
 	/**
 	 * 商品一覧を取得し、表示する。
@@ -90,19 +101,39 @@ public class AdminController {
 		return "admin/goods-register";
 	}
 
-	/**
-	 * 商品登録データを確認する。
-	 *
-	 * @param form 商品登録フォーム
-	 * @param bindingResult バインディング結果
-	 * @return 商品登録確認ページまたは商品登録ページ
-	 */
 	@PostMapping("/goods-register-confirm")
 	public String confirmGoodsData(@ModelAttribute @Validated(GroupOrder.class) GoodsEditForm form,
-			BindingResult bindingResult) {
+			BindingResult bindingResult,
+			Model model) throws IOException {
 		// 入力チェック結果
 		if (bindingResult.hasErrors()) {
-			// NG:商品登録画面に戻る
+			// NG: 商品登録画面に戻る
+			return getRegisterGoods(form);
+		}
+
+		// 画像ファイルをアップロード
+		MultipartFile file = form.getImageFile();
+		if (file == null || file.isEmpty()) {
+			bindingResult.rejectValue("imageFile", "error.goodsEditForm", "ファイルが選択されていません。");
+			return getRegisterGoods(form);
+		}
+
+		// ユニークなファイル名を生成する
+		String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+		Path filePath = Paths.get(imgFolder, fileName);
+
+		// ファイルの保存
+		Files.copy(file.getInputStream(), filePath);
+
+		// 保存したファイルが存在するか確認する
+		if (Files.exists(filePath)) {
+			// ファイルが正常に保存された場合の処理
+			form.setImageUrl(fileName);
+			System.out.println("ファイルが正常に保存されました。ファイルパス：" + filePath.toAbsolutePath());
+		} else {
+			// ファイルが保存されていない場合の処理
+			System.out.println("ファイルの保存に失敗しました。");
+			model.addAttribute("message", "ファイルの保存に失敗しました。");
 			return getRegisterGoods(form);
 		}
 
@@ -136,12 +167,37 @@ public class AdminController {
 	 */
 	@PostMapping(value = "/goods-management-confirm", params = "update")
 	public String confirmGoodsUpdate(@ModelAttribute @Validated(GroupOrder.class) GoodsEditForm form,
-			BindingResult bindingResult) {
+			BindingResult bindingResult,
+			Model model) throws IOException {
 
 		// 入力チェック結果
 		if (bindingResult.hasErrors()) {
 
 			return "admin/goods-edit";
+		}
+
+		// 画像ファイルをアップロード
+		MultipartFile file = form.getImageFile();
+		if (file != null && !file.isEmpty()) {
+			// ユニークなファイル名を生成する
+			String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+			Path filePath = Paths.get(imgFolder, fileName);
+
+			// ファイルの保存
+			Files.copy(file.getInputStream(), filePath);
+
+			// 保存したファイルが存在するか確認する
+			if (Files.exists(filePath)) {
+				// ファイルが正常に保存された場合の処理
+				form.setImageUrl(fileName);
+				System.out.println("ファイルが正常に保存されました。ファイルパス：" + filePath.toAbsolutePath());
+			} else {
+				// ファイルが保存されていない場合の処理
+				System.out.println("ファイルの保存に失敗しました。");
+				model.addAttribute("message", "ファイルの保存に失敗しました。");
+				return "admin/goods-edit";
+			}
+
 		}
 
 		return "admin/goods-update-confirm";
@@ -208,6 +264,7 @@ public class AdminController {
 			Model model) {
 		List<Order> orderList = shoppingService.getAllOrders(query);
 		model.addAttribute("orderList", orderList);
+		model.addAttribute("query", query);
 		return "admin/order-list";
 	}
 
@@ -219,7 +276,8 @@ public class AdminController {
 	 * @return 注文詳細のビュー名
 	 */
 	@GetMapping("/order-details/{orderId}")
-	public String getOrderDetail(Model model, @PathVariable("orderId") Integer orderId) {
+	public String getOrderDetail(Model model,
+			@PathVariable("orderId") Integer orderId) {
 		Order orderDetailsOne = shoppingService.getUserOrders(orderId);
 		model.addAttribute("orderDetailsOne", orderDetailsOne);
 		return "admin/order-details";
@@ -233,9 +291,11 @@ public class AdminController {
 	 * @return 顧客一覧のビュー名
 	 */
 	@GetMapping("/customer-list")
-	public String getCustomerList(@RequestParam(required = false) String query, Model model) {
+	public String getCustomerList(@RequestParam(required = false) String query,
+			Model model) {
 		List<MUser> customerList = shoppingService.getUsers(query);
 		model.addAttribute("customerList", customerList);
+		model.addAttribute("query", query);
 		return "admin/customer-list";
 	}
 

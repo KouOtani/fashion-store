@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import katachi.spring.exercise.application.service.UserApplicationService;
+import katachi.spring.exercise.domain.user.model.ExtendedUser;
 import katachi.spring.exercise.domain.user.model.Order;
 import katachi.spring.exercise.domain.user.service.ShoppingService;
-import katachi.spring.exercise.userwithcode.UserWithCode;
 
 /**
  * 注文履歴に関連するリクエストを処理するコントローラークラスです。
@@ -36,8 +36,8 @@ public class OrderHistoryController {
 	@GetMapping("/history")
 	public String showOrderHistory(Model model) {
 
-		// ユーザーの購入履歴を取得
-		UserWithCode userDetails = userApplicationService.getCurrentUserDetails();
+		// ユーザーの注文履歴を取得
+		ExtendedUser userDetails = userApplicationService.getCurrentUserDetails();
 		List<Order> historyList = shoppingService.getHistories(userDetails.getUserId());
 		model.addAttribute("historyList", historyList);
 
@@ -56,7 +56,7 @@ public class OrderHistoryController {
 			@PathVariable("orderId") Integer orderId) {
 
 		// 指定された注文の詳細を取得
-		UserWithCode userDetails = userApplicationService.getCurrentUserDetails();
+		ExtendedUser userDetails = userApplicationService.getCurrentUserDetails();
 		Order orderDetails = shoppingService.getOrderDetailsOne(userDetails.getUserId(), orderId);
 		model.addAttribute("orderDetails", orderDetails);
 

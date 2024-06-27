@@ -45,7 +45,6 @@
             <th>商品名</th>
             <th>説明</th>
             <th>価格</th>
-            <th>画像URL</th>
             <th></th>
           </tr>
         </thead>
@@ -54,14 +53,13 @@
             <tr>
               <td class="align-middle" th:text="${item.id}"></td>
               <td class="align-middle text-center">
-                <img th:src="'/img/' + ${item.imageUrl}" alt="アイテム画像" class="w-75">
+                <img th:src="'/img/' + ${item.imageUrl}" alt="アイテム画像" style="width: 150px; height: auto;">
               </td>
               <td class="align-middle" th:text="${item.goodsName}"></td>
               <td class="align-middle" th:text="${item.description}">
               </td>
               <td class="align-middle"
                 th:text="${'&yen;' + #numbers.formatInteger(item.price, 3, 'COMMA')}"></td>
-              <td class="align-middle" th:text="${item.imageUrl}"></td>
               <td class="align-middle button">
                 <a class="btn btn-primary" th:href="@{'/admin/goods-edit/' + ${item.id}}">編集</a>
               </td>

@@ -3,7 +3,7 @@
  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <!-- Mapperとxmlのマッピング -->
-<mapper namespace="katachi.spring.exercise.repository.UserMapper">
+<mapper namespace="katachi.spring.exercise.repository.EcMapper">
 
   <!-- マッピング定義(ユーザー) -->
   <resultMap
@@ -313,7 +313,7 @@
     id = #{userId}
   </update>
 
-  <!--購入者情報を保存する -->
+  <!--注文者情報を保存する -->
   <insert id="insertOrder" useGeneratedKeys="true"
     keyProperty="id">
     INSERT INTO `order` (
@@ -328,7 +328,7 @@
     )
   </insert>
 
-  <!--購入商品の詳細を保存する -->
+  <!--注文商品の詳細を保存する -->
   <insert id="insertOrderDetails">
     INSERT INTO `order_details` (
     order_id,
@@ -344,7 +344,7 @@
     )
   </insert>
 
-  <!--購入商品の配送先を保存する -->
+  <!--注文商品の配送先を保存する -->
   <insert id="insertDeliveryAddress">
     INSERT INTO delivery_address (
     order_id,
@@ -364,7 +364,7 @@
     )
   </insert>
 
-  <!-- 購入履歴を複数件取得 -->
+  <!-- 注文履歴を複数件取得 -->
   <select id="findManyHistories" resultMap="order">
     SELECT
     `order`.id,
@@ -386,7 +386,7 @@
     `order`.user_id = #{userId}
   </select>
 
-  <!-- 購入履歴１件取得 -->
+  <!-- 注文履歴１件取得 -->
   <select id="findOneHistory" resultMap="order">
     SELECT
     `order`.id,
@@ -477,7 +477,7 @@
     `order`
     JOIN
     order_details ON `order`.id = order_details.order_id
-    JOIN
+    LEFT JOIN
     m_users ON `order`.user_id = m_users.id
     <where>
       <if test="searchQuery != null and searchQuery != ''">
@@ -490,7 +490,7 @@
     </where>
   </select>
 
-  <!-- 購入履歴１件取得 -->
+  <!-- 注文履歴１件取得 -->
   <select id="selectUserOrders" resultMap="order">
     SELECT
     `order`.id,
@@ -516,7 +516,7 @@
     order_details ON `order`.id = order_details.order_id
     JOIN
     delivery_address ON `order`.id = delivery_address.order_id
-    JOIN
+    LEFT JOIN
     m_users ON `order`.user_id = m_users.id
     JOIN
     m_goods ON m_goods.id = order_details.goods_id

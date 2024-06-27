@@ -2,14 +2,10 @@ package katachi.spring.exercise.domain.user.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
-
-import katachi.spring.exercise.domain.user.service.ShoppingService;
 
 /**
  * ユーザーのカート情報を管理するクラスです。
@@ -19,12 +15,9 @@ import katachi.spring.exercise.domain.user.service.ShoppingService;
 @Component
 public class Cart implements Serializable {
 
-	@Autowired
-	private ShoppingService shoppingService;
-
 	private static final long serialVersionUID = 1L;
 
-	private List<CartItem> cartList;
+	private List<CartItem> cartList = new ArrayList<>();
 
 	/**
 	 * カートに商品を追加します。
@@ -34,10 +27,6 @@ public class Cart implements Serializable {
 	 * @param quantity 追加する数量
 	 */
 	public void addToCart(CartItem item, Integer quantity) {
-		if (cartList == null) {
-			cartList = new ArrayList<>();
-		}
-
 		//すでに商品がカートに存在するかチェック
 		for (CartItem cartItem : cartList) {
 			if (cartItem.getGoodsId().equals(item.getGoodsId())) {
@@ -45,17 +34,8 @@ public class Cart implements Serializable {
 				return;
 			}
 		}
-
-		//カートに新しい商品を追加
-		CartItem newItem = new CartItem();
-		newItem.setUserId(item.getUserId()); // ユーザーIDを設定
-		newItem.setGoodsId(item.getGoodsId()); // 商品IDを設定
-		newItem.setQuantity(item.getQuantity()); // 数量を設定
-		newItem.setGoodsName(item.getGoodsName()); // 商品名を設定
-		newItem.setImageUrl(item.getImageUrl()); // 画像URLを設定
-		newItem.setPrice(item.getPrice()); //価格を設定
-		newItem.setQuantity(quantity); //個数を設定
-		cartList.add(newItem);
+		item.setQuantity(quantity);
+		cartList.add(item);
 	}
 
 	/**
@@ -65,39 +45,11 @@ public class Cart implements Serializable {
 	 * @param quantity 新しい数量
 	 */
 	public void changeQuantity(Integer itemId, Integer quantity) {
-		// カート内の商品リストがnullであれば、何もせずに終了
-		if (cartList == null) {
-			return;
-		}
-
 		// カート内の各商品についてループし、itemIdが一致する商品の数量を更新
 		for (CartItem cartItem : cartList) {
 			if (cartItem.getGoodsId().equals(itemId)) {
 				cartItem.setQuantity(quantity);
 				return;
-			}
-		}
-	}
-
-	/**
-	 * ゲストカートの商品をユーザーカートに追加します。
-	 *
-	 * @param userId   ユーザーID
-	 * @param guestCartItems ゲストカートの商品リスト
-	 */
-	public void transferCartItems(Integer userId, List<CartItem> guestCartItems) {
-		for (CartItem item : guestCartItems) {
-
-			if (shoppingService.checkCartItemExistence(userId,
-					item.getGoodsId())) {
-				shoppingService.addToCartItemQuantity(userId,
-						item.getGoodsId(),
-						item.getQuantity());
-
-			} else {
-				shoppingService.addToCart(userId,
-						item.getGoodsId(),
-						item.getQuantity());
 			}
 		}
 	}
@@ -134,9 +86,6 @@ public class Cart implements Serializable {
 	 * @return カート内の商品リスト
 	 */
 	public List<CartItem> getCartList() {
-		if (cartList == null) {
-			cartList = new ArrayList<>();
-		}
 		return cartList;
 	}
 
@@ -155,22 +104,14 @@ public class Cart implements Serializable {
 	 * @param goodsId 削除する商品のID
 	 */
 	public void removeItemById(Integer itemId) {
-		Iterator<CartItem> iterator = cartList.iterator();
-		while (iterator.hasNext()) {
-			CartItem cartItem = iterator.next();
-			if (cartItem.getGoodsId() == itemId) {
-				iterator.remove();
-				break; // 見つかったらループを抜ける
-			}
-		}
-
+		cartList.removeIf(item -> item.getGoodsId() == itemId);
 	}
 
 	/**
 	 * カートを空にします。
 	 */
 	public void clearCart() {
-		this.cartList = null;
+		cartList.clear();
 	}
 
 }

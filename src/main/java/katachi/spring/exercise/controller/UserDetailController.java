@@ -18,6 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
 import katachi.spring.exercise.application.service.UserApplicationService;
+import katachi.spring.exercise.domain.user.model.ExtendedUser;
 import katachi.spring.exercise.domain.user.model.MUser;
 import katachi.spring.exercise.domain.user.service.ShoppingService;
 import katachi.spring.exercise.form.AddressEditForm;
@@ -26,7 +27,6 @@ import katachi.spring.exercise.form.PasswordEditForm;
 import katachi.spring.exercise.form.ShippingAddressEditForm;
 import katachi.spring.exercise.form.SignupForm;
 import katachi.spring.exercise.form.UserDetailEditForm;
-import katachi.spring.exercise.userwithcode.UserWithCode;
 
 /**
  * ユーザー詳細および情報更新に関連するリクエストを処理するコントローラークラスです。
@@ -55,8 +55,9 @@ public class UserDetailController {
 	 * @return ユーザー詳細画面のビュー名
 	 */
 	@GetMapping("/detail")
-	public String getUserDetail(Model model, SignupForm form) {
-		UserWithCode userDetails = userApplicationService.getCurrentUserDetails();
+	public String getUserDetail(Model model,
+			SignupForm form) {
+		ExtendedUser userDetails = userApplicationService.getCurrentUserDetails();
 		MUser user = shoppingService.getLoginUserById(userDetails.getUserId());
 		model.addAttribute("user", user);
 		return "user/detail";
@@ -70,7 +71,8 @@ public class UserDetailController {
 	 * @return 住所更新画面のビュー名
 	 */
 	@GetMapping("/address-update")
-	public String getAddressUpdate(@ModelAttribute AddressEditForm form, Locale locale) {
+	public String getAddressUpdate(@ModelAttribute AddressEditForm form,
+			Locale locale) {
 		return "user/address-edit";
 	}
 
@@ -84,8 +86,10 @@ public class UserDetailController {
 	 * @return 入力チェックが成功した場合はユーザー詳細画面へのリダイレクトURL、失敗した場合は住所更新画面のビュー名
 	 */
 	@PostMapping("/address-update-confirm")
-	public String confirmAddressUpdate(Locale locale, @ModelAttribute @Validated(GroupOrder.class) AddressEditForm form,
-			BindingResult bindingResult, Model model) {
+	public String confirmAddressUpdate(Locale locale,
+			@ModelAttribute @Validated(GroupOrder.class) AddressEditForm form,
+			BindingResult bindingResult,
+			Model model) {
 
 		if (bindingResult.hasErrors()) {
 			return getAddressUpdate(form, locale);
@@ -101,7 +105,7 @@ public class UserDetailController {
 			return getAddressUpdate(form, locale);
 		}
 
-		UserWithCode userDetails = userApplicationService.getCurrentUserDetails();
+		ExtendedUser userDetails = userApplicationService.getCurrentUserDetails();
 		MUser user = shoppingService.getLoginUserById(userDetails.getUserId());
 		model.addAttribute("beforeEmail", user.getEMail());
 
@@ -116,8 +120,9 @@ public class UserDetailController {
 	 * @return ユーザー詳細画面へのリダイレクトURL
 	 */
 	@PostMapping("/address-update")
-	public String addressUpdate(@ModelAttribute AddressEditForm form, RedirectAttributes redirectAttributes) {
-		UserWithCode userDetails = userApplicationService.getCurrentUserDetails();
+	public String addressUpdate(@ModelAttribute AddressEditForm form,
+			RedirectAttributes redirectAttributes) {
+		ExtendedUser userDetails = userApplicationService.getCurrentUserDetails();
 		shoppingService.addressUpdate(userDetails.getUserId(), form.getEMail());
 		redirectAttributes.addFlashAttribute("message", "メールアドレスを更新しました。");
 		return "redirect:/account/detail";
@@ -131,7 +136,8 @@ public class UserDetailController {
 	 * @return パスワード更新画面のビュー名
 	 */
 	@GetMapping("/password-update")
-	public String getPasswordUpdate(@ModelAttribute PasswordEditForm form, Locale locale) {
+	public String getPasswordUpdate(@ModelAttribute PasswordEditForm form,
+			Locale locale) {
 		return "user/password-edit";
 	}
 
@@ -145,8 +151,10 @@ public class UserDetailController {
 	 * @return ユーザー詳細画面へのリダイレクトURL、またはパスワード更新画面のビュー名
 	 */
 	@PostMapping("/password-update")
-	public String passwordUpdate(Locale locale, @ModelAttribute @Validated(GroupOrder.class) PasswordEditForm form,
-			BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+	public String passwordUpdate(Locale locale,
+			@ModelAttribute @Validated(GroupOrder.class) PasswordEditForm form,
+			BindingResult bindingResult,
+			RedirectAttributes redirectAttributes) {
 
 		if (bindingResult.hasErrors()) {
 			return getPasswordUpdate(form, locale);
@@ -157,7 +165,7 @@ public class UserDetailController {
 			return getPasswordUpdate(form, locale);
 		}
 
-		UserWithCode userDetails = userApplicationService.getCurrentUserDetails();
+		ExtendedUser userDetails = userApplicationService.getCurrentUserDetails();
 		shoppingService.passwordUpdate(userDetails.getUserId(), form.getPassword());
 		redirectAttributes.addFlashAttribute("message", "パスワードを更新しました。");
 		return "redirect:/account/detail";
@@ -172,7 +180,9 @@ public class UserDetailController {
 	 * @return 配送先住所更新画面のビュー名
 	 */
 	@GetMapping("/shipping-address-update")
-	public String getShippingAddressUpdate(@ModelAttribute ShippingAddressEditForm form, Locale locale, Model model) {
+	public String getShippingAddressUpdate(@ModelAttribute ShippingAddressEditForm form,
+			Locale locale,
+			Model model) {
 		List<String> prefecturesList = userApplicationService.getPrefecturesList();
 		model.addAttribute("prefecturesList", prefecturesList);
 		return "user/shippingaddress-edit";
@@ -189,7 +199,8 @@ public class UserDetailController {
 	 */
 	@PostMapping("/shipping-address-update-confirm")
 	public String confirmShippingAddressUpdate(Locale locale,
-			@ModelAttribute @Validated(GroupOrder.class) ShippingAddressEditForm form, BindingResult bindingResult,
+			@ModelAttribute @Validated(GroupOrder.class) ShippingAddressEditForm form,
+			BindingResult bindingResult,
 			Model model) {
 
 		if (bindingResult.hasErrors()) {
@@ -214,7 +225,7 @@ public class UserDetailController {
 		MUser user = modelMapper.map(form, MUser.class);
 
 		if (form.getIsEverytime()) {
-			UserWithCode userDetails = userApplicationService.getCurrentUserDetails();
+			ExtendedUser userDetails = userApplicationService.getCurrentUserDetails();
 			shoppingService.shippingAddressUpdate(userDetails.getUserId(), user);
 
 		} else {
@@ -235,7 +246,14 @@ public class UserDetailController {
 	 * @return ユーザー詳細情報更新画面のビュー名
 	 */
 	@GetMapping("/detail-update")
-	public String getDetailUpdate(@ModelAttribute UserDetailEditForm form, Locale locale, Model model) {
+	public String getDetailUpdate(@ModelAttribute UserDetailEditForm form,
+			Locale locale,
+			Model model) {
+		ExtendedUser userDetails = userApplicationService.getCurrentUserDetails();
+		MUser user = shoppingService.getLoginUserById(userDetails.getUserId());
+		form = modelMapper.map(user, UserDetailEditForm.class);
+		model.addAttribute("userDetailEditForm", form);
+
 		Map<String, Integer> genderMap = userApplicationService.getGenderMap(locale);
 		model.addAttribute("genderMap", genderMap);
 
@@ -256,7 +274,8 @@ public class UserDetailController {
 	 */
 	@PostMapping("/detail-update-confirm")
 	public String ConfirmUserDetailUpdate(Model model, Locale locale,
-			@ModelAttribute @Validated(GroupOrder.class) UserDetailEditForm form, BindingResult bindingResult) {
+			@ModelAttribute @Validated(GroupOrder.class) UserDetailEditForm form,
+			BindingResult bindingResult) {
 
 		if (bindingResult.hasErrors()) {
 			return getDetailUpdate(form, locale, model);
@@ -273,9 +292,10 @@ public class UserDetailController {
 	 * @return ユーザー詳細画面へのリダイレクトURL
 	 */
 	@PostMapping("/detail-update")
-	public String userDetailUpdate(@ModelAttribute UserDetailEditForm form, RedirectAttributes redirectAttributes) {
+	public String userDetailUpdate(@ModelAttribute UserDetailEditForm form,
+			RedirectAttributes redirectAttributes) {
 		MUser user = modelMapper.map(form, MUser.class);
-		UserWithCode userDetails = userApplicationService.getCurrentUserDetails();
+		ExtendedUser userDetails = userApplicationService.getCurrentUserDetails();
 		shoppingService.detailUpdate(userDetails.getUserId(), user);
 		redirectAttributes.addFlashAttribute("message", "ユーザー情報を更新しました。");
 		return "redirect:/account/detail";

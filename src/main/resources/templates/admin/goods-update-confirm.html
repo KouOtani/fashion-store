@@ -56,10 +56,10 @@
               </td>
             </tr>
             <tr>
-              <th>画像URL</th>
+              <th>商品画像</th>
               <td>
                 <input type="hidden" class="form-control" th:field="*{imageUrl}" />
-                <p th:text="*{imageUrl}"></p>
+                <p><img th:src="'/img/' + *{imageUrl}" alt="商品画像" style="width: 200px; height: auto;"/></p>
               </td>
             </tr>
           </tbody>

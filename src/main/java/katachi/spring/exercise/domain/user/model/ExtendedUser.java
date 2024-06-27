@@ -1,11 +1,11 @@
-package katachi.spring.exercise.userwithcode;
+package katachi.spring.exercise.domain.user.model;
 
 import java.util.Collection;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
-public class UserWithCode extends User {
+public class ExtendedUser extends User {
 
 	private Integer userId;
 	private String eMail;
@@ -14,7 +14,7 @@ public class UserWithCode extends User {
 	private String postalCode;
 	private String shippingAddress;
 
-	public UserWithCode(Integer userId, String eMail, String password, Collection<? extends GrantedAuthority> authorities,
+	public ExtendedUser(Integer userId, String eMail, String password, Collection<? extends GrantedAuthority> authorities,
 			String userName, String phoneNumber, String postalCode,
 			String prefectures, String city, String townName, String others) {
 

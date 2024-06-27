@@ -51,7 +51,33 @@ public class SessionAspect {
 		if (url == null) {
 			return false;
 		}
-		return !(url.endsWith("/login") || url.endsWith("/signup") || url.endsWith("/guest-signup"));
+
+		// URLからパス部分を抽出
+		String path = extractPath(url);
+
+		// 無効なURLパターンのリスト
+		String[] invalidPatterns = { "/login", "/signup", "/guest-signup", "/account", "/admin" };
+		for (String pattern : invalidPatterns) {
+			if (path.startsWith(pattern)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * フルURLからパス部分を抽出します。
+	 *
+	 * @param url フルURL
+	 * @return パス部分
+	 */
+	private String extractPath(String url) {
+		try {
+			// URLのパス部分を抽出
+			return new java.net.URL(url).getPath();
+		} catch (java.net.MalformedURLException e) {
+			return "";
+		}
 	}
 
 	/**

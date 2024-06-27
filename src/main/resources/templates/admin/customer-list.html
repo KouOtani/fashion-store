@@ -35,7 +35,7 @@
 
     <div class="container mt-3">
       <form class="d-flex pe-3" role="search" th:action="@{/admin/customer-list}" method="get">
-        <input class="form-control me-2 w-auto" type="search" placeholder="検索" aria-label="Search" name="query">
+        <input class="form-control me-2 w-auto" type="search" placeholder="検索" aria-label="Search" name="query" th:value="${query}">
         <button class="btn btn-primary text-white" type="submit">検索</button>
       </form>
       <table class="table table-striped table-bordered table-hover mt-3">

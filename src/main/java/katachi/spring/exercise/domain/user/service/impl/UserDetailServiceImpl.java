@@ -11,9 +11,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import katachi.spring.exercise.domain.user.model.ExtendedUser;
 import katachi.spring.exercise.domain.user.model.MUser;
 import katachi.spring.exercise.domain.user.service.ShoppingService;
-import katachi.spring.exercise.userwithcode.UserWithCode;
 
 /**
  * Spring SecurityのUserDetailsServiceを実装して、ユーザー情報を取得するサービスクラスです。
@@ -41,7 +41,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
 		authorities.add(authority);
 
 		//UserDetail生成
-		UserDetails userDetails = (UserDetails) new UserWithCode(
+		UserDetails userDetails = (UserDetails) new ExtendedUser(
 				loginUser.getId(),
 				loginUser.getEMail(),
 				loginUser.getPassword(),

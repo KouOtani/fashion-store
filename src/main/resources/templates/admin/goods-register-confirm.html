@@ -18,7 +18,7 @@
       <div class="row mt-3">
         <div class="col-sm-3"></div>
         <div class="col-sm-6 alert alert-info text-center mb-0">
-          下記項目を登録します。
+          下記商品を登録します。
         </div>
         <div class="col-sm-3"></div>
       </div>
@@ -51,10 +51,10 @@
               </td>
             </tr>
             <tr>
-              <th>画像URL</th>
+              <th>商品画像</th>
               <td>
                 <input type="hidden" class="form-control" th:field="*{imageUrl}" />
-                <p th:text="*{imageUrl}"></p>
+                <p><img th:src="'/img/' + *{imageUrl}" alt="商品画像" style="width: 200px; height: auto;"/></p>
               </td>
             </tr>
           </tbody>

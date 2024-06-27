@@ -13,7 +13,7 @@ import katachi.spring.exercise.domain.user.model.Order;
 import katachi.spring.exercise.domain.user.model.OrderDetails;
 
 @Mapper
-public interface UserMapper {
+public interface EcMapper {
 
 	//ユーザー登録
 	public int insertUser(MUser user);
@@ -93,7 +93,7 @@ public interface UserMapper {
 	public void updateShippingAddress(@Param("userId") Integer userId,
 			@Param("user") MUser user);
 
-	//購入ユーザーを登録
+	//注文ユーザーを登録
 	public int insertOrder(Order order);
 
 	//オーダーの詳細を登録
@@ -102,10 +102,10 @@ public interface UserMapper {
 	//オーダーの配送先を登録
 	public int insertDeliveryAddress(DeliveryAddress address);
 
-	//購入履歴一覧取得
+	//注文履歴一覧取得
 	public List<Order> findManyHistories(@Param("userId") Integer userId);
 
-	//購入履歴取得（1件）
+	//注文履歴取得（1件）
 	public Order findOneHistory(@Param("userId") Integer userId,
 			@Param("orderId") Integer orderId);
 

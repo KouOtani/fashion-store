@@ -16,9 +16,9 @@ import jakarta.servlet.http.HttpSession;
 import katachi.spring.exercise.application.service.UserApplicationService;
 import katachi.spring.exercise.domain.user.model.Cart;
 import katachi.spring.exercise.domain.user.model.CartItem;
+import katachi.spring.exercise.domain.user.model.ExtendedUser;
 import katachi.spring.exercise.domain.user.model.MGoods;
 import katachi.spring.exercise.domain.user.service.ShoppingService;
-import katachi.spring.exercise.userwithcode.UserWithCode;
 
 /**
  * カートに関連するリクエストを処理するコントローラークラスです。
@@ -72,20 +72,16 @@ public class CartController {
 			RedirectAttributes redirectAttributes,
 			Authentication authentication) {
 
-		// ログインユーザーのカートに商品を追加する処理
-		if (authentication != null && authentication.isAuthenticated()) {
-			boolean itemExists = shoppingService.checkCartItemExistence(userId, goodsId);
-			if (itemExists) {
-				shoppingService.addToCartItemQuantity(userId, goodsId, quantity);
-			} else {
-				shoppingService.addToCart(userId, goodsId, quantity);
-			}
-		}
-
+		// セッション内のカートに商品を追加する処理
 		MGoods goods = shoppingService.getGoodsOne(goodsId);
 		CartItem item = modelMapper.map(goods, CartItem.class);
 		cart.addToCart(item, quantity);
 		session.setAttribute("cart", cart.getCartList());
+
+		// ログインユーザーであればデータベースに保存する
+		if (authentication != null && authentication.isAuthenticated()) {
+			shoppingService.addToCart(userId, goodsId, quantity);
+		}
 
 		// リダイレクト先にデータを渡す
 		redirectAttributes.addFlashAttribute("message", "商品がカートに追加されました。");
@@ -108,13 +104,14 @@ public class CartController {
 			@RequestParam Integer quantity,
 			Authentication authentication) {
 
-		// ログインユーザーのカートに商品を追加する処理
+		// セッション内のカートの数量を更新する処理
+		cart.changeQuantity(goodsId, quantity);
+		session.setAttribute("cart", cart.getCartList());
+
+		// ログインユーザーであればデータベースに保存する
 		if (authentication != null && authentication.isAuthenticated()) {
 			shoppingService.changeCartItemQuantity(userId, goodsId, quantity);
 		}
-
-		cart.changeQuantity(goodsId, quantity);
-		session.setAttribute("cart", cart.getCartList());
 
 		return "redirect:/goods/cart";
 	}
@@ -130,14 +127,14 @@ public class CartController {
 	public String removeItemFromCart(@RequestParam Integer goodsId,
 			Authentication authentication) {
 
-		if (authentication != null && authentication.isAuthenticated()) {
-			UserWithCode userDetails = userApplicationService.getCurrentUserDetails();
-			shoppingService.deleteItem(userDetails.getUserId(), goodsId);
-		}
-
 		// カートから商品を削除する処理
 		cart.removeItemById(goodsId);
 		session.removeAttribute("totalQuantity");
+
+		if (authentication != null && authentication.isAuthenticated()) {
+			ExtendedUser userDetails = userApplicationService.getCurrentUserDetails();
+			shoppingService.deleteItem(userDetails.getUserId(), goodsId);
+		}
 
 		return "redirect:/goods/cart";
 	}

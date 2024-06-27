@@ -13,7 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import katachi.spring.exercise.userwithcode.UserWithCode;
+import katachi.spring.exercise.domain.user.model.ExtendedUser;
 
 /**
  * ユーザーアプリケーションのサービスを提供するクラスです。
@@ -105,14 +105,14 @@ public class UserApplicationService {
 	 * 現在の認証されたユーザーの詳細を取得します。
 	 *
 	 * このメソッドは、Spring SecurityのSecurityContextから現在の認証情報を取得し、
-	 * 認証されたユーザーの詳細（UserWithCodeオブジェクト）を返します。
+	 * 認証されたユーザーの詳細（ExtendedUserオブジェクト）を返します。
 	 *
-	 * @return 現在認証されているユーザーの詳細（UserWithCodeオブジェクト）
-	 * @throws ClassCastException 認証されたユーザーがUserWithCode型にキャストできない場合
+	 * @return 現在認証されているユーザーの詳細（ExtendedUserオブジェクト）
+	 * @throws ClassCastException 認証されたユーザーがExtendedUser型にキャストできない場合
 	 */
-	public UserWithCode getCurrentUserDetails() {
+	public ExtendedUser getCurrentUserDetails() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		return (UserWithCode) authentication.getPrincipal();
+		return (ExtendedUser) authentication.getPrincipal();
 	}
 
 	/**
