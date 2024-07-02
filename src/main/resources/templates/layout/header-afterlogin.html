@@ -8,10 +8,18 @@
 <body>
   <nav layout:fragment="afterLoginHeader" class="navbar navbar-expand-lg" style="background-color: #d4a373;">
     <div class="container">
-      <a th:href="@{/}" class="navbar-brand text-white">
-        <img src="/img/plants_01.png" alt="" / style="width: 40px; height: 40px;">
+      <a th:if="!${#authorization.expression('hasRole(''ROLE_ADMIN'')')}" th:href="@{/}"
+        class="navbar-brand text-white">
+        <img src="/img/plants_01.png" alt="" style="width: 40px; height: 40px;">
         <span th:text="#{title}"></span>
       </a>
+
+      <a th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}" th:href="@{/admin/goods-management}"
+        class="navbar-brand text-white">
+        <img src="/img/plants_01.png" alt="" style="width: 40px; height: 40px;">
+        <span th:text="#{title}"></span>
+      </a>
+
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -29,7 +37,8 @@
               <ul class="dropdown-menu">
                 <li><a class="dropdown-item" th:href="@{/account/detail}">ユーザー情報詳細</a></li>
                 <li><a class="dropdown-item" th:href="@{/account/password-update}">パスワード変更</a></li>
-                <li><a class="dropdown-item" th:href="@{/account/history}">注文履歴</a></li>
+                <li><a class="dropdown-item" th:href="@{/account/history}"
+                    sec:authorize="hasRole('GENERAL')">注文履歴</a></li>
                 <li>
                   <hr class="dropdown-divider">
                 </li>
@@ -42,7 +51,7 @@
             </div>
           </li>
 
-          <li class="nav-item li pe-3">
+          <li class="nav-item li pe-3" sec:authorize="hasRole('GENERAL')">
             <a th:href="@{/cart}">
               <figure class="text-white mb-0 text-center relative">
                 <i class="fas fa-shopping-cart fa-lg"></i>
@@ -52,15 +61,6 @@
                     <p class="mb-0 fw-bold" th:text="${session.totalQuantity}"></p>
                   </figcaption>
                 </th:block>
-              </figure>
-            </a>
-          </li>
-
-          <li class="nav-item li pe-3" sec:authorize="hasRole('ADMIN')">
-            <a th:href="@{/admin/goods-management}">
-              <figure class="text-white mb-0 text-center relative">
-                <i class="fa-solid fa-user-gear fa-lg"></i>
-                <figcaption th:text="#{admin}"></figcaption>
               </figure>
             </a>
           </li>

@@ -4,12 +4,11 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import katachi.spring.exercise.application.service.UserApplicationService;
 import katachi.spring.exercise.domain.user.model.Cart;
 import katachi.spring.exercise.domain.user.model.CartItem;
 import katachi.spring.exercise.domain.user.model.ExtendedUser;
@@ -30,6 +29,9 @@ public class PreviousPageController {
 	@Autowired
 	private HttpSession session;
 
+	@Autowired
+	private UserApplicationService userApplicationService;
+
 	/**
 	 * 認証後にユーザーを前のページにリダイレクトします。
 	 *
@@ -38,12 +40,16 @@ public class PreviousPageController {
 	 * @return 前のページまたはホームページへのリダイレクトURL
 	 */
 	@GetMapping("/redirect")
-	public String redirectToPreviousPage(HttpServletRequest request, Authentication authentication) {
+	public String redirectToPreviousPage(Authentication authentication) {
 
-		// 現在の認証情報を取得
-		Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
+		ExtendedUser userDetails = userApplicationService.getCurrentUserDetails();
 
-		ExtendedUser userDetails = (ExtendedUser) currentAuth.getPrincipal();
+		// 管理者であれば管理者ページにリダイレクト
+		boolean isAdmin = authentication.getAuthorities().stream()
+				.anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
+		if (isAdmin) {
+			return "redirect:/admin/goods-management";
+		}
 
 		// カートのアイテムをユーザーのカートに転送
 		shoppingService.transferCartItems(userDetails.getUserId(), cart.getCartList());

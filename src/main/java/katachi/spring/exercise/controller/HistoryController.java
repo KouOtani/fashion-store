@@ -19,7 +19,7 @@ import katachi.spring.exercise.domain.user.service.ShoppingService;
  */
 @Controller
 @RequestMapping("/account")
-public class OrderHistoryController {
+public class HistoryController {
 
 	@Autowired
 	private ShoppingService shoppingService;

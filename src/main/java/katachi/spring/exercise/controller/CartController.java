@@ -50,7 +50,8 @@ public class CartController {
 	 * @return カートページのビュー名
 	 */
 	@GetMapping
-	public String showCartContents(Model model, Authentication authentication) {
+	public String showCartContents(Model model,
+			Authentication authentication) {
 		session.setAttribute("totalAmount", cart.totalAmount());
 		return "user/cart";
 	}

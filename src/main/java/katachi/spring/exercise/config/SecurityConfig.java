@@ -1,23 +1,16 @@
 package katachi.spring.exercise.config;
 
-import java.io.IOException;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
-
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Spring Securityの設定を行うためのJavaConfigクラスです。
@@ -78,6 +71,7 @@ public class SecurityConfig {
 		http.authorizeHttpRequests(authorize -> authorize
 				.requestMatchers(mvc.pattern("/admin/**")).hasAuthority("ROLE_ADMIN")
 				.requestMatchers(mvc.pattern("/account/**")).authenticated()
+				.requestMatchers(mvc.pattern("/order/complete")).hasAuthority("ROLE_GENERAL")
 				.anyRequest().permitAll());
 
 		// ログイン処理の設定
@@ -102,20 +96,6 @@ public class SecurityConfig {
 		http.headers(headers -> headers.frameOptions(FrameOptionsConfig::disable));
 
 		return http.build();
-	}
-
-	/**
-	 * ログアウト成功時の処理を行うためのカスタムログアウト成功ハンドラです。
-	 * ログアウト成功時には、ログアウト後にログインページにリダイレクトします。
-	 */
-	public static class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
-		@Override
-		public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response,
-				Authentication authentication) throws IOException, ServletException {
-			// ログアウト成功後の処理を記述
-			response.setStatus(HttpServletResponse.SC_OK);
-			response.sendRedirect("/login?logout");
-		}
 	}
 
 }
