@@ -54,7 +54,7 @@ public class AdminController {
 	private UserApplicationService userApplicationService;
 
 	/** プロフィール画像の保存先フォルダ */
-	@Value("${image.folder}")
+	@Value("${IMAGE_FOLDER}")
 	private String imgFolder;
 
 	/**
