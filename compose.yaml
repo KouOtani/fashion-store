@@ -18,7 +18,7 @@ services:
     volumes:
       - ./src/main/resources/docker/init.sql:/initdb/init.sql
       - mysql-data:/var/lib/mysql
-      - ./target/classes/static/img:/app/static/img
+      - ./src/main/resources/static/img:/app/static/img
     command: --init-file /initdb/init.sql
 
   app:
@@ -39,7 +39,7 @@ services:
     networks:
       - my-network
     volumes:
-      - ./target/classes/static/img:/app/static/img
+      - ./src/main/resources/static/img:/app/static/img
 
 networks:
   my-network:
