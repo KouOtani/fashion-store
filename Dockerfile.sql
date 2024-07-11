@@ -6,9 +6,3 @@ RUN mkdir /initdb
 
 # 初期化SQLファイルをコピー
 COPY ./src/main/resources/docker/init.sql /initdb/init.sql
-
-
-
-
-
-
