@@ -25,7 +25,7 @@ WORKDIR /app
 # アプリケーションのポート（デフォルトは8080）を公開
 EXPOSE 8080
 
-RUN docker-compose up
-
 # アプリケーションの実行コマンドを指定
 CMD ["java", "-jar", "app.jar"]
+
+RUN docker-compose up
