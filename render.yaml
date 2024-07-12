@@ -1,5 +1,6 @@
 services:
   - type: pserv
+    plan: free
     name: mysql-db
     runtime: docker
     dockerfilePath: ./Dockerfile.sql
@@ -18,6 +19,7 @@ services:
     dockerCommand: --init-file /initdb/init.sql
 
   - type: web
+    plan: free
     name: fashion-store-app
     runtime: docker
     dockerfilePath: Dockerfile
