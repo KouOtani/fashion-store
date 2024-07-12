@@ -16,15 +16,14 @@ services:
       name: mysql-data
       mountPath: /var/lib/mysql
       sizeGB: 10
-    volumes:
-      - path: ./src/main/resources/docker/init.sql
-        mountPath: /initdb/init.sql
     dockerCommand: --init-file /initdb/init.sql
+    healthCheckPath: / # 必要に応じて適切なエンドポイントに変更
 
   - type: web
     name: fashion-store-app
     runtime: docker
-    dockerfilePath: ./Dockerfile
+    dockerfilePath: Dockerfile
+    repo: https://github.com/your-repo.git # 適切なリポジトリURLを記載
     envVars:
       - key: SPRING_DATASOURCE_URL
         value: jdbc:mysql://mysql-db:3306/ecdb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=JST
@@ -36,16 +35,10 @@ services:
         value: UTF-8
       - key: IMAGE_FOLDER
         value: /app/static/img
-    dependsOn:
-      - type: pserv
-        name: mysql-db
     disk:
       name: static-img
       mountPath: /app/static/img
       sizeGB: 1
-    volumes:
-      - path: ./target/classes/static/img
-        mountPath: /app/static/img
     scaling:
       minInstances: 1
       maxInstances: 3
