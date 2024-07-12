@@ -19,7 +19,7 @@ services:
     health_check_path: /
     http_port: 8080
 
-  - type: mysql
+  - type: pserv
     name: fashion-store-db
     env:
       - key: MYSQL_ROOT_PASSWORD
