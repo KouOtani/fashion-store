@@ -1,10 +1,7 @@
 services:
   - type: web
     name: fashion-store-app
-    dockerfile_path: ./Dockerfile
     env:
-      - key: SPRING_DATASOURCE_URL
-        value: jdbc:mysql://pserv:3306/ecdb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=JST
       - key: SPRING_DATASOURCE_USERNAME
         value: root
       - key: SPRING_DATASOURCE_PASSWORD
@@ -17,18 +14,7 @@ services:
   - type: pserv
     name: fashion-store-db
     env:
-      - key: MYSQL_DATABASE
-        value: ecdb
       - key: MYSQL_USER
         value: root
       - key: MYSQL_PASSWORD
         value: root
-
-build_settings:
-  - dockerfile_path: ./Dockerfile
-    output_image_name: fashion-store-app
-    use_default_build_settings: false
-
-  - dockerfile_path: ./Dockerfile.sql
-    output_image_name: fashion-store-db
-    use_default_build_settings: false
