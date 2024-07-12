@@ -1,5 +1,5 @@
 # 使用するベースイメージを指定（OpenJDKを使用）
-FROM openjdk:17-jdk-slim
+FROM openjdk:17-jdk-slim AS build
 
 # コンテナ内にアプリケーションを配置するディレクトリを作成
 RUN mkdir -p /app/static/img
@@ -7,7 +7,7 @@ RUN mkdir -p /app/static/img
 # コンテナ内にアプリケーションを配置するディレクトリを作成
 RUN mkdir -p /app
 
-# コンテナ内にアプリケーションをコピー
+# アプリケーションをコピー
 COPY SpringEC-0.0.1-SNAPSHOT.jar /app/app.jar
 
 # MySQLイメージを使用
@@ -27,5 +27,3 @@ EXPOSE 8080
 
 # アプリケーションの実行コマンドを指定
 CMD ["java", "-jar", "app.jar"]
-
-RUN docker-compose up
