@@ -1,10 +1,10 @@
 services:
   - type: web
     name: fashion-store-app
-    dockerfile_path: Dockerfile
+    dockerfile_path: ./Dockerfile
     env:
       - key: SPRING_DATASOURCE_URL
-        value: jdbc:mysql://db:3306/ecdb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=JST
+        value: jdbc:mysql://pserv:3306/ecdb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=JST
       - key: SPRING_DATASOURCE_USERNAME
         value: root
       - key: SPRING_DATASOURCE_PASSWORD
@@ -13,36 +13,22 @@ services:
         value: UTF-8
       - key: IMAGE_FOLDER
         value: /app/static/img
-    env_secret_names: []
-    build_command: docker-compose build app
-    start_command: docker-compose up -d
-    health_check_path: /
-    http_port: 8080
 
   - type: pserv
     name: fashion-store-db
     env:
-      - key: MYSQL_ROOT_PASSWORD
-        value: root
       - key: MYSQL_DATABASE
         value: ecdb
       - key: MYSQL_USER
         value: root
       - key: MYSQL_PASSWORD
         value: root
-    env_secret_names: []
-    build_command: docker-compose build db
-    start_command: docker-compose up -d db
-    health_check_path: /
-    http_port: 3306
-
-volumes: {}
 
 build_settings:
-  - dockerfile_path: Dockerfile
+  - dockerfile_path: ./Dockerfile
     output_image_name: fashion-store-app
     use_default_build_settings: false
 
-  - dockerfile_path: Dockerfile.sql
+  - dockerfile_path: ./Dockerfile.sql
     output_image_name: fashion-store-db
     use_default_build_settings: false
