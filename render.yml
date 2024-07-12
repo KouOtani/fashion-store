@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: fashion-store-app
+    env: docker
+    plan: free
+    repo: https://github.com/KouOtani/fashion-store.git  # あなたのリポジトリのURLを指定
+    branch: main  # デプロイするブランチを指定
+    dockerfilePath: ./Dockerfile
+    buildCommand: docker-compose -f docker-compose.yml up --build
+    startCommand: docker-compose -f docker-compose.yml up
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        value: jdbc:mysql://db:3306/ecdb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=JST
+      - key: SPRING_DATASOURCE_USERNAME
+        value: root
+      - key: SPRING_DATASOURCE_PASSWORD
+        value: root
+      - key: SPRING_SQL_INIT_ENCODING
+        value: UTF-8
+      - key: IMAGE_FOLDER
+        value: /app/static/img
+
+
