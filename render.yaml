@@ -17,7 +17,6 @@ services:
       mountPath: /var/lib/mysql
       sizeGB: 10
     dockerCommand: --init-file /initdb/init.sql
-    healthCheckPath: / # 必要に応じて適切なエンドポイントに変更
 
   - type: web
     name: fashion-store-app
