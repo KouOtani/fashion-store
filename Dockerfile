@@ -19,6 +19,8 @@ RUN mkdir /initdb
 # 初期化SQLファイルをコピー
 COPY ./src/main/resources/docker/init.sql /initdb/init.sql
 
+RUN apt-get update && apt-get install -y --no-install-recommends openjdk-17-jdk
+
 # ワーキングディレクトリを設定
 WORKDIR /app
 
