@@ -1,7 +1,33 @@
 services:
+  - type: pserv
+    name: mysql-db
+    runtime: docker
+    dockerfilePath: ./Dockerfile.sql
+    envVars:
+      - key: MYSQL_ROOT_PASSWORD
+        value: root
+      - key: MYSQL_DATABASE
+        value: ecdb
+      - key: MYSQL_USER
+        value: root
+      - key: MYSQL_PASSWORD
+        value: root
+    disk:
+      name: mysql-data
+      mountPath: /var/lib/mysql
+      sizeGB: 10
+    volumes:
+      - path: ./src/main/resources/docker/init.sql
+        mountPath: /initdb/init.sql
+    dockerCommand: --init-file /initdb/init.sql
+
   - type: web
     name: fashion-store-app
-    env:
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        value: jdbc:mysql://mysql-db:3306/ecdb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=JST
       - key: SPRING_DATASOURCE_USERNAME
         value: root
       - key: SPRING_DATASOURCE_PASSWORD
@@ -10,11 +36,19 @@ services:
         value: UTF-8
       - key: IMAGE_FOLDER
         value: /app/static/img
-
-  - type: pserv
-    name: fashion-store-db
-    env:
-      - key: MYSQL_USER
-        value: root
-      - key: MYSQL_PASSWORD
-        value: root
+    dependsOn:
+      - type: pserv
+        name: mysql-db
+    disk:
+      name: static-img
+      mountPath: /app/static/img
+      sizeGB: 1
+    volumes:
+      - path: ./target/classes/static/img
+        mountPath: /app/static/img
+    scaling:
+      minInstances: 1
+      maxInstances: 3
+      targetMemoryPercent: 60
+      targetCPUPercent: 60
+    healthCheckPath: /
