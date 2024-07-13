@@ -1,27 +1,10 @@
 services:
-  - type: pserv
-    plan: free
-    name: mysql-db
-    runtime: docker
-    dockerfilePath: ./Dockerfile.sql
-    envVars:
-      - key: MYSQL_ROOT_PASSWORD
-        value: root
-      - key: MYSQL_DATABASE
-        value: ecdb
-      - key: MYSQL_USER
-        value: root
-      - key: MYSQL_PASSWORD
-        value: root
-    disk:
-      name: mysql-data
-      mountPath: /var/lib/mysql
-    dockerCommand: --init-file /initdb/init.sql
 
   - type: web
     plan: free
     name: fashion-store-app
     runtime: docker
+    region: singapore
     dockerfilePath: Dockerfile
     envVars:
       - key: SPRING_DATASOURCE_URL
@@ -34,6 +17,20 @@ services:
         value: UTF-8
       - key: IMAGE_FOLDER
         value: /app/static/img
-    disk:
-      name: static-img
-      mountPath: /app/static/img
+
+  - type: pserv
+    plan: free
+    name: mysql-db
+    runtime: docker
+    region: singapore
+    dockerfilePath: ./Dockerfile.sql
+    envVars:
+      - key: MYSQL_ROOT_PASSWORD
+        value: root
+      - key: MYSQL_DATABASE
+        value: ecdb
+      - key: MYSQL_USER
+        value: root
+      - key: MYSQL_PASSWORD
+        value: root
+    dockerCommand: --init-file /initdb/init.sql
