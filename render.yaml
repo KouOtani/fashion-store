@@ -19,21 +19,3 @@ services:
         value: /app/static/img
       - key: SERVER_PORT
         value: 8080
-
-  - type: pserv
-    plan: free
-    name: mysql-db
-    runtime: docker
-    region: singapore
-    dockerfilePath: ./Dockerfile.sql
-    envVars:
-      - key: MYSQL_ROOT_PASSWORD
-        value: root
-      - key: MYSQL_DATABASE
-        value: ecdb
-      - key: MYSQL_USER
-        value: app_user
-      - key: MYSQL_PASSWORD
-        value: root
-      - key: SERVER_PORT
-        value: 3306
