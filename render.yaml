@@ -33,4 +33,3 @@ services:
         value: root
       - key: MYSQL_PASSWORD
         value: root
-    dockerCommand: --init-file /initdb/init.sql
