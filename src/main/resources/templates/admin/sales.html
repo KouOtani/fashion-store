@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layout-admin}">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>月別売上グラフ</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+  <div layout:fragment="content">
+    <div class="border-bottom d-flex align-items-center justify-content-between">
+      <h1 class="h2">月別売上グラフ</h1>
+      <button id="toggleChartType" class="btn btn-outline-primary">グラフ切り替え</button>
+    </div>
+
+    <div class="container mt-3">
+      <canvas id="salesChart" width="400" height="200"></canvas>
+      <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+          const ctx = document.getElementById('salesChart').getContext('2d');
+          const salesList = /*[[${salesList}]]*/"salesList"; // サーバーから渡されるデータ
+
+          const labels = salesList.map(s => ('0' + s.month).slice(-2) + '月');
+          const salesData = salesList.map(s => s.sales);
+
+          let currentChartType = 'bar';
+
+          const chartConfig = {
+            type: currentChartType,
+            data: {
+              labels: labels,
+              datasets: [{
+                label: `月次売上 (${new Date().getMonth() < 3 ? new Date().getFullYear() - 1 : new Date().getFullYear()}年度)`,
+                data: salesData,
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+              }]
+            },
+            options: {
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  ticks: {
+                    callback: function (value) {
+                      return value.toLocaleString() + '円';
+                    }
+                  }
+                }
+              }
+            }
+          };
+
+          let chart = new Chart(ctx, chartConfig);
+
+          document.getElementById('toggleChartType').addEventListener('click', function () {
+            currentChartType = currentChartType === 'bar' ? 'line' : 'bar';
+            chartConfig.type = currentChartType;
+            chart.destroy(); // 既存のチャートを破棄
+            chart = new Chart(ctx, chartConfig); // 新しいチャートを作成
+          });
+        });
+      </script>
+    </div>
+  </div>
+</body>
+
+</html>

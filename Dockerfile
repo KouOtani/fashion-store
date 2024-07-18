@@ -11,7 +11,7 @@ RUN mkdir -p /app/static/img
 COPY ./src/main/resources/static/img /app/static/img
 
 # コンテナ内にアプリケーションをコピー
-COPY SpringEC-0.0.1-SNAPSHOT.jar /app/app.jar
+COPY ./target/SpringEC-0.0.1-SNAPSHOT.jar /app/app.jar
 
 # ワーキングディレクトリを設定
 WORKDIR /app

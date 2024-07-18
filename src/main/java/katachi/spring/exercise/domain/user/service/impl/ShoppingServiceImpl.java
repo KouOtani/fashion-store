@@ -1,5 +1,8 @@
 package katachi.spring.exercise.domain.user.service.impl;
 
+import java.math.BigDecimal;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +13,7 @@ import katachi.spring.exercise.domain.user.model.CartItem;
 import katachi.spring.exercise.domain.user.model.DeliveryAddress;
 import katachi.spring.exercise.domain.user.model.MGoods;
 import katachi.spring.exercise.domain.user.model.MUser;
+import katachi.spring.exercise.domain.user.model.MonthlySales;
 import katachi.spring.exercise.domain.user.model.Order;
 import katachi.spring.exercise.domain.user.model.OrderDetails;
 import katachi.spring.exercise.domain.user.service.ShoppingService;
@@ -299,6 +303,52 @@ public class ShoppingServiceImpl implements ShoppingService {
 	@Override
 	public void saveDeliveryAddress(DeliveryAddress address) {
 		mapper.insertDeliveryAddress(address);
+	}
+
+	/**
+	 * 月次売上を更新するメソッド。
+	 * 指定された注文日付に基づいて売上データを更新します。
+	 *
+	 * @param orderDate 注文日付
+	 * @param sales 売上金額
+	 */
+	@Override
+	public void updateMonthlySales(Date orderDate, BigDecimal sales) {
+		int year = getYearFromDate(orderDate);
+		int month = getMonthFromDate(orderDate);
+
+		mapper.updateMonthlySales(year, month, sales);
+	}
+
+	/**
+	 * 指定された日付から年を取得するヘルパーメソッド。
+	 *
+	 * @param date 日付
+	 * @return 年
+	 */
+	private int getYearFromDate(Date date) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		return calendar.get(Calendar.YEAR);
+	}
+
+	/**
+	 * 指定された日付から月を取得するヘルパーメソッド。
+	 * Calendar.MONTHは0から11の範囲を返すため、1を加算して1から12の範囲とする。
+	 *
+	 * @param date 日付
+	 * @return 月（1から12の範囲）
+	 */
+	private int getMonthFromDate(Date date) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		return calendar.get(Calendar.MONTH) + 1;
+	}
+
+	//月別の売り上げを取得する
+	public List<MonthlySales> getMonthlySales() {
+		int currentYear = Calendar.getInstance().get(Calendar.YEAR); // 今年の年を取得するロジック
+		return mapper.getMonthlySales(currentYear);
 	}
 
 	/**

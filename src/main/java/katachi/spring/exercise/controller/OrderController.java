@@ -1,5 +1,6 @@
 package katachi.spring.exercise.controller;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -113,6 +114,8 @@ public class OrderController {
 		List<CartItem> cartItemsList = cart.getCartList();
 		List<OrderDetails> orderDetailsList = new ArrayList<>();
 
+		BigDecimal totalSales = BigDecimal.ZERO;
+
 		for (CartItem cartItem : cartItemsList) {
 			Integer goodsId = cartItem.getGoodsId();
 			Integer quantity = cartItem.getQuantity();
@@ -124,6 +127,10 @@ public class OrderController {
 			orderDetail.setPrice(price);
 			orderDetail.setQuantity(quantity);
 			orderDetailsList.add(orderDetail);
+
+			// 売上を加算
+			BigDecimal itemTotal = BigDecimal.valueOf(price).multiply(BigDecimal.valueOf(quantity));
+			totalSales = totalSales.add(itemTotal);
 		}
 		shoppingService.saveOrder(orderDetailsList);
 
@@ -151,6 +158,9 @@ public class OrderController {
 			userDetails = userApplicationService.getCurrentUserDetails();
 			shoppingService.allClearCart(userDetails.getUserId());
 		}
+
+		// 月別売上を更新
+		shoppingService.updateMonthlySales(order.getOrderDate(), totalSales);
 
 		return "redirect:/order/complete-order";
 	}

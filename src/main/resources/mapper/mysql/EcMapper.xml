@@ -364,6 +364,35 @@
     )
   </insert>
 
+  <!-- 月次売上を更新する -->
+  <update id="updateMonthlySales">
+    INSERT INTO monthly_sales (year, month, sales)
+    VALUES (
+    #{year},
+    #{month},
+    #{sales}
+    )
+    ON DUPLICATE KEY UPDATE
+    sales = sales + VALUES(sales)
+  </update>
+
+  <!-- 月別の売り上げを所得 -->
+  <select id="getMonthlySales" resultType="MonthlySales">
+    SELECT
+        year,
+        month,
+        sales
+    FROM
+        monthly_sales
+    WHERE
+        (month >= 4 AND year = #{currentYear})
+        OR
+        (3 >= month AND year = #{currentYear} + 1)
+    ORDER BY
+        year,
+        month
+  </select>
+
   <!-- 注文履歴を複数件取得 -->
   <select id="findManyHistories" resultMap="order">
     SELECT

@@ -71,7 +71,6 @@ public class SecurityConfig {
 		http.authorizeHttpRequests(authorize -> authorize
 				.requestMatchers(mvc.pattern("/admin/**")).hasAuthority("ROLE_ADMIN")
 				.requestMatchers(mvc.pattern("/account/**")).authenticated()
-				.requestMatchers(mvc.pattern("/order/complete")).hasAuthority("ROLE_GENERAL")
 				.anyRequest().permitAll());
 
 		// ログイン処理の設定

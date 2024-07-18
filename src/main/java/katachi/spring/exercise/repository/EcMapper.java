@@ -1,5 +1,6 @@
 package katachi.spring.exercise.repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -9,6 +10,7 @@ import katachi.spring.exercise.domain.user.model.CartItem;
 import katachi.spring.exercise.domain.user.model.DeliveryAddress;
 import katachi.spring.exercise.domain.user.model.MGoods;
 import katachi.spring.exercise.domain.user.model.MUser;
+import katachi.spring.exercise.domain.user.model.MonthlySales;
 import katachi.spring.exercise.domain.user.model.Order;
 import katachi.spring.exercise.domain.user.model.OrderDetails;
 
@@ -101,6 +103,12 @@ public interface EcMapper {
 
 	//オーダーの配送先を登録
 	public int insertDeliveryAddress(DeliveryAddress address);
+
+	//月別の売り上げを更新
+	public void updateMonthlySales(Integer year, Integer month, BigDecimal sales);
+
+	//月別の売り上げを取得
+	public List<MonthlySales> getMonthlySales(@Param("currentYear") Integer currentYear);
 
 	//注文履歴一覧取得
 	public List<Order> findManyHistories(@Param("userId") Integer userId);

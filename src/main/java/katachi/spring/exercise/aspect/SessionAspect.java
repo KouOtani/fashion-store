@@ -56,7 +56,7 @@ public class SessionAspect {
 		String path = extractPath(url);
 
 		// 無効なURLパターンのリスト
-		String[] invalidPatterns = { "/login", "/signup", "/guest-signup", "/account", "/admin" };
+		String[] invalidPatterns = { "/login", "/signup-confirm", "/guest-signup-confirm", "/account", "/admin" };
 		for (String pattern : invalidPatterns) {
 			if (path.startsWith(pattern)) {
 				return false;

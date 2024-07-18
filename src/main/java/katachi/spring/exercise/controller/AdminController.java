@@ -28,6 +28,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import katachi.spring.exercise.application.service.UserApplicationService;
 import katachi.spring.exercise.domain.user.model.MGoods;
 import katachi.spring.exercise.domain.user.model.MUser;
+import katachi.spring.exercise.domain.user.model.MonthlySales;
 import katachi.spring.exercise.domain.user.model.Order;
 import katachi.spring.exercise.domain.user.service.ShoppingService;
 import katachi.spring.exercise.form.CustomerEditForm;
@@ -394,5 +395,12 @@ public class AdminController {
 
 		redirectAttributes.addFlashAttribute("message", "顧客を削除しました。");
 		return "redirect:/admin/customer-list";
+	}
+
+	@GetMapping("/sales")
+	public String getMonthlySales(Model model) {
+		List<MonthlySales> salesList = shoppingService.getMonthlySales();
+		model.addAttribute("salesList", salesList);
+		return "admin/sales";
 	}
 }

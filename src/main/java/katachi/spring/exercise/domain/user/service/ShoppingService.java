@@ -1,11 +1,14 @@
 package katachi.spring.exercise.domain.user.service;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 import katachi.spring.exercise.domain.user.model.CartItem;
 import katachi.spring.exercise.domain.user.model.DeliveryAddress;
 import katachi.spring.exercise.domain.user.model.MGoods;
 import katachi.spring.exercise.domain.user.model.MUser;
+import katachi.spring.exercise.domain.user.model.MonthlySales;
 import katachi.spring.exercise.domain.user.model.Order;
 import katachi.spring.exercise.domain.user.model.OrderDetails;
 
@@ -89,6 +92,12 @@ public interface ShoppingService {
 
 	//注文商品の配送先を登録
 	public void saveDeliveryAddress(DeliveryAddress address);
+
+	//月別の売り上げを加算する
+	public void updateMonthlySales(Date orderDate, BigDecimal sales);
+
+	//月別の売り上げを取得する
+	public List<MonthlySales> getMonthlySales();
 
 	//注文履歴を取得
 	public List<Order> getHistories(Integer userId);

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layout}">>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title th:text="#{newRegister}"></title>
+</head>
+
+<body>
+  <div layout:fragment="content">
+
+    <div class="container">
+      <div class="row mt-3">
+        <div class="col-sm-4"></div>
+        <div class="col-sm-4 alert alert-primary text-center mb-0">
+          下記内容で登録します。<br>
+          よろしいですか？
+        </div>
+        <div class="col-sm-4"></div>
+      </div>
+    </div>
+
+    <div class="my-3">
+      <form th:action="@{/user/signup}" method="post" class="form-signup" th:object="${signupForm}">
+        <!--メールアドレス-->
+        <div class="mb-3">
+          <h1 th:text="#{eMail}" class="h5 fw-bold"></h1>
+          <input type="hidden" class="form-control" th:field="*{eMail}" />
+          <p th:text="*{eMail}"></p>
+        </div>
+        <!--パスワード-->
+        <div class="mb-3">
+          <h1 th:text="#{password}" class="h5 fw-bold"></h1>
+          <input type="hidden" class="form-control" th:field="*{password}" />
+          <p th:text="*{password}"></p>
+        </div>
+        <!--名前-->
+        <div class="mb-3">
+          <h1 th:text="#{userName}" class="h5 fw-bold"></h1>
+          <input type="hidden" class="form-control" th:field="*{userName}" />
+          <p th:text="*{userName}"></p>
+        </div>
+        <!--フリガナ-->
+        <div class="mb-3">
+          <h1 th:text="#{furigana}" class="h5 fw-bold"></h1>
+          <input type="hidden" class="form-control" th:field="*{furigana}" />
+          <p th:text="*{furigana}"></p>
+        </div>
+        <!--郵便番号-->
+        <div class="mb-3">
+          <h1 th:text="#{postalCode}" class="h5 fw-bold"></h1>
+          <input type="hidden" class="form-control" th:field="*{postalCode}" />
+          <p th:text="*{postalCode}"></p>
+        </div>
+        <!--都道府県-->
+        <div class="mb-3">
+          <h1 th:text="#{prefectures}" class="h5 fw-bold"></h1>
+          <input type="hidden" class="form-control" th:field="*{prefectures}" />
+          <p th:text="*{prefectures}"></p>
+        </div>
+        <!--市町村-->
+        <div class="mb-3">
+          <h1 th:text="#{city}" class="h5 fw-bold"></h1>
+          <input type="hidden" class="form-control" th:field="*{city}" />
+          <p th:text="*{city}"></p>
+        </div>
+        <!--町名・番地-->
+        <div class="mb-3">
+          <h1 th:text="#{townName}" class="h5 fw-bold"></h1>
+          <input type="hidden" class="form-control" th:field="*{townName}" />
+          <p th:text="*{townName}"></p>
+        </div>
+        <!--建物名・部屋番号 -->
+        <div class="mb-3">
+          <h1 th:text="#{others}" class="h5 fw-bold"></h1>
+          <input type="hidden" class="form-control" th:field="*{others}" />
+          <p th:text="*{#strings.isEmpty(others) ? '未入力' : others}"></p>
+        </div>
+        <!--電話番号-->
+        <div class="mb-3">
+          <h1 th:text="#{phoneNumber}" class="h5 fw-bold"></h1>
+          <input type="hidden" class="form-control" th:field="*{phoneNumber}" />
+          <p th:text="*{phoneNumber}"></p>
+        </div>
+        <!--性別-->
+        <div class="mb-3">
+          <h1 th:text="#{gender}" class="h5 fw-bold"></h1>
+          <input type="hidden" class="form-control" th:field="*{gender}" />
+          <p th:text="*{gender == 1 ? '男性' : (gender == 2 ? '女性' : (gender == 3 ? 'その他' : ''))}"></p>
+        </div>
+        <!--生年月日-->
+        <div class="mb-3">
+          <h1 th:text="#{birthday}" class="h5 fw-bold"></h1>
+          <input type="hidden" class="form-control" th:field="*{birthday}" />
+          <p th:text="*{#dates.format(birthday,'YYYY/MM/dd')}"></p>
+        </div>
+        <div class="text-center">
+          <button class="btn btn-primary mt-3 w-75" type="submit" th:text="#{newRegister}"></button>
+        </div>
+      </form>
+
+      <div class="text-center">
+        <a th:href="@{/user/signup}">ユーザー登録画面に戻る</a>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
