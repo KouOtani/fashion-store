@@ -1,5 +1,4 @@
 services:
-
   - type: web
     plan: free
     name: fashion-store-app
@@ -8,14 +7,10 @@ services:
     dockerfilePath: ./Dockerfile
     envVars:
       - key: SPRING_DATASOURCE_URL
-        value: jdbc:mysql://mysql-db:3306/ecdb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=JST
+        value: jdbc:h2:file:/data/testdb;DB_CLOSE_DELAY=-1
       - key: SPRING_DATASOURCE_USERNAME
-        value: root
+        value: sa
       - key: SPRING_DATASOURCE_PASSWORD
-        value: root
-      - key: SPRING_SQL_INIT_ENCODING
-        value: UTF-8
-      - key: IMAGE_FOLDER
-        value: /app/static/img
-      - key: SERVER_PORT
-        value: 8080
+        value: password
+      - key: SPRING_JPA_HIBERNATE_DDL_AUTO
+        value: none

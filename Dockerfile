@@ -11,7 +11,10 @@ RUN mkdir -p /app/static/img
 COPY ./src/main/resources/static/img /app/static/img
 
 # コンテナ内にアプリケーションをコピー
-COPY ./target/SpringEC-0.0.1-SNAPSHOT.jar /app/app.jar
+COPY SpringEC-0.0.1-SNAPSHOT.jar /app/app.jar
+
+# 初期化SQLファイルをコピー
+COPY ./src/main/resources/docker/init.sql /initdb/init.sql
 
 # ワーキングディレクトリを設定
 WORKDIR /app
