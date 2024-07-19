@@ -16,6 +16,9 @@ COPY ./src/main/resources/docker/init.sql /initdb/init.sql
 COPY init-db.sh /init-db.sh
 RUN chmod +x /init-db.sh
 
+# H2 データベース JAR を追加
+RUN wget https://repo1.maven.org/maven2/com/h2database/h2/2.1.214/h2-2.1.214.jar -O /h2.jar
+
 # ワーキングディレクトリを設定
 WORKDIR /app
 
@@ -23,4 +26,4 @@ WORKDIR /app
 EXPOSE 8080
 
 # 初期化スクリプトを実行し、アプリケーションを起動
-ENTRYPOINT ["/bin/sh", "-c", "/init-db.sh && java -Djava.security.egd=file:/dev/./urandom -jar app.jar"]
+ENTRYPOINT ["/bin/sh", "-c", "java -cp /h2.jar:/app/app.jar org.h2.tools.RunScript -url jdbc:h2:file:/data/ecdb -user sa -password password -script /initdb/init.sql && java -Djava.security.egd=file:/dev/./urandom -jar app.jar"]
