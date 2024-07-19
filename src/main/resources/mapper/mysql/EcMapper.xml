@@ -366,7 +366,7 @@
 
   <!-- 月次売上を更新する -->
   <update id="updateMonthlySales">
-    INSERT INTO monthly_sales (year, `month`, sales)
+    INSERT INTO monthly_sales (`year`, `month`, sales)
     VALUES (
     #{year},
     #{month},
@@ -379,17 +379,17 @@
   <!-- 月別の売り上げを所得 -->
   <select id="getMonthlySales" resultType="MonthlySales">
     SELECT
-        year,
+        `year`,
         `month`,
         sales
     FROM
         monthly_sales
     WHERE
-        (`month` >= 4 AND year = #{currentYear})
+        (`month` >= 4 AND `year` = #{currentYear})
         OR
-        (3 >= `month` AND year = #{currentYear} + 1)
+        (3 >= `month` AND `year` = #{currentYear} + 1)
     ORDER BY
-        year,
+        `year`,
         `month`
   </select>
 
