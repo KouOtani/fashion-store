@@ -23,4 +23,4 @@ WORKDIR /app
 EXPOSE 8080
 
 # アプリケーションの実行コマンドを指定
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar"]
