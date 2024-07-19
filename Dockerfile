@@ -17,7 +17,7 @@ COPY init-db.sh /init-db.sh
 RUN chmod +x /init-db.sh
 
 # H2 データベース JAR を追加
-RUN wget https://repo1.maven.org/maven2/com/h2database/h2/2.1.214/h2-2.1.214.jar -O /h2.jar
+RUN curl -L https://repo1.maven.org/maven2/com/h2database/h2/2.1.214/h2-2.1.214.jar -o /h2.jar
 
 # ワーキングディレクトリを設定
 WORKDIR /app
