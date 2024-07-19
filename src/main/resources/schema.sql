@@ -1,5 +1,3 @@
-CREATE DATABASE IF NOT EXISTS ecdb;
-USE ecdb;
 CREATE TABLE `m_users`
 (
    `id` int NOT NULL AUTO_INCREMENT,

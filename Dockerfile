@@ -14,8 +14,8 @@ COPY ./src/main/resources/static/img /app/static/img
 COPY SpringEC-0.0.1-SNAPSHOT.jar /app/app.jar
 
 # データベースの初期化用 SQL ファイルをコピー
-COPY ./src/main/resources/schema.sql /app/schema.sql
-COPY ./src/main/resources/data.sql /app/data.sql
+COPY ./src/main/resources/schema.sql /initdb/schema.sql
+COPY ./src/main/resources/data.sql /initdb/data.sql
 
 # ワーキングディレクトリを設定
 WORKDIR /app
