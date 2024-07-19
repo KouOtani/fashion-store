@@ -1,5 +1,5 @@
 # 使用するベースイメージを指定（OpenJDKを使用）
-FROM openjdk:17-jdk-slim
+FROM openjdk:17-jdk
 
 # コンテナ内にアプリケーションを配置するディレクトリを作成
 RUN mkdir -p /app
@@ -15,9 +15,6 @@ COPY SpringEC-0.0.1-SNAPSHOT.jar /app/app.jar
 COPY ./src/main/resources/docker/init.sql /initdb/init.sql
 COPY init-db.sh /init-db.sh
 RUN chmod +x /init-db.sh
-
-# H2 データベース JAR を追加
-RUN curl -L https://repo1.maven.org/maven2/com/h2database/h2/2.1.214/h2-2.1.214.jar -o /h2.jar
 
 # ワーキングディレクトリを設定
 WORKDIR /app
