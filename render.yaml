@@ -8,9 +8,4 @@ services:
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: h2
-      - key: SPRING_DATASOURCE_URL
-        value: jdbc:h2:file:/data/testdb;DB_CLOSE_DELAY=-1
-      - key: SPRING_DATASOURCE_USERNAME
-        value: sa
-      - key: SPRING_DATASOURCE_PASSWORD
-        value: password
+
