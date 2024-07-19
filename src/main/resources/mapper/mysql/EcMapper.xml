@@ -366,7 +366,7 @@
 
   <!-- 月次売上を更新する -->
   <update id="updateMonthlySales">
-    INSERT INTO monthly_sales (year, month, sales)
+    INSERT INTO monthly_sales (year, `month`, sales)
     VALUES (
     #{year},
     #{month},
@@ -380,17 +380,17 @@
   <select id="getMonthlySales" resultType="MonthlySales">
     SELECT
         year,
-        month,
+        `month`,
         sales
     FROM
         monthly_sales
     WHERE
-        (month >= 4 AND year = #{currentYear})
+        (`month` >= 4 AND year = #{currentYear})
         OR
-        (3 >= month AND year = #{currentYear} + 1)
+        (3 >= `month` AND year = #{currentYear} + 1)
     ORDER BY
         year,
-        month
+        `month`
   </select>
 
   <!-- 注文履歴を複数件取得 -->
