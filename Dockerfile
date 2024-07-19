@@ -23,4 +23,4 @@ WORKDIR /app
 EXPOSE 8080
 
 # アプリケーションの実行コマンドを指定
-ENTRYPOINT ["java", "-jar", "app.jar", "--spring.profiles.active=h2"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
