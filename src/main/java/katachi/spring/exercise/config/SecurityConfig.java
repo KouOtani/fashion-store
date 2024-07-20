@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -70,7 +71,7 @@ public class SecurityConfig {
 		http.authorizeHttpRequests(authorize -> authorize
 				.requestMatchers(mvc.pattern("/admin/**")).hasAuthority("ROLE_ADMIN")
 				.requestMatchers(mvc.pattern("/account/**")).authenticated()
-				.requestMatchers(mvc.pattern("/h2-console/**")).hasAuthority("ROLE_ADMIN") // H2コンソールへのアクセス制限
+				.requestMatchers(mvc.pattern("/h2-console")).hasAuthority("ROLE_ADMIN") // H2コンソールへのアクセス制限
 				.anyRequest().permitAll());
 
 		// ログイン処理の設定
@@ -91,11 +92,8 @@ public class SecurityConfig {
 				.invalidateHttpSession(true)
 				.permitAll());
 
-		// H2コンソールのためにCSRFを無効化
-		http.csrf(csrf -> csrf.ignoringRequestMatchers(mvc.pattern("/h2-console/**")));
-
-		// H2コンソールのフレームオプション無効化
-		http.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin()));
+		// ヘッダーの設定
+		http.headers(headers -> headers.frameOptions(FrameOptionsConfig::disable));
 
 		return http.build();
 	}
