@@ -71,7 +71,7 @@ public class SecurityConfig {
 		http.authorizeHttpRequests(authorize -> authorize
 				.requestMatchers(mvc.pattern("/admin/**")).hasAuthority("ROLE_ADMIN")
 				.requestMatchers(mvc.pattern("/account/**")).authenticated()
-				.requestMatchers(mvc.pattern("/h2-console")).hasAuthority("ROLE_ADMIN") // H2コンソールへのアクセス制限
+				.requestMatchers(mvc.pattern("/h2-console/**")).hasAuthority("ROLE_ADMIN") // H2コンソールへのアクセス制限
 				.anyRequest().permitAll());
 
 		// ログイン処理の設定
