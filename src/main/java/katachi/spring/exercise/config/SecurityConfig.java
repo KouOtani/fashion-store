@@ -1,5 +1,6 @@
 package katachi.spring.exercise.config;
 
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -96,9 +97,9 @@ public class SecurityConfig {
 		http.headers(headers -> headers.frameOptions(FrameOptionsConfig::disable));
 
 		// H2データベースコンソールのための設定
-		//		http.csrf(csrf -> csrf
-		//				.ignoringRequestMatchers(PathRequest.toH2Console())
-		//				.disable());
+		http.csrf(csrf -> csrf
+				.ignoringRequestMatchers(PathRequest.toH2Console())
+				.disable());
 
 		return http.build();
 	}
