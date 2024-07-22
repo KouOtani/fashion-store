@@ -1,5 +1,6 @@
 package katachi.spring.exercise.config;
 
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -71,7 +72,7 @@ public class SecurityConfig {
 		http.authorizeHttpRequests(authorize -> authorize
 				.requestMatchers(mvc.pattern("/admin/**")).hasAuthority("ROLE_ADMIN")
 				.requestMatchers(mvc.pattern("/account/**")).authenticated()
-				.requestMatchers(mvc.pattern("/h2-console")).hasAuthority("ROLE_ADMIN") // H2コンソールへのアクセス制限
+				.requestMatchers("/h2-console/**").permitAll() // H2DBデバッグ用
 				.anyRequest().permitAll());
 
 		// ログイン処理の設定
@@ -94,6 +95,11 @@ public class SecurityConfig {
 
 		// ヘッダーの設定
 		http.headers(headers -> headers.frameOptions(FrameOptionsConfig::disable));
+
+		// H2データベースコンソールのための設定
+		http.csrf(csrf -> csrf
+				.ignoringRequestMatchers(PathRequest.toH2Console())
+				.disable());
 
 		return http.build();
 	}
