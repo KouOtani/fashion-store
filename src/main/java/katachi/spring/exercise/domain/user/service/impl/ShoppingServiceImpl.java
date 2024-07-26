@@ -305,6 +305,18 @@ public class ShoppingServiceImpl implements ShoppingService {
 		mapper.insertDeliveryAddress(address);
 	}
 
+	@Override
+	public void updateOrInsertMonthlySales(Date orderDate, BigDecimal sales) {
+		int year = getYearFromDate(orderDate);
+		int month = getMonthFromDate(orderDate);
+		Integer count = mapper.checkMonthYear(year, month);
+		if (count != null && count > 0) {
+			mapper.updateSales(year, month, sales);
+		} else {
+			mapper.insertMonthlySales(year, month, sales);
+		}
+	}
+
 	/**
 	 * 月次売上を更新するメソッド。
 	 * 指定された注文日付に基づいて売上データを更新します。

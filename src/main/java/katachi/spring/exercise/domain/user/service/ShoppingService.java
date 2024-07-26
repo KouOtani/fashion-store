@@ -93,6 +93,8 @@ public interface ShoppingService {
 	//注文商品の配送先を登録
 	public void saveDeliveryAddress(DeliveryAddress address);
 
+	public void updateOrInsertMonthlySales(Date orderDate, BigDecimal sales);
+
 	//月別の売り上げを加算する
 	public void updateMonthlySales(Date orderDate, BigDecimal sales);
 

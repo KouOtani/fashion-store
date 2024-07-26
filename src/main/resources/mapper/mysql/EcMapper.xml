@@ -365,32 +365,49 @@
   </insert>
 
   <!-- 月次売上を更新する -->
-  <update id="updateMonthlySales">
-    INSERT INTO monthly_sales (`year`, `month`, sales)
-    VALUES (
-    #{year},
-    #{month},
-    #{sales}
-    )
-    ON DUPLICATE KEY UPDATE
-    sales = sales + VALUES(sales)
+  <!-- <update id="updateMonthlySales"> -->
+  <!-- INSERT INTO monthly_sales (`year`, `month`, sales) -->
+  <!-- VALUES ( -->
+  <!-- #{year}, -->
+  <!-- #{month}, -->
+  <!-- #{sales} -->
+  <!-- ) -->
+  <!-- ON DUPLICATE KEY UPDATE -->
+  <!-- sales = sales + VALUES(sales) -->
+  <!-- </update> -->
+
+  <select id="checkMonthYear" resultType="java.lang.Integer">
+    SELECT COUNT(*)
+    FROM monthly_sales
+    WHERE `year` = #{year} AND `month` = #{month}
+  </select>
+
+  <update id="updateSales">
+    UPDATE monthly_sales
+    SET sales = sales + #{sales}
+    WHERE `year` = #{year} AND `month` = #{month}
   </update>
+
+  <insert id="insertMonthlySales">
+    INSERT INTO monthly_sales (`year`, `month`, sales)
+    VALUES (#{year}, #{month}, #{sales})
+  </insert>
 
   <!-- 月別の売り上げを所得 -->
   <select id="getMonthlySales" resultType="MonthlySales">
     SELECT
-        `year`,
-        `month`,
-        sales
+    `year`,
+    `month`,
+    sales
     FROM
-        monthly_sales
+    monthly_sales
     WHERE
-        (`month` >= 4 AND `year` = #{currentYear})
-        OR
-        (3 >= `month` AND `year` = #{currentYear} + 1)
+    (`month` >= 4 AND `year` = #{currentYear})
+    OR
+    (3 >= `month` AND `year` = #{currentYear} + 1)
     ORDER BY
-        `year`,
-        `month`
+    `year`,
+    `month`
   </select>
 
   <!-- 注文履歴を複数件取得 -->

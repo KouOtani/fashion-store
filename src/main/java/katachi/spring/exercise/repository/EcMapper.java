@@ -110,6 +110,12 @@ public interface EcMapper {
 	//月別の売り上げを取得
 	public List<MonthlySales> getMonthlySales(@Param("currentYear") Integer currentYear);
 
+	public Integer checkMonthYear(@Param("year") Integer year, @Param("month") Integer month);
+
+	public void updateSales(@Param("year") Integer year, @Param("month") Integer month, @Param("sales") BigDecimal sales);
+
+	public void insertMonthlySales(@Param("year") Integer year, @Param("month") Integer month, @Param("sales") BigDecimal sales);
+
 	//注文履歴一覧取得
 	public List<Order> findManyHistories(@Param("userId") Integer userId);
 

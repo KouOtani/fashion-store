@@ -160,7 +160,8 @@ public class OrderController {
 		}
 
 		// 月別売上を更新
-		shoppingService.updateMonthlySales(order.getOrderDate(), totalSales);
+		//		shoppingService.updateMonthlySales(order.getOrderDate(), totalSales);
+		shoppingService.updateOrInsertMonthlySales(order.getOrderDate(), totalSales);
 
 		return "redirect:/order/complete-order";
 	}
