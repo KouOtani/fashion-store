@@ -9,7 +9,7 @@ services:
       - key: SPRING_PROFILES_ACTIVE
         value: h2
       - key: SPRING_DATASOURCE_URL
-        value: jdbc:h2:file:/data/ecdb;AUTO_SERVER=TRUE;DB_CLOSE_DELAY=-1;TIME ZONE=JST
+        value: jdbc:h2:file:/data/ec_db;AUTO_SERVER=TRUE;DB_CLOSE_DELAY=-1;TIME ZONE=JST
       - key: SPRING_DATASOURCE_USERNAME
         value: sa
       - key: SPRING_DATASOURCE_PASSWORD
