@@ -129,7 +129,7 @@ public class SignupController {
 		MUser user = modelMapper.map(signupForm, MUser.class);
 
 		// ユーザーを登録
-		shoppingService.registerUser(user);
+		//		shoppingService.registerUser(user);
 
 		redirectAttributes.addFlashAttribute("message", "ユーザーを登録しました。");
 

@@ -38,6 +38,9 @@ public class SessionAspect {
 		if (isValidPreviousUrl(previousUrl)) {
 			// 前のURLをセッションに保存
 			session.setAttribute("previousUrl", previousUrl);
+		} else {
+			// 無効なURLパターンに一致する場合はルートパスにリダイレクト
+			session.setAttribute("previousUrl", "/");
 		}
 	}
 
@@ -58,7 +61,7 @@ public class SessionAspect {
 		// 無効なURLパターンのリスト
 		String[] invalidPatterns = { "/login", "/signup-confirm", "/guest-signup-confirm", "/account", "/admin" };
 		for (String pattern : invalidPatterns) {
-			if (path.startsWith(pattern)) {
+			if (path.endsWith(pattern)) {
 				return false;
 			}
 		}
