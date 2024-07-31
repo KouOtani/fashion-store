@@ -4,11 +4,11 @@
 このプロジェクトは、完全なECサイトのプロトタイプです。ユーザーは商品を閲覧し、カートに追加し、購入手続きを行うことができます。
 
 ## デモ
-- **デモリンク**: [Live Demo](https://fashion-store-app.onrender.com)
+- **デモリンク**: [fashion store](https://fashion-store-app.onrender.com)
 - **スクリーンショット**:
-  ![ホームページ](screenshots/homepage.png)
-  ![商品詳細](screenshots/goods-details.png)
-  ![カート](screenshots/cart.png)
+  ![ホームページ](docs/screenshots/homepage.png)
+  ![商品詳細](docs/screenshots/goods-details.png)
+  ![カート](docs/screenshots/cart.png)
 
 ## 機能
 - 商品閲覧と検索
