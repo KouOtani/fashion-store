@@ -24,4 +24,4 @@ WORKDIR /app
 EXPOSE 8080
 
 # アプリケーションの実行コマンドを指定
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-Duser.timezone=JST", "-jar", "app.jar"]
