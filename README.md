@@ -5,11 +5,24 @@
 
 ## デモ
 - **デモリンク**: [fashion store](https://fashion-store-app.onrender.com)
-- **スクリーンショット**:
-  ![ホームページ](docs/screenshots/homepage.png)
-  ![商品詳細](docs/screenshots/goods-details.png)
-  ![カート](docs/screenshots/cart.png)
 
+- **スクリーンショット**:
+  
+  <div style="text-align: center;">
+    <p><strong>ホームページ</strong></p>
+    <img src="docs/screenshots/homepage.png" alt="ホームページ" style="max-width: 100%; height: auto;">
+  </div>
+  
+  <div style="text-align: center;">
+    <p><strong>商品詳細</strong></p>
+    <img src="docs/screenshots/goods-details.png" alt="商品詳細" style="max-width: 100%; height: auto;">
+  </div>
+
+  <div style="text-align: center;">
+    <p><strong>カート</strong></p>
+    <img src="docs/screenshots/cart.png" alt="カート" style="max-width: 100%; height: auto;">
+  </div>
+  
 ## 機能
 - 商品閲覧と検索
 - 商品の詳細ページ
