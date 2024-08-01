@@ -1,2 +1,0 @@
-*.largefile filter=lfs diff=lfs merge=lfs -text
-docs/video/*.mp4 filter=lfs diff=lfs merge=lfs -text
