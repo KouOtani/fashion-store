@@ -10,13 +10,8 @@
 
 <div style="text-align: center;">
   <p><strong>ユーザー画面</strong></p>
-<<<<<<< HEAD
   <video controls style="max-width: 100%; height: auto;">
    <source src="https://KouOtani.github.io/fashion-store/docs/video/user.mp4" type="video/mp4">
-=======
-   <video controls style="max-width: 100%; height: auto;">
-    <source src="https://KouOtani.github.io/fashion-store/docs/video/user.mp4" type="video/mp4">
->>>>>>> d539d0f1cb8665a2be019ce535dcc769b6cddcbd
   </video>
 </div>
 <br>
@@ -25,7 +20,7 @@
   <video controls style="max-width: 100%; height: auto;">
     <source src="https://KouOtani.github.io/fashion-store/docs/video/admin.mp4" type="video/mp4">
   </video>
-  </div>
+</div>
 
 ## 機能
 - 商品閲覧と検索

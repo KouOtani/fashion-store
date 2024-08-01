@@ -376,6 +376,7 @@
     sales = sales + VALUES(sales)
   </update>
 
+<!-- 月次売上を更新する（デプロイ用） -->
 <!--  <select id="checkMonthYear" resultType="java.lang.Integer">-->
 <!--    SELECT COUNT(*)-->
 <!--    FROM monthly_sales-->
