@@ -10,15 +10,15 @@
 
 <div style="text-align: center;">
   <p><strong>ユーザー画面</strong></p>
-  <video controls style="max-width: 100%; height: auto;">
-   <source src="https://KouOtanie.github.io/fashion-store/docs/video/user.mp4" type="video/mp4">
+   <video controls style="max-width: 100%; height: auto;">
+    <source src="https://kouotani.github.io/fashion-store/docs/video/user.mp4" type="video/mp4">
   </video>
 </div>
 <br>
 <div style="text-align: center;">
   <p><strong>管理者画面</strong></p>
   <video controls style="max-width: 100%; height: auto;">
-    <source src="https://KouOtanie.github.io/fashion-store/docs/video/admin.mp4" type="video/mp4">
+    <source src="https://kouotani.github.io/fashion-store/docs/video/admin.mp4" type="video/mp4">
   </video>
   </div>
 
