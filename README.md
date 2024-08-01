@@ -4,7 +4,7 @@
 このプロジェクトは、完全なECサイトのプロトタイプです。<br>ユーザーは商品を閲覧し、カートに追加し、購入手続きを行うことができます。
 
 ## デモ
-[![Demo](https://img.shields.io/badge/Demo-fashionstore-blueviolet?style=for-the-badge&logo=appveyor)](https://fashion-store-app.onrender.com)
+[![Demo](https://img.shields.io/badge/Demo-→%20Click%20Here-blueviolet?style=for-the-badge&logo=appveyor)](https://fashion-store-app.onrender.com)
 
 ## スクリーンショット
 
