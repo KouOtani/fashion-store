@@ -6,7 +6,6 @@
 ## デモ
 [![Demo](https://img.shields.io/badge/Demo-→%20Click%20Here-blueviolet?style=for-the-badge&logo=appveyor)](https://fashion-store-app.onrender.com)
 
-<<<<<<< HEAD
 ## 画面録画
 
 <div style="text-align: center;">
@@ -21,24 +20,7 @@
   <video controls style="max-width: 100%; height: auto;">
     <source src="docs/videos/admin.mp4" type="video/mp4">
   </video>
-=======
-## スクリーンショット
-
-<div style="text-align: center;">
-  <p><strong>ホームページ</strong></p>
-  <img src="docs/screenshots/homepage.png" alt="ホームページ" style="max-width: 100%; height: auto;">
-</div>
-<br>
-<div style="text-align: center;">
-  <p><strong>商品詳細</strong></p>
-  <img src="docs/screenshots/goods-details.png" alt="商品詳細" style="max-width: 100%; height: auto;">
-</div>
-<br>
-<div style="text-align: center;">
-  <p><strong>カート</strong></p>
-  <img src="docs/screenshots/cart.png" alt="カート" style="max-width: 100%; height: auto;">
->>>>>>> 00a62373b0908c06279e5ccb9be9e1aa80b88a87
-</div>
+  </div>
 
 ## 機能
 - 商品閲覧と検索
