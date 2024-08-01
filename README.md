@@ -6,22 +6,6 @@
 ## デモ
 [![Demo](https://img.shields.io/badge/Demo-→%20Click%20Here-blueviolet?style=for-the-badge&logo=appveyor)](https://fashion-store-app.onrender.com)
 
-## 画面録画
-
-<div style="text-align: center;">
-  <p><strong>ユーザー画面</strong></p>
-  <video controls style="max-width: 100%; height: auto;">
-   <source src="https://github.com/KouOtani/fashion-store/releases/download/v1.0/user.mp4" type="video/mp4">
-  </video>
-</div>
-<br>
-<div style="text-align: center;">
-  <p><strong>管理者画面</strong></p>
-  <video controls style="max-width: 100%; height: auto;">
-    <source src="https://github.com/KouOtani/fashion-store/releases/download/v1.0/admin.mp4" type="video/mp4">
-  </video>
-</div>
-
 ## 機能
 - 商品閲覧と検索
 - 商品の詳細ページ
@@ -57,3 +41,27 @@
 
 ## デプロイ
 - **本番環境へのデプロイ手順**: このプロジェクトは、Renderの無料プランを使用してデプロイされています。データベースには、Spring Boot内蔵のH2データベースを利用しています。
+
+## 工夫した点
+
+- **Spring Boot & MyBatisの活用**
+  Spring Bootをフレームワークとして使用し、MyBatisでデータベースアクセスを効率化。これにより、迅速な開発と保守性の向上を実現しました。
+
+- **ゲスト機能の実装**
+  ユーザー登録やログインなしで商品閲覧やカート機能を利用できるゲスト機能を導入。これにより、ユーザーが手軽にサイトを利用できるようになりました。
+
+- **セッションでのカート機能**
+  ユーザーがログインしていない場合でも、セッションを利用してカートの内容を保持。これにより、ユーザーがページを移動してもカートの内容を維持できます。
+
+- **Dockerによる環境構築**
+  Dockerを使用してアプリケーションとデータベースのコンテナを管理。これにより、開発環境の再現性と移植性を向上させました。
+
+- **管理者画面の実装**
+  管理者用のダッシュボードを提供し、商品の管理や注文の確認を簡単に行えるようにしました。これにより、管理業務の効率化を図りました。
+
+- **売上グラフの表示**
+  売上データをグラフで視覚化する機能を追加。これにより、データの分析がより直感的に行えるようにしました。
+
+- **ログイン後の画面遷移**
+  ユーザーがログイン後、ログイン前にいた画面に自動的に遷移する機能を実装。これにより、ユーザーの操作感がスムーズになり、使い勝手が向上しました。
+
