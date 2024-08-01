@@ -365,33 +365,33 @@
   </insert>
 
   <!-- 月次売上を更新する -->
-  <!-- <update id="updateMonthlySales"> -->
-  <!-- INSERT INTO monthly_sales (`year`, `month`, sales) -->
-  <!-- VALUES ( -->
-  <!-- #{year}, -->
-  <!-- #{month}, -->
-  <!-- #{sales} -->
-  <!-- ) -->
-  <!-- ON DUPLICATE KEY UPDATE -->
-  <!-- sales = sales + VALUES(sales) -->
-  <!-- </update> -->
-
-  <select id="checkMonthYear" resultType="java.lang.Integer">
-    SELECT COUNT(*)
-    FROM monthly_sales
-    WHERE `year` = #{year} AND `month` = #{month}
-  </select>
-
-  <update id="updateSales">
-    UPDATE monthly_sales
-    SET sales = sales + #{sales}
-    WHERE `year` = #{year} AND `month` = #{month}
+  <update id="updateMonthlySales">
+    INSERT INTO monthly_sales (`year`, `month`, sales)
+    VALUES (
+    #{year},
+    #{month},
+    #{sales}
+    )
+    ON DUPLICATE KEY UPDATE
+    sales = sales + VALUES(sales)
   </update>
 
-  <insert id="insertMonthlySales">
-    INSERT INTO monthly_sales (`year`, `month`, sales)
-    VALUES (#{year}, #{month}, #{sales})
-  </insert>
+<!--  <select id="checkMonthYear" resultType="java.lang.Integer">-->
+<!--    SELECT COUNT(*)-->
+<!--    FROM monthly_sales-->
+<!--    WHERE `year` = #{year} AND `month` = #{month}-->
+<!--  </select>-->
+
+<!--  <update id="updateSales">-->
+<!--    UPDATE monthly_sales-->
+<!--    SET sales = sales + #{sales}-->
+<!--    WHERE `year` = #{year} AND `month` = #{month}-->
+<!--  </update>-->
+
+<!--  <insert id="insertMonthlySales">-->
+<!--    INSERT INTO monthly_sales (`year`, `month`, sales)-->
+<!--    VALUES (#{year}, #{month}, #{sales})-->
+<!--  </insert>-->
 
   <!-- 月別の売り上げを所得 -->
   <select id="getMonthlySales" resultType="MonthlySales">
