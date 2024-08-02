@@ -6,13 +6,13 @@
 ## デモ
 [![Demo](https://img.shields.io/badge/Demo-→%20Click%20Here-blueviolet?style=for-the-badge&logo=appveyor)](https://fashion-store-app.onrender.com)
 
-このリンクから、[ECサイトのデモ](https://fashion-store-app.onrender.com)をご覧いただけます。。<br>
+このリンクから、[ECサイトのデモ](https://fashion-store-app.onrender.com)をご覧いただけます。<br>
 サイトの機能や操作感を確認するために、ぜひクリックしてみてください。<br>
 デモ環境では、商品の閲覧、カートへの追加、購入手続きなどの基本機能を試すことができます。
 
 ### ログイン情報
 
-デモ環境でのログイン情報は以下の通りです：
+デモ環境でのログイン情報は以下の通りです
 
 #### ユーザー
 - **ログインID**: `xxx@example.com`
