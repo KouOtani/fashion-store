@@ -16,10 +16,9 @@ Renderのフリープランでは、アプリケーションが15分間のアイ
 ## 概要
 このプロジェクトは、完全なECサイトのプロトタイプです。<br>ユーザーは商品を閲覧し、カートに追加し、購入手続きを行うことができます。
 
-## 概要
-このプロジェクトは、完全なECサイトのプロトタイプです。<br>ユーザーは商品を閲覧し、カートに追加し、購入手続きを行うことができます。
-
 ## デモ
+![ECサイトのトップページ](https://github.com/KouOtani/fashion-store/blob/main/asset/top_page.png)
+
 [![Demo](https://img.shields.io/badge/Demo-→%20Click%20Here-blueviolet?style=for-the-badge&logo=appveyor)](https://fashion-store-app.onrender.com)
 
 このリンクから、[ECサイトのデモ](https://fashion-store-app.onrender.com)をご覧いただけます。<br>
