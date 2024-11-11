@@ -26,8 +26,6 @@ Renderのフリープランでは、アプリケーションが15分間のアイ
 - **管理者**
 
 ## デモ
-![ECサイトのトップページ](https://github.com/KouOtani/fashion-store/blob/main/asset/top_page.png)
-
 [![Demo](https://img.shields.io/badge/Demo-→%20Click%20Here-blueviolet?style=for-the-badge&logo=appveyor)](https://fashion-store-app.onrender.com)
 
 このリンクから、[ECサイトのデモ](https://fashion-store-app.onrender.com)をご覧いただけます。<br>
