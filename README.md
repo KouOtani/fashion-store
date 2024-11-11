@@ -22,7 +22,7 @@ Renderのフリープランでは、アプリケーションが15分間のアイ
 - **会員ユーザー**
 
 
-https://github.com/user-attachments/assets/f7ac0f18-e492-4ef1-a51d-519db58ec03d
+https://github.com/user-attachments/assets/644257b9-445f-4855-966f-6810d881acf2
 
 
 - **ゲストユーザー**
